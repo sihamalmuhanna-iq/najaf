@@ -17,13 +17,13 @@
             display: flex; justify-content: center; align-items: center; z-index: 9999; padding: 20px;
         }
         .login-card {
-            background: white; width: 100%; max-width: 380px; padding: 30px 25px; border-radius: 16px;
+            background: white; width: 100%; max-width: 390px; padding: 30px 25px; border-radius: 16px;
             text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border-top: 5px solid var(--gold);
         }
         .login-card h2 { color: var(--primary); margin-bottom: 8px; font-size: 22px; }
         .login-card p { color: #64748b; font-size: 14px; margin-bottom: 20px; }
         .pin-input {
-            width: 100%; padding: 14px; text-align: center; font-size: 22px; letter-spacing: 6px;
+            width: 100%; padding: 14px; text-align: center; font-size: 22px; letter-spacing: 5px;
             border: 2px solid #cbd5e1; border-radius: 10px; margin-bottom: 15px; outline: none; font-weight: bold;
         }
         .btn-main {
@@ -36,30 +36,41 @@
         header {
             background: var(--primary); color: white; padding: 18px 20px;
             display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 4px solid var(--gold);
+            border-bottom: 4px solid var(--gold); flex-wrap: wrap; gap: 10px;
         }
         header h1 { font-size: 18px; color: var(--gold); }
-        .role-badge { background: rgba(255,255,255,0.15); padding: 6px 12px; border-radius: 20px; font-size: 13px; }
+        .role-badge { background: rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: bold; }
 
-        .container { max-width: 1150px; margin: 20px auto; padding: 0 15px; }
+        .container { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
 
         /* الإحصائيات */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }
         .stat-card {
             background: white; padding: 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            border-right: 5px solid var(--gold); text-align: center;
+            border-right: 5px solid var(--gold); text-align: center; transition: 0.3s;
         }
         .stat-card h3 { font-size: 26px; color: var(--primary); margin-bottom: 4px; }
         .stat-card span { font-size: 13px; color: #64748b; font-weight: 700; }
 
-        /* التبويبات */
+        /* التبويبات الرئيسية */
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
         .tab-btn {
-            flex: 1; min-width: 140px; padding: 13px; background: white; border: 1px solid #cbd5e1;
+            flex: 1; min-width: 150px; padding: 13px; background: white; border: 1px solid #cbd5e1;
             border-radius: 10px; font-weight: 700; font-size: 15px; color: #475569; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
+            display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s;
         }
         .tab-btn.active { background: var(--primary); color: var(--gold); border-color: var(--primary); }
+        .tab-btn.locked {
+            background: #e2e8f0; color: #94a3b8; border-color: #cbd5e1; cursor: not-allowed; opacity: 0.75;
+        }
+
+        /* تبويبات الأرشيف الفرعية */
+        .sub-tabs { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
+        .sub-tab-btn {
+            padding: 9px 18px; border-radius: 8px; border: 1px solid #cbd5e1; background: #f8fafc;
+            font-weight: 700; font-size: 13.5px; color: #475569; cursor: pointer;
+        }
+        .sub-tab-btn.active { background: var(--gold); color: var(--primary); border-color: var(--gold); }
 
         .panel { display: none; background: white; padding: 22px; border-radius: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .panel.active { display: block; }
@@ -75,16 +86,15 @@
 
         /* جدول الأرشيف */
         .search-bar { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
-        .search-bar input, .search-bar select { padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; }
-        .search-bar input { flex: 1; min-width: 220px; }
+        .search-bar input { flex: 1; min-width: 240px; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; outline: none; }
 
         .table-responsive { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 900px; font-size: 13.5px; }
+        table { width: 100%; border-collapse: collapse; min-width: 850px; font-size: 13.5px; }
         th, td { padding: 12px 10px; text-align: right; border-bottom: 1px solid #e2e8f0; }
         th { background: #f8fafc; color: var(--primary); font-weight: 800; white-space: nowrap; }
         tr:hover { background: #f8fafc; }
 
-        .badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; display: inline-block; }
+        .badge { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; display: inline-block; }
         .badge-wait { background: #fef3c7; color: #b45309; }
         .badge-out { background: #dbeafe; color: #1d4ed8; }
         .badge-done { background: #dcfce7; color: #15803d; }
@@ -100,6 +110,7 @@
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
             background: #1e293b; color: white; padding: 12px 24px; border-radius: 30px;
             font-weight: 700; font-size: 14px; display: none; z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            text-align: center;
         }
     </style>
 </head>
@@ -110,8 +121,8 @@
         <div class="login-card">
             <i class="fas fa-user-shield" style="font-size: 48px; color: var(--gold); margin-bottom: 15px;"></i>
             <h2>بوابة كادر المكتب والأرشيف</h2>
-            <p>النائب سهام منعم المحنة</p>
-            <input type="password" id="pin-input" class="pin-input" placeholder="••••" maxlength="6">
+            <p>مكتب النائب سهام منعم المحنة</p>
+            <input type="password" id="pin-input" class="pin-input" placeholder="أدخل الرمز السري" maxlength="12" onkeypress="if(event.key==='Enter') login()">
             <button onclick="login()" class="btn-main"><i class="fas fa-sign-in-alt"></i> دخول للمنظومة</button>
             <p id="login-err" style="color: #dc2626; margin-top: 12px; display: none; font-weight: bold;">رمز الدخول غير صحيح!</p>
         </div>
@@ -122,33 +133,42 @@
             <h1><i class="fas fa-folder-open"></i> منظومة الصادر والوارد والأرشيف</h1>
             <small style="opacity: 0.85;">مكتب النائب سهام منعم المحنة</small>
         </div>
-        <div class="role-badge" id="user-role-label">كادر المكتب</div>
+        <div style="display:flex; align-items:center; gap:10px;">
+            <div class="role-badge" id="user-role-label">كادر المكتب</div>
+            <button onclick="location.reload()" style="background:#dc2626; color:white; border:none; padding:6px 12px; border-radius:15px; font-size:12px; font-weight:bold; cursor:pointer;"><i class="fas fa-power-off"></i> خروج</button>
+        </div>
     </header>
 
     <div class="container">
         <!-- لوحة الإحصائيات -->
         <div class="stats-grid">
-            <div class="stat-card"><h3 id="st-total">0</h3><span>إجمالي السجلات</span></div>
-            <div class="stat-card" style="border-color:#f59e0b;"><h3 id="st-wait">0</h3><span>قيد المراجعة</span></div>
-            <div class="stat-card" style="border-color:#2563eb;"><h3 id="st-out">0</h3><span>كتب الصادر</span></div>
-            <div class="stat-card" style="border-color:#16a34a;"><h3 id="st-done">0</h3><span>الوارد (المنجز)</span></div>
+            <div class="stat-card" id="card-st-out" style="border-color:#2563eb;"><h3 id="st-out">0</h3><span>إجمالي سجل الصادر</span></div>
+            <div class="stat-card" id="card-st-in" style="border-color:#16a34a;"><h3 id="st-done">0</h3><span>إجمالي سجل الوارد</span></div>
+            <div class="stat-card" id="card-st-linked" style="border-color:var(--gold);"><h3 id="st-linked">0</h3><span>كتب مرتبطة (صادر + وارد)</span></div>
+            <div class="stat-card" id="card-st-app" style="border-color:#f59e0b;"><h3 id="st-app">0</h3><span>طلبات التطبيق العام</span></div>
         </div>
 
-        <!-- أزرار التنقل -->
+        <!-- أزرار التنقل الرئيسية (تظهر للجميع مع قفل غير المسموح) -->
         <div class="tabs">
-            <button class="tab-btn active" id="tab-btn-out" onclick="openPanel('out-panel', this)"><i class="fas fa-paper-plane"></i> تسجيل كتاب صادر</button>
-            <button class="tab-btn" id="tab-btn-in" onclick="openPanel('in-panel', this)"><i class="fas fa-inbox"></i> تسجيل إجابة وارد</button>
-            <button class="tab-btn" id="tab-btn-arch" onclick="openPanel('arch-panel', this); loadArchive();"><i class="fas fa-archive"></i> سجل الأرشيف الشامل</button>
+            <button class="tab-btn active" id="tab-btn-out" onclick="tryOpenPanel('out-panel', this, 'outgoing')">
+                <i class="fas fa-paper-plane"></i> تسجيل كتاب صادر <i id="lock-out" class="fas fa-lock" style="display:none; font-size:13px;"></i>
+            </button>
+            <button class="tab-btn" id="tab-btn-in" onclick="tryOpenPanel('in-panel', this, 'incoming')">
+                <i class="fas fa-inbox"></i> تسجيل إجابة وارد <i id="lock-in" class="fas fa-lock" style="display:none; font-size:13px;"></i>
+            </button>
+            <button class="tab-btn" id="tab-btn-arch" onclick="tryOpenPanel('arch-panel', this, 'archive')">
+                <i class="fas fa-archive"></i> سجل الأرشيف <span id="arch-tab-label">الشامل</span>
+            </button>
         </div>
 
         <!-- 1. واجهة موظف الصادر -->
         <div id="out-panel" class="panel active">
-            <h3 class="panel-title"><i class="fas fa-file-export" style="color:var(--blue);"></i> تسجيل كتاب صادر (يحوّل الحالة إلى: تم رفع الكتاب إلى الجهة المعنية)</h3>
+            <h3 class="panel-title"><i class="fas fa-file-export" style="color:var(--blue);"></i> تسجيل كتاب صادر جديد (ينزل في سجل الصادر المستقل)</h3>
             <form id="outgoing-form">
                 <div class="form-grid">
                     <div class="form-group">
                         <label>الاسم الكامل للمواطن *</label>
-                        <input type="text" class="form-control" id="out-name" required placeholder="اكتب الاسم (سيتم التحديث إذا كان مسجلاً)">
+                        <input type="text" class="form-control" id="out-name" required placeholder="اكتب الاسم الثلاثي أو الرباعي">
                     </div>
                     <div class="form-group">
                         <label>رقم الهاتف *</label>
@@ -168,21 +188,21 @@
                     </div>
                     <div class="form-group full">
                         <label>موضوع الكتاب *</label>
-                        <textarea class="form-control" id="out-subject" rows="3" required placeholder="اكتب خلاصة أو موضوع الكتاب..."></textarea>
+                        <textarea class="form-control" id="out-subject" rows="3" required placeholder="اكتب خلاصة أو موضوع كتاب الصادر..."></textarea>
                     </div>
                 </div>
-                <button type="submit" class="btn-main" style="background:var(--blue); margin-top:10px;"><i class="fas fa-save"></i> حفظ وتسجيل في الصادر</button>
+                <button type="submit" class="btn-main" style="background:var(--blue); margin-top:10px;"><i class="fas fa-save"></i> حفظ في سجل الصادر</button>
             </form>
         </div>
 
         <!-- 2. واجهة موظف الوارد -->
         <div id="in-panel" class="panel">
-            <h3 class="panel-title"><i class="fas fa-file-import" style="color:var(--green);"></i> تسجيل إجابة وارد (يحوّل الحالة إلى: مراجعة مكتب المناذرة يوم الجمعة عصراً)</h3>
+            <h3 class="panel-title"><i class="fas fa-file-import" style="color:var(--green);"></i> تسجيل إجابة وارد (يفحص سجل الصادر تلقائياً للتأشير والربط)</h3>
             <form id="incoming-form">
                 <div class="form-grid">
                     <div class="form-group">
                         <label>الاسم الكامل للمواطن *</label>
-                        <input type="text" class="form-control" id="in-name" required placeholder="اكتب الاسم لتحديث حالته أو إضافته">
+                        <input type="text" class="form-control" id="in-name" required placeholder="اكتب الاسم (سيتم تأشيره إذا كان مسجلاً بالصادر)">
                     </div>
                     <div class="form-group">
                         <label>الوزارة أو الجهة *</label>
@@ -205,45 +225,33 @@
                         <textarea class="form-control" id="in-subject" rows="3" required placeholder="موضوع كتاب الإجابة..."></textarea>
                     </div>
                 </div>
-                <button type="submit" class="btn-main" style="background:var(--green); margin-top:10px;"><i class="fas fa-check-double"></i> حفظ وإنجاز الطلب (وارد)</button>
+                <button type="submit" class="btn-main" style="background:var(--green); margin-top:10px;"><i class="fas fa-check-double"></i> حفظ في سجل الوارد وإنجاز الطلب</button>
             </form>
         </div>
 
-        <!-- 3. واجهة الأرشيف الشامل -->
+        <!-- 3. واجهة الأرشيف المفلتر حسب الصلاحية -->
         <div id="arch-panel" class="panel">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
-                <h3 class="panel-title" style="margin:0; border:none;"><i class="fas fa-database"></i> سجل الأرشيف والمتابعة</h3>
-                <button onclick="loadArchive()" class="action-btn" style="background:var(--primary); padding:8px 15px;"><i class="fas fa-sync-alt"></i> تحديث البيانات</button>
+                <h3 class="panel-title" style="margin:0; border:none;" id="archive-main-title"><i class="fas fa-database"></i> سجل الأرشيف</h3>
+                <button onclick="loadArchive()" class="action-btn" style="background:var(--primary); padding:8px 15px;"><i class="fas fa-sync-alt"></i> تحديث السجلات</button>
+            </div>
+
+            <!-- أزرار التبديل بين السجلات (تظهر للمدير العام فقط) -->
+            <div class="sub-tabs" id="admin-sub-tabs" style="display:none;">
+                <button class="sub-tab-btn active" onclick="switchArchiveView('outgoing', this)"><i class="fas fa-paper-plane"></i> سجل الصادر المستقل</button>
+                <button class="sub-tab-btn" onclick="switchArchiveView('incoming', this)"><i class="fas fa-inbox"></i> سجل الوارد المستقل</button>
+                <button class="sub-tab-btn" onclick="switchArchiveView('app', this)"><i class="fas fa-mobile-alt"></i> سجل طلبات التطبيق والأرشيف العام</button>
             </div>
 
             <div class="search-bar">
-                <input type="text" id="arch-search" oninput="filterArchive()" placeholder="ابحث بالاسم، رقم الطلب، الوزارة، رقم الكتاب، أو الهامش...">
-                <select id="arch-filter" onchange="filterArchive()">
-                    <option value="">كل الحالات</option>
-                    <option value="قيد المراجعة">قيد المراجعة</option>
-                    <option value="تم رفع الكتاب">الصادر (تم رفع الكتاب)</option>
-                    <option value="مكتب المناذرة">الوارد (منجز - مكتب المناذرة)</option>
-                </select>
+                <input type="text" id="arch-search" oninput="renderCurrentArchive()" placeholder="ابحث بالاسم، الكود، الوزارة، رقم الكتاب، أو الموضوع...">
             </div>
 
             <div class="table-responsive">
                 <table>
-                    <thead>
-                        <tr>
-                            <th>رقم الطلب</th>
-                            <th>الاسم</th>
-                            <th>الهاتف</th>
-                            <th>الوزارة / الجهة</th>
-                            <th>الموضوع</th>
-                            <th>كتاب الصادر</th>
-                            <th>كتاب الوارد والهامش</th>
-                            <th>المرفق</th>
-                            <th>الحالة الحالية</th>
-                            <th>إجراء سريع</th>
-                        </tr>
-                    </thead>
+                    <thead id="archive-thead"></thead>
                     <tbody id="archive-tbody">
-                        <tr><td colspan="10" style="text-align:center; padding:30px;">جاري تحميل الأرشيف...</td></tr>
+                        <tr><td colspan="9" style="text-align:center; padding:30px;">جاري تحميل البيانات...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -253,55 +261,120 @@
     <div id="toast">تم الحفظ بنجاح</div>
 
     <script>
-        // ⚠️ ضع نفس رابط Apps Script هنا
+        // ⚠️ ضع رابط Apps Script الخاص بك هنا:
         const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbyy8_vW5N3EPJbgO2eCaDp4M1vd1Mh9v4PTuZ-DVScqG-7wl5ThLgfNxXkmftptqNQfig/exec";
 
-        // رموز الدخول للكادر (يمكنك تعديلها)
+        // الرموز السرية المعتمدة حسب طلبك
         const PINS = {
-            "1001": { role: "all", title: "المدير العام (صلاحية كاملة)" },
-            "2002": { role: "outgoing", title: "موظف الصادر" },
-            "3003": { role: "incoming", title: "موظف الوارد" }
+            "199701997": { role: "admin", title: "المدير العام (صلاحية مطلقة)" },
+            "300300":    { role: "outgoing", title: "موظف الصادر" },
+            "009900":    { role: "incoming", title: "موظف الوارد" }
         };
 
-        let archiveData = [];
+        let currentUserRole = "";
+        let currentArchiveView = "outgoing"; // outgoing | incoming | app
+        let outgoingData = [];
+        let incomingData = [];
+        let appRequestsData = [];
 
         function login() {
             const pin = document.getElementById('pin-input').value.trim();
             if (PINS[pin]) {
+                currentUserRole = PINS[pin].role;
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('user-role-label').innerText = PINS[pin].title;
                 
-                // تخصيص الواجهة حسب الموظف
-                if (PINS[pin].role === "outgoing") {
-                    openPanel('out-panel', document.getElementById('tab-btn-out'));
-                } else if (PINS[pin].role === "incoming") {
-                    openPanel('in-panel', document.getElementById('tab-btn-in'));
-                }
+                applyRoleRestrictions();
                 loadArchive();
             } else {
                 document.getElementById('login-err').style.display = 'block';
             }
         }
 
-        function openPanel(panelId, btn) {
+        // تطبيق قيود الصلاحيات على الواجهة والأرشيف
+        function applyRoleRestrictions() {
+            const btnOut = document.getElementById('tab-btn-out');
+            const btnIn = document.getElementById('tab-btn-in');
+            const lockOut = document.getElementById('lock-out');
+            const lockIn = document.getElementById('lock-in');
+            const adminSubTabs = document.getElementById('admin-sub-tabs');
+
+            if (currentUserRole === "admin") {
+                adminSubTabs.style.display = "flex";
+                currentArchiveView = "outgoing";
+                document.getElementById('arch-tab-label').innerText = "(الصادر / الوارد / التطبيق)";
+            } 
+            else if (currentUserRole === "outgoing") {
+                // قفل تبويب الوارد على موظف الصادر
+                btnIn.classList.add('locked');
+                lockIn.style.display = 'inline-block';
+                adminSubTabs.style.display = 'none';
+                currentArchiveView = "outgoing";
+                document.getElementById('arch-tab-label').innerText = "(الصادر فقط)";
+                document.getElementById('archive-main-title').innerHTML = '<i class="fas fa-paper-plane" style="color:var(--blue);"></i> أرشيف سجل الصادر';
+                // إخفاء إحصائيات الوارد والتطبيق عن موظف الصادر
+                document.getElementById('card-st-in').style.display = 'none';
+                document.getElementById('card-st-app').style.display = 'none';
+                activatePanel('out-panel', btnOut);
+            } 
+            else if (currentUserRole === "incoming") {
+                // قفل تبويب الصادر على موظف الوارد
+                btnOut.classList.add('locked');
+                lockOut.style.display = 'inline-block';
+                adminSubTabs.style.display = 'none';
+                currentArchiveView = "incoming";
+                document.getElementById('arch-tab-label').innerText = "(الوارد فقط)";
+                document.getElementById('archive-main-title').innerHTML = '<i class="fas fa-inbox" style="color:var(--green);"></i> أرشيف سجل الوارد';
+                // إخفاء إحصائيات الصادر والتطبيق عن موظف الوارد
+                document.getElementById('card-st-out').style.display = 'none';
+                document.getElementById('card-st-app').style.display = 'none';
+                activatePanel('in-panel', btnIn);
+            }
+        }
+
+        function tryOpenPanel(panelId, btn, requiredAccess) {
+            if (currentUserRole === "outgoing" && requiredAccess === "incoming") {
+                showToast("🔒 عذراً، هذا القسم مخصص لموظف الوارد فقط");
+                return;
+            }
+            if (currentUserRole === "incoming" && requiredAccess === "outgoing") {
+                showToast("🔒 عذراً، هذا القسم مخصص لموظف الصادر فقط");
+                return;
+            }
+            activatePanel(panelId, btn);
+            if (requiredAccess === "archive") {
+                loadArchive();
+            }
+        }
+
+        function activatePanel(panelId, btn) {
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(panelId).classList.add('active');
             btn.classList.add('active');
         }
 
+        function switchArchiveView(viewName, btn) {
+            if (currentUserRole !== "admin") return;
+            currentArchiveView = viewName;
+            document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderCurrentArchive();
+        }
+
         function showToast(msg) {
             const t = document.getElementById('toast');
             t.innerText = msg;
             t.style.display = 'block';
-            setTimeout(() => { t.style.display = 'none'; }, 3500);
+            setTimeout(() => { t.style.display = 'none'; }, 4000);
         }
 
         // إرسال نموذج الصادر
         document.getElementById('outgoing-form').addEventListener('submit', function(e) {
             e.preventDefault();
+            if (currentUserRole === "incoming") return;
             const btn = this.querySelector('button[type="submit"]');
-            btn.disabled = true; btn.innerText = "جاري الحفظ...";
+            btn.disabled = true; btn.innerText = "جاري الحفظ في سجل الصادر...";
 
             const payload = {
                 action: "staff_entry",
@@ -317,20 +390,21 @@
             fetch(WEBHOOK_URL, { method: 'POST', body: JSON.stringify(payload) })
             .then(r => r.json())
             .then(res => {
-                btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> حفظ وتسجيل في الصادر';
+                btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> حفظ في سجل الصادر';
                 if(res.result === "success") {
-                    showToast(res.mode === "updated" ? "✅ تم تحديث بيانات المواطن وتحويله للصادر" : "✅ تم إضافة كتاب الصادر الجديد برقم: " + res.reqId);
+                    showToast("✅ تم تسجيل كتاب الصادر بنجاح (كود: " + res.reqId + ")");
                     e.target.reset();
                     loadArchive();
                 }
-            }).catch(() => { btn.disabled = false; alert("خطأ في الاتصال"); });
+            }).catch(() => { btn.disabled = false; alert("حدث خطأ في الاتصال"); });
         });
 
         // إرسال نموذج الوارد
         document.getElementById('incoming-form').addEventListener('submit', function(e) {
             e.preventDefault();
+            if (currentUserRole === "outgoing") return;
             const btn = this.querySelector('button[type="submit"]');
-            btn.disabled = true; btn.innerText = "جاري الحفظ...";
+            btn.disabled = true; btn.innerText = "جاري الفحص والحفظ في سجل الوارد...";
 
             const payload = {
                 action: "staff_entry",
@@ -346,13 +420,17 @@
             fetch(WEBHOOK_URL, { method: 'POST', body: JSON.stringify(payload) })
             .then(r => r.json())
             .then(res => {
-                btn.disabled = false; btn.innerHTML = '<i class="fas fa-check-double"></i> حفظ وإنجاز الطلب (وارد)';
+                btn.disabled = false; btn.innerHTML = '<i class="fas fa-check-double"></i> حفظ في سجل الوارد وإنجاز الطلب';
                 if(res.result === "success") {
-                    showToast(res.mode === "updated" ? "✅ تم تسجيل الوارد وإشعار المواطن بمراجعة مكتب المناذرة" : "✅ تم تسجيل الوارد الجديد برقم: " + res.reqId);
+                    if (res.linked) {
+                        showToast("✅ تم حفظ الوارد وتأشير ارتباطه بكتاب الصادر تلقائياً!");
+                    } else {
+                        showToast("✅ تم حفظ الوارد (وارد مباشر - كود: " + res.reqId + ")");
+                    }
                     e.target.reset();
                     loadArchive();
                 }
-            }).catch(() => { btn.disabled = false; alert("خطأ في الاتصال"); });
+            }).catch(() => { btn.disabled = false; alert("حدث خطأ في الاتصال"); });
         });
 
         // جلب بيانات الأرشيف
@@ -361,73 +439,155 @@
             .then(r => r.json())
             .then(res => {
                 if (res.result === "success") {
-                    archiveData = res.data;
+                    outgoingData = res.outgoing || [];
+                    incomingData = res.incoming || [];
+                    appRequestsData = res.appRequests || [];
                     updateStats();
-                    renderArchive(archiveData);
+                    renderCurrentArchive();
                 }
             });
         }
 
         function updateStats() {
-            document.getElementById('st-total').innerText = archiveData.length;
-            document.getElementById('st-wait').innerText = archiveData.filter(x => x.status.includes("قيد")).length;
-            document.getElementById('st-out').innerText = archiveData.filter(x => x.status.includes("رفع الكتاب")).length;
-            document.getElementById('st-done').innerText = archiveData.filter(x => x.status.includes("مكتب المناذرة") || x.status.includes("إنجاز")).length;
+            document.getElementById('st-out').innerText = outgoingData.length;
+            document.getElementById('st-done').innerText = incomingData.length;
+            const linkedCount = incomingData.filter(x => x.linkStatus.includes("مرتبط بصادر")).length;
+            document.getElementById('st-linked').innerText = linkedCount;
+            document.getElementById('st-app').innerText = appRequestsData.length;
         }
 
-        function renderArchive(list) {
+        function renderCurrentArchive() {
+            const q = document.getElementById('arch-search').value.trim().toLowerCase();
+            const thead = document.getElementById('archive-thead');
             const tbody = document.getElementById('archive-tbody');
-            if (list.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="10" style="text-align:center; padding:25px;">لا توجد سجلات مطابقة</td></tr>';
-                return;
+
+            // 1. عرض سجل الصادر
+            if (currentArchiveView === "outgoing") {
+                thead.innerHTML = `
+                    <tr>
+                        <th>كود التتبع</th>
+                        <th>الاسم الكامل</th>
+                        <th>رقم الهاتف</th>
+                        <th>الوزارة / الجهة</th>
+                        <th>رقم وتاريخ الصادر</th>
+                        <th>الموضوع</th>
+                        <th>تأشير الارتباط بالوارد</th>
+                    </tr>`;
+                
+                const filtered = outgoingData.filter(item => 
+                    (item.name + " " + item.id + " " + item.ministry + " " + item.bookNum + " " + item.subject + " " + item.linkStatus).toLowerCase().includes(q)
+                );
+
+                if (filtered.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:25px;">لا توجد سجلات في الصادر</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = filtered.map(item => {
+                    const isLinked = item.linkStatus.includes("وصلت الإجابة");
+                    const badgeCls = isLinked ? 'badge-done' : 'badge-wait';
+                    return `
+                    <tr>
+                        <td><strong>${item.id}</strong><br><small style="color:#64748b;">${item.regDate}</small></td>
+                        <td><strong>${item.name}</strong></td>
+                        <td dir="ltr">${item.phone || '—'}</td>
+                        <td>${item.ministry}</td>
+                        <td><strong>رقم: ${item.bookNum}</strong><br><small>${item.bookDate}</small></td>
+                        <td style="max-width:240px;">${item.subject}</td>
+                        <td><span class="badge ${badgeCls}">${item.linkStatus}</span></td>
+                    </tr>`;
+                }).join('');
             }
 
-            let html = '';
-            list.forEach(item => {
-                let badgeClass = 'badge-wait';
-                if (item.status.includes('رفع الكتاب')) badgeClass = 'badge-out';
-                if (item.status.includes('مكتب المناذرة') || item.status.includes('إنجاز')) badgeClass = 'badge-done';
+            // 2. عرض سجل الوارد
+            else if (currentArchiveView === "incoming") {
+                thead.innerHTML = `
+                    <tr>
+                        <th>كود التتبع</th>
+                        <th>الاسم الكامل</th>
+                        <th>الوزارة / الجهة</th>
+                        <th>رقم وتاريخ الوارد</th>
+                        <th>هامش الوزير / الجهة</th>
+                        <th>الموضوع</th>
+                        <th>تأشير الأوليات (الصادر)</th>
+                    </tr>`;
 
-                const attachLink = (item.attachment && item.attachment.startsWith('http')) 
-                    ? `<a href="${item.attachment}" target="_blank" style="color:var(--blue); font-weight:bold;">فتح المرفق</a>` 
-                    : '—';
+                const filtered = incomingData.filter(item => 
+                    (item.name + " " + item.id + " " + item.ministry + " " + item.bookNum + " " + item.margin + " " + item.subject + " " + item.linkStatus).toLowerCase().includes(q)
+                );
 
-                const outInfo = item.outNum ? `رقم: ${item.outNum}<br><small>${item.outDate}</small>` : '—';
-                const inInfo = item.inNum ? `رقم: ${item.inNum}<br><small>${item.inDate}</small><br><strong style="color:var(--green);">الهامش: ${item.margin}</strong>` : '—';
+                if (filtered.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:25px;">لا توجد سجلات في الوارد</td></tr>';
+                    return;
+                }
 
-                html += `
-                <tr>
-                    <td><strong>${item.id}</strong><br><small style="color:#64748b;">${item.date}</small></td>
-                    <td><strong>${item.name}</strong><br><small>${item.gov} ${item.district}</small></td>
-                    <td dir="ltr">${item.phone || '—'}</td>
-                    <td>${item.ministry || '—'}</td>
-                    <td style="max-width:200px;">${item.subject || '—'}</td>
-                    <td>${outInfo}</td>
-                    <td>${inInfo}</td>
-                    <td>${attachLink}</td>
-                    <td><span class="badge ${badgeClass}">${item.status}</span></td>
-                    <td>
-                        <button class="action-btn btn-out" onclick="quickUpdate(${item.rowIndex}, 'تم رفع الكتاب إلى الجهة المعنية')">صادر</button>
-                        <button class="action-btn btn-in" onclick="quickUpdate(${item.rowIndex}, 'تم إنجاز الطلب - يرجى مراجعة مكتب المناذرة يوم الجمعة عصراً لاستلام كتاب الإجابة.')">وارد (منجز)</button>
-                    </td>
-                </tr>`;
-            });
-            tbody.innerHTML = html;
-        }
+                tbody.innerHTML = filtered.map(item => {
+                    const isLinked = item.linkStatus.includes("مرتبط بصادر");
+                    const badgeCls = isLinked ? 'badge-done' : 'badge-out';
+                    return `
+                    <tr>
+                        <td><strong>${item.id}</strong><br><small style="color:#64748b;">${item.regDate}</small></td>
+                        <td><strong>${item.name}</strong></td>
+                        <td>${item.ministry}</td>
+                        <td><strong>رقم: ${item.bookNum}</strong><br><small>${item.bookDate}</small></td>
+                        <td><strong style="color:var(--green);">${item.margin}</strong></td>
+                        <td style="max-width:240px;">${item.subject}</td>
+                        <td><span class="badge ${badgeCls}">${item.linkStatus}</span></td>
+                    </tr>`;
+                }).join('');
+            }
 
-        function filterArchive() {
-            const q = document.getElementById('arch-search').value.trim().toLowerCase();
-            const f = document.getElementById('arch-filter').value;
+            // 3. عرض سجل طلبات التطبيق العام (للمدير فقط)
+            else if (currentArchiveView === "app" && currentUserRole === "admin") {
+                thead.innerHTML = `
+                    <tr>
+                        <th>رقم الطلب</th>
+                        <th>الاسم</th>
+                        <th>الهاتف</th>
+                        <th>الوزارة</th>
+                        <th>التفاصيل</th>
+                        <th>المرفق</th>
+                        <th>الحالة الحالية</th>
+                        <th>تغيير سريع للحالة</th>
+                    </tr>`;
 
-            const filtered = archiveData.filter(item => {
-                const matchText = (item.name + " " + item.id + " " + item.ministry + " " + item.subject + " " + item.outNum + " " + item.inNum + " " + item.margin).toLowerCase().includes(q);
-                const matchStatus = f === "" || item.status.includes(f);
-                return matchText && matchStatus;
-            });
-            renderArchive(filtered);
+                const filtered = appRequestsData.filter(item => 
+                    (item.name + " " + item.id + " " + item.ministry + " " + item.subject + " " + item.status).toLowerCase().includes(q)
+                );
+
+                if (filtered.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:25px;">لا توجد طلبات مطابقة</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = filtered.map(item => {
+                    let badgeClass = 'badge-wait';
+                    if (item.status.includes('رفع الكتاب')) badgeClass = 'badge-out';
+                    if (item.status.includes('مكتب المناذرة') || item.status.includes('إنجاز')) badgeClass = 'badge-done';
+
+                    const attachLink = (item.attachment && item.attachment.startsWith('http')) 
+                        ? `<a href="${item.attachment}" target="_blank" style="color:var(--blue); font-weight:bold;">فتح المرفق</a>` : '—';
+
+                    return `
+                    <tr>
+                        <td><strong>${item.id}</strong><br><small style="color:#64748b;">${item.date}</small></td>
+                        <td><strong>${item.name}</strong><br><small>${item.gov} ${item.district}</small></td>
+                        <td dir="ltr">${item.phone || '—'}</td>
+                        <td>${item.ministry || '—'}</td>
+                        <td style="max-width:220px;">${item.subject || '—'}</td>
+                        <td>${attachLink}</td>
+                        <td><span class="badge ${badgeClass}">${item.status}</span></td>
+                        <td>
+                            <button class="action-btn btn-out" onclick="quickUpdate(${item.rowIndex}, 'تم رفع الكتاب إلى الجهة المعنية')">صادر</button>
+                            <button class="action-btn btn-in" onclick="quickUpdate(${item.rowIndex}, 'تم إنجاز الطلب - يرجى مراجعة مكتب المناذرة يوم الجمعة عصراً لاستلام كتاب الإجابة.')">وارد (منجز)</button>
+                        </td>
+                    </tr>`;
+                }).join('');
+            }
         }
 
         function quickUpdate(rowIndex, newStatus) {
+            if (currentUserRole !== "admin") return;
             showToast("جاري تحديث الحالة...");
             fetch(WEBHOOK_URL, {
                 method: 'POST',
