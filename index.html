@@ -8,6 +8,57 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* تنسيق قسم المكاتب المتجاوب */
+.offices-container {
+    width: 100%;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-sizing: border-box;
+}
+
+.office-card-pro {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 16px 18px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e2e8f0;
+    border-right: 6px solid #d4af37; /* خط ذهبي فخم جهة اليمين */
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.office-card-pro h3 {
+    margin: 0 0 12px 0;
+    color: #0f1d36; /* كحلي رسمي */
+    font-size: 1.15rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.office-card-pro .detail-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+    color: #334155;
+    line-height: 1.5;
+}
+
+.office-card-pro .detail-row:last-child {
+    margin-bottom: 0;
+}
+
+.office-card-pro .detail-row i {
+    color: #d4af37;
+    font-size: 1.1rem;
+    margin-top: 3px;
+    min-width: 18px;
+}
         :root {
             --primary-color: #1a2a3a; 
             --secondary-color: #d4af37; 
@@ -193,28 +244,37 @@
     </div>
 
     <!-- 3. قسم المكتب -->
-    <div class="office-cards-container">
-    <div class="office-card">
-        <h3 class="office-title">مكتب قضاء المناذرة</h3>
-        <div class="office-detail">
+    <div class="offices-container">
+
+    <div class="office-card-pro">
+        <h3><i class="fas fa-building"></i> مكتب قضاء المناذرة</h3>
+        <div class="detail-row">
             <i class="fas fa-map-marker-alt"></i>
-            <span>العنوان: مركز قضاء المناذرة - شارع المستشفى</span>
+            <span><strong>العنوان:</strong> مركز قضاء المناذرة - شارع المستشفى</span>
         </div>
-        <div class="office-detail">
+        <div class="detail-row">
+            <i class="fas fa-calendar-alt"></i>
+            <span><strong>أيام الدوام:</strong> الأحد، الاثنين، الأربعاء، الجمعة</span>
+        </div>
+        <div class="detail-row">
             <i class="fas fa-clock"></i>
-            <span>أوقات الدوام: الأحد، الاثنين، الأربعاء، الجمعة (3:30 - 7:30 مساءً)</span>
+            <span><strong>الأوقات:</strong> 3:30 مساءً إلى 7:30 مساءً</span>
         </div>
     </div>
 
-    <div class="office-card">
-        <h3 class="office-title">مكتب النجف الأشرف</h3>
-        <div class="office-detail">
+    <div class="office-card-pro">
+        <h3><i class="fas fa-landmark"></i> مكتب النجف الأشرف</h3>
+        <div class="detail-row">
             <i class="fas fa-map-marker-alt"></i>
-            <span>العنوان: شارع نجف كوفة - خلف محكمة النجف مباشرةً</span>
+            <span><strong>العنوان:</strong> شارع نجف كوفة - خلف محكمة النجف مباشرةً</span>
         </div>
-        <div class="office-detail">
+        <div class="detail-row">
+            <i class="fas fa-calendar-alt"></i>
+            <span><strong>أيام الدوام:</strong> السبت، الثلاثاء</span>
+        </div>
+        <div class="detail-row">
             <i class="fas fa-clock"></i>
-            <span>أوقات الدوام: السبت، الثلاثاء (3:30 - 7:30 مساءً)</span>
+            <span><strong>الأوقات:</strong> 3:30 مساءً إلى 7:30 مساءً</span>
         </div>
     </div>
 
