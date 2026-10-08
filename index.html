@@ -18,7 +18,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-color); overflow-x: hidden; }
 
-        /* شاشة الترحيب */
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, var(--primary-color), #0f1922);
@@ -34,7 +33,6 @@
         .splash-title { color: white; font-size: 26px; font-weight: 800; text-align: center; line-height: 1.4; margin-bottom: 5px; }
         .splash-subtitle { color: var(--secondary-color); font-size: 16px; font-weight: 500; }
 
-        /* الشريط الإخباري */
         .ticker-wrap {
             background-color: var(--secondary-color); color: var(--primary-color);
             padding: 8px 0; overflow: hidden; font-weight: 700; font-size: 14px;
@@ -44,17 +42,12 @@
             display: inline-block; white-space: nowrap; padding-right: 100%;
             animation: ticker-rtl 35s linear infinite;
         }
-        @keyframes ticker-rtl {
-            0% { transform: translateX(-100%); } 
-            100% { transform: translateX(100%); } 
-        }
+        @keyframes ticker-rtl { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
-        /* رأس الصفحة */
         header { background-color: var(--primary-color); padding: 15px 20px; text-align: center; color: white; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
         header h2 { font-size: 20px; color: var(--secondary-color); }
         header p { font-size: 12px; margin-top: 3px; opacity: 0.9; }
 
-        /* أزرار التنقل السفلية */
         .nav-bar {
             position: fixed; bottom: 0; width: 100%; background-color: white;
             display: flex; justify-content: space-around; padding: 10px 0;
@@ -72,7 +65,6 @@
         .section-container.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* الأخبار والاقتباس */
         .news-card {
             background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-right: 4px solid var(--secondary-color);
@@ -83,7 +75,6 @@
         .news-snippet { font-size: 14px; color: #555; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
         .read-more-btn { background: none; border: none; color: var(--secondary-color); font-weight: 700; font-size: 14px; margin-top: 8px; cursor: pointer; padding: 0; }
 
-        /* نافذة قراءة الخبر كاملاً */
         #news-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.8); z-index: 10000; justify-content: center; align-items: center; padding: 15px;
@@ -101,7 +92,16 @@
         #modal-date { font-size: 13px; color: #888; margin-bottom: 15px; }
         #modal-details { font-size: 15px; color: #444; line-height: 1.8; }
 
-        /* الاستمارة ورفع الملفات */
+        /* ستايل متابعة الطلب والاستمارة */
+        .tracking-box {
+            background: white; border-radius: 12px; padding: 20px; margin-bottom: 25px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-right: 4px solid var(--primary-color);
+        }
+        .tracking-box h4 { color: var(--primary-color); margin-bottom: 10px; font-size: 16px; }
+        .tracking-flex { display: flex; gap: 10px; }
+        .tracking-flex input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; outline: none; }
+        .tracking-flex button { background: var(--primary-color); color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; font-weight: 700; margin-bottom: 8px; color: var(--primary-color); font-size: 14px; }
         .form-control { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; }
@@ -110,58 +110,12 @@
         .file-upload-wrapper i { font-size: 24px; color: var(--secondary-color); margin-bottom: 8px; }
         .submit-btn { width: 100%; background-color: var(--primary-color); color: white; border: none; padding: 15px; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; }
 
-        /* تنسيق قسم المكاتب المتجاوب */
-        .offices-container {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            box-sizing: border-box;
-        }
+        .offices-container { width: 100%; display: flex; flex-direction: column; gap: 15px; box-sizing: border-box; }
+        .office-card-pro { background: #ffffff; border-radius: 12px; padding: 16px 18px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06); border: 1px solid #e2e8f0; border-right: 6px solid #d4af37; width: 100%; }
+        .office-card-pro h3 { margin: 0 0 12px 0; color: var(--primary-color); font-size: 1.15rem; font-weight: bold; display: flex; align-items: center; gap: 8px; }
+        .office-card-pro .detail-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; font-size: 0.95rem; color: #334155; line-height: 1.5; }
+        .office-card-pro .detail-row i { color: var(--secondary-color); font-size: 1.1rem; margin-top: 3px; min-width: 18px; }
 
-        .office-card-pro {
-            background: #ffffff;
-            border-radius: 12px;
-            padding: 16px 18px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-            border: 1px solid #e2e8f0;
-            border-right: 6px solid #d4af37;
-            box-sizing: border-box;
-            width: 100%;
-        }
-
-        .office-card-pro h3 {
-            margin: 0 0 12px 0;
-            color: var(--primary-color);
-            font-size: 1.15rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .office-card-pro .detail-row {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            margin-bottom: 8px;
-            font-size: 0.95rem;
-            color: #334155;
-            line-height: 1.5;
-        }
-
-        .office-card-pro .detail-row:last-child {
-            margin-bottom: 0;
-        }
-
-        .office-card-pro .detail-row i {
-            color: var(--secondary-color);
-            font-size: 1.1rem;
-            margin-top: 3px;
-            min-width: 18px;
-        }
-
-        /* التواصل */
         .social-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
         .social-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 20px; border-radius: 12px; color: white; text-decoration: none; font-weight: 700; font-size: 16px; border: none; cursor: pointer; }
         .social-btn i { font-size: 30px; }
@@ -170,7 +124,6 @@
         .tg-btn { background: linear-gradient(45deg, #0088cc, #005580); }
         .yt-btn { background: linear-gradient(45deg, #FF0000, #990000); }
 
-        /* النوافذ المنبثقة */
         #success-modal, #loading-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; justify-content: center; align-items: center; }
         .popup-box { background: white; width: 85%; border-radius: 15px; padding: 30px 20px; text-align: center; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
@@ -202,7 +155,17 @@
     </div>
 
     <div id="form-section" class="section-container">
-        <h3 style="color: var(--primary-color); margin-bottom: 20px; border-bottom: 2px solid var(--secondary-color); padding-bottom: 10px;">استمارة الطلبات والمناشدات</h3>
+        
+        <div class="tracking-box">
+            <h4><i class="fas fa-search"></i> متابعة طلب سابق</h4>
+            <div class="tracking-flex">
+                <input type="text" id="track-name-input" placeholder="اكتب اسمك للبحث عن طلبك...">
+                <button onclick="trackRequest()">استعلام</button>
+            </div>
+            <p id="track-result" style="margin-top: 10px; font-size: 14px; font-weight: bold;"></p>
+        </div>
+
+        <h3 style="color: var(--primary-color); margin-bottom: 20px; border-bottom: 2px solid var(--secondary-color); padding-bottom: 10px;">استمارة تقديم طلب جديد</h3>
         <form id="contact-form">
             <div class="form-group">
                 <label>الاسم الرباعي واللقب</label>
@@ -234,39 +197,18 @@
 
     <div id="office-section" class="section-container">
         <div class="offices-container">
-            
             <div class="office-card-pro">
                 <h3><i class="fas fa-building"></i> مكتب قضاء المناذرة</h3>
-                <div class="detail-row">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span><strong>العنوان:</strong> مركز قضاء المناذرة - شارع المستشفى</span>
-                </div>
-                <div class="detail-row">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span><strong>أيام الدوام:</strong> الأحد، الاثنين، الأربعاء، الجمعة</span>
-                </div>
-                <div class="detail-row">
-                    <i class="fas fa-clock"></i>
-                    <span><strong>الأوقات:</strong> 3:30 مساءً إلى 7:30 مساءً</span>
-                </div>
+                <div class="detail-row"><i class="fas fa-map-marker-alt"></i><span><strong>العنوان:</strong> مركز قضاء المناذرة - شارع المستشفى</span></div>
+                <div class="detail-row"><i class="fas fa-calendar-alt"></i><span><strong>أيام الدوام:</strong> الأحد، الاثنين، الأربعاء، الجمعة</span></div>
+                <div class="detail-row"><i class="fas fa-clock"></i><span><strong>الأوقات:</strong> 3:30 مساءً إلى 7:30 مساءً</span></div>
             </div>
-
             <div class="office-card-pro">
                 <h3><i class="fas fa-landmark"></i> مكتب النجف الأشرف</h3>
-                <div class="detail-row">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span><strong>العنوان:</strong> شارع نجف كوفة - خلف محكمة النجف مباشرةً</span>
-                </div>
-                <div class="detail-row">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span><strong>أيام الدوام:</strong> السبت، الثلاثاء</span>
-                </div>
-                <div class="detail-row">
-                    <i class="fas fa-clock"></i>
-                    <span><strong>الأوقات:</strong> 3:30 مساءً إلى 7:30 مساءً</span>
-                </div>
+                <div class="detail-row"><i class="fas fa-map-marker-alt"></i><span><strong>العنوان:</strong> شارع نجف كوفة - خلف محكمة النجف مباشرةً</span></div>
+                <div class="detail-row"><i class="fas fa-calendar-alt"></i><span><strong>أيام الدوام:</strong> السبت، الثلاثاء</span></div>
+                <div class="detail-row"><i class="fas fa-clock"></i><span><strong>الأوقات:</strong> 3:30 مساءً إلى 7:30 مساءً</span></div>
             </div>
-
         </div>
     </div>
 
@@ -300,9 +242,15 @@
 
     <div id="success-modal">
         <div class="popup-box">
-            <i class="fas fa-check-circle" style="font-size: 60px; color: #28a745; margin-bottom: 15px;"></i>
-            <h2 style="color: var(--primary-color); margin-bottom: 10px;">تم الإرسال بنجاح!</h2>
-            <p style="color: #666; margin-bottom: 20px;">تم استلام طلبك والمرفقات بنجاح، سيتم مراجعته بأقرب وقت.</p>
+            <i class="fas fa-check-circle" style="font-size: 50px; color: #28a745; margin-bottom: 10px;"></i>
+            <h2 style="color: var(--primary-color); margin-bottom: 10px;">تم استلام طلبك بنجاح</h2>
+            
+            <div style="background: #f8f9fa; border: 1px dashed #ccc; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <p style="font-size: 14px; color: #555; margin-bottom: 5px;">رقم المراجعة الخاص بك هو:</p>
+                <h3 id="generated-req-id" style="color: var(--secondary-color); font-weight: bold; letter-spacing: 2px; font-size: 24px;"></h3>
+                <p style="font-size: 11px; color: #dc3545; margin-top: 8px;">* سيتم مراجعة طلبك بأقرب وقت</p>
+            </div>
+            
             <button onclick="document.getElementById('success-modal').style.display='none'" style="background: var(--primary-color); color: white; border: none; padding: 10px 30px; border-radius: 25px; font-weight: 700;">حسناً</button>
         </div>
     </div>
@@ -310,23 +258,22 @@
     <div id="loading-modal">
         <div class="popup-box">
             <i class="fas fa-spinner fa-spin" style="font-size: 40px; color: var(--secondary-color); margin-bottom: 15px;"></i>
-            <h3 style="color: var(--primary-color);">جاري رفع الملف وإرسال الطلب...</h3>
-            <p style="color: #666; font-size: 13px; mt-2">يرجى عدم إغلاق التطبيق</p>
+            <h3 style="color: var(--primary-color);">جاري المعالجة...</h3>
+            <p style="color: #666; font-size: 13px; mt-2">يرجى الانتظار وعدم إغلاق التطبيق</p>
         </div>
     </div>
 
     <script>
-        const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbyy8_vW5N3EPJbgO2eCaDp4M1vd1Mh9v4PTuZ-DVScqG-7wl5ThLgfNxXkmftptqNQfig/exec";
+        // ⚠️ لا تنسى تغير هذا الرابط إذا سويت New Deployment بالكود مال Google
+        const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbza4DNn--OLN9hbZCKZM61eyskpVYgeo3N-jMLXLxdhvDbFDze4LT30AOHjPuReoQ8Duw/exec";
         let globalNewsData = [];
 
-        // إخفاء الترحيب 
         setTimeout(() => {
             const splash = document.getElementById('splash-screen');
             splash.style.opacity = '0';
             setTimeout(() => { splash.style.display = 'none'; }, 500);
         }, 2500);
 
-        // التنقل 
         function switchTab(tabId, btn) {
             document.querySelectorAll('.section-container').forEach(sec => sec.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -334,7 +281,6 @@
             btn.classList.add('active');
         }
 
-        // جلب الأخبار وعرض المقتطف
         fetch(WEBHOOK_URL)
             .then(res => res.json())
             .then(data => {
@@ -360,7 +306,6 @@
                 }
             });
 
-        // فتح وإغلاق الخبر الكامل
         function openNewsModal(index) {
             const item = globalNewsData[index];
             document.getElementById('modal-title').innerText = item.title;
@@ -373,13 +318,45 @@
         }
         function closeNewsModal() { document.getElementById('news-modal').style.display = 'none'; }
 
-        // فتح منصات التواصل عبر Kodular 
         function openExternalApp(url) {
             if (window.AppInventor) { window.AppInventor.setWebViewString(url); } 
             else { window.open(url, '_blank'); }
         }
 
-        // معالجة اختيار الملف
+        // دالة تتبع الطلب بالاسم (النظام الذكي)
+        function trackRequest() {
+            const searchName = document.getElementById('track-name-input').value.trim();
+            const resultP = document.getElementById('track-result');
+            if(!searchName) { resultP.innerText = "يرجى إدخال اسمك للبحث!"; resultP.style.color = "red"; return; }
+            
+            resultP.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري البحث في السجلات...';
+            resultP.style.color = "#666";
+
+            fetch(WEBHOOK_URL + "?action=track&name=" + encodeURIComponent(searchName))
+            .then(res => res.json())
+            .then(data => {
+                if(data.result === "success") {
+                    let resultsHTML = "<span style='color:#0f1d36;'>نتائج البحث:</span><br>";
+                    // عرض كل الطلبات المطابقة للاسم
+                    data.data.forEach(req => {
+                        resultsHTML += `
+                        <div style="background:#fff; padding:15px; margin-top:10px; border-radius:8px; border:1px solid #e2e8f0; border-right:4px solid var(--secondary-color); text-align:right;">
+                            <strong style="color:var(--primary-color);">${req.name}</strong><br>
+                            <span style="font-size:12px; color:#888;"><i class="far fa-calendar-alt"></i> ${req.date}</span><br>
+                            <div style="margin-top:8px; font-weight:bold;">حالة الطلب: <span style="color: #28a745;">${req.status}</span></div>
+                        </div>`;
+                    });
+                    resultP.innerHTML = resultsHTML;
+                } else {
+                    resultP.innerHTML = "لم يتم العثور على طلب بهذا الاسم.";
+                    resultP.style.color = "red";
+                }
+            }).catch(() => {
+                resultP.innerText = "حدث خطأ بالاتصال، يرجى المحاولة لاحقاً.";
+                resultP.style.color = "red";
+            });
+        }
+
         let fileBase64 = "";
         let fileName = "";
         let mimeType = "";
@@ -390,14 +367,12 @@
                 fileName = file.name;
                 mimeType = file.type;
                 const reader = new FileReader();
-                reader.onload = function(readerEvt) {
-                    fileBase64 = btoa(readerEvt.target.result);
-                };
+                reader.onload = function(readerEvt) { fileBase64 = btoa(readerEvt.target.result); };
                 reader.readAsBinaryString(file);
             }
         });
 
-        // إرسال الاستمارة
+        // إرسال الاستمارة وتحديث النافذة
         document.getElementById('contact-form').addEventListener('submit', (e) => {
             e.preventDefault();
             document.getElementById('loading-modal').style.display = 'flex';
@@ -410,9 +385,14 @@
             };
 
             fetch(WEBHOOK_URL, { method: 'POST', body: JSON.stringify(dataObj) })
-            .then(res => res.text())
-            .then(() => {
+            .then(res => res.json())
+            .then(resData => {
                 document.getElementById('loading-modal').style.display = 'none';
+                
+                if(resData.result === "success") {
+                    document.getElementById('generated-req-id').innerText = resData.reqId;
+                }
+                
                 document.getElementById('success-modal').style.display = 'flex';
                 e.target.reset(); document.getElementById('file-name-display').innerText = 'اضغط هنا لاختيار ملف';
                 fileBase64 = ""; fileName = ""; mimeType = "";
