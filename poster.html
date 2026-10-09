@@ -6,7 +6,7 @@
     <title>مولد صور أرشيف الوارد للنشر</title>
     <!-- مكتبة تحويل الشاشة إلى صورة عالية الدقة -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { 
@@ -46,27 +46,24 @@
 
         /* حاوية الصورة الأساسية */
         #capture-area {
-            width: 1080px;  /* عرض قياسي وممتاز للنشر */
-            height: 1350px; /* طول متوافق مع إنستغرام وفيسبوك (4:5) */
-            /* استدعاء الصورة التي قمت برفعها كخلفية */
-            background-image: url('طلبات المواطنين نشر اعتماد.png');
+            width: 1080px;  
+            height: 1350px; 
+            background-image: url('طلبات المواطنين نشر اعتماد.jpg');
             background-size: 100% 100%;
             background-position: top center;
             background-repeat: no-repeat;
             position: relative;
             box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-            background-color: white; /* في حال تأخر تحميل الصورة */
+            background-color: white;
         }
 
-        /* شبكة الجدول الشفافة فوق الصورة */
+        /* شبكة الجدول الشفافة فوق الصورة (تم تعديل الإحداثيات لتطابق صورتك) */
         .table-overlay {
             position: absolute;
-            /* هذه النسب المئوية تحدد مكان بدء ونهاية الجدول فوق الصورة */
-            /* يمكنك تعديلها قليلاً إذا احتجت لمطابقة السطور بنسبة 100% */
-            top: 28.2%; 
-            bottom: 18.5%; 
+            top: 29.5%;  /* تم التنزيل قليلاً لتجنب الاصطدام بالخط العلوي */
+            bottom: 18.2%; 
             left: 4.8%; 
-            right: 9.3%; /* تركنا مسافة لعمود الأرقام "ت" الموجود أصلاً بالصورة */
+            right: 9.3%;
             display: flex;
             flex-direction: column;
         }
@@ -86,30 +83,40 @@
         }
 
         /* توزيع عرض الأعمدة لتطابق التصميم (من اليمين لليسار) */
-        .col-name { flex: 4; }       /* اسم المواطن (المساحة الأكبر) */
-        .col-ministry { flex: 1.8; } /* الوزارة */
-        .col-type { flex: 1.8; }     /* نوع الطلب */
-        .col-margin { flex: 1.8; }   /* الهامش */
+        .col-name { flex: 4; }       
+        .col-ministry { flex: 1.8; } 
+        .col-type { flex: 1.8; }     
+        .col-margin { flex: 1.8; }   
 
-        /* تصميم حقول الإدخال */
-        input {
+        /* استخدام DIV قابل للكتابة بدل الـ input لحل مشكلة التصدير */
+        .editable-cell {
             width: 100%;
-            height: 80%;
-            background: transparent;
-            border: none;
-            text-align: center;
-            font-family: 'Tajawal', sans-serif;
-            font-size: 21px; /* حجم الخط مناسب للطباعة */
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px; 
             font-weight: 700;
             color: #0f172a;
             outline: none;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            /* دفع النص للأسفل قليلاً ليتوسط المربع بصرياً */
+            padding-top: 4px; 
         }
-        
-        /* إخفاء نصوص المساعدة عند تحميل الصورة */
-        input::placeholder { color: rgba(0,0,0,0.15); font-weight: normal; }
-        
-        /* إخفاء واجهة التحكم عند أخذ اللقطة */
-        .hide-for-capture { display: none !important; }
+
+        /* تصميم النصوص المؤقتة (Placeholders) */
+        .editable-cell:empty:before {
+            content: attr(data-placeholder);
+            color: rgba(0,0,0,0.18);
+            font-weight: 400;
+        }
+
+        /* كلاس لإخفاء النصوص المؤقتة عند أخذ الصورة */
+        .hide-placeholders .editable-cell:empty:before {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
@@ -123,7 +130,7 @@
     <!-- المساحة التي سيتم تصويرها -->
     <div id="capture-area">
         <div class="table-overlay" id="rows-container">
-            <!-- سيتم توليد الـ 15 سطر هنا بواسطة الجافاسكربت -->
+            <!-- سيتم توليد الـ 15 سطر هنا -->
         </div>
     </div>
 
@@ -133,10 +140,10 @@
         for (let i = 1; i <= 15; i++) {
             container.innerHTML += `
                 <div class="row">
-                    <div class="cell col-name"><input type="text" placeholder="اكتب الاسم"></div>
-                    <div class="cell col-ministry"><input type="text" placeholder="الوزارة"></div>
-                    <div class="cell col-type"><input type="text" placeholder="نوع الطلب"></div>
-                    <div class="cell col-margin"><input type="text" placeholder="الهامش"></div>
+                    <div class="cell col-name"><div class="editable-cell" contenteditable="true" data-placeholder="اكتب الاسم"></div></div>
+                    <div class="cell col-ministry"><div class="editable-cell" contenteditable="true" data-placeholder="الوزارة"></div></div>
+                    <div class="cell col-type"><div class="editable-cell" contenteditable="true" data-placeholder="نوع الطلب"></div></div>
+                    <div class="cell col-margin"><div class="editable-cell" contenteditable="true" data-placeholder="الهامش"></div></div>
                 </div>
             `;
         }
@@ -146,28 +153,21 @@
             const captureArea = document.getElementById('capture-area');
             const btn = document.querySelector('.btn-download');
             
-            // تغيير نص الزر أثناء المعالجة
             const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التصدير...';
             btn.disabled = true;
 
-            // إزالة الـ Placeholders مؤقتاً حتى لا تظهر في الصورة النهائية إذا كان الحقل فارغاً
-            const inputs = document.querySelectorAll('input');
-            const placeholders = [];
-            inputs.forEach((inp, idx) => {
-                placeholders[idx] = inp.placeholder;
-                if(!inp.value) inp.placeholder = ''; 
-            });
+            // إخفاء الـ Placeholders حتى لا تظهر في الصورة إذا كان الحقل فارغاً
+            captureArea.classList.add('hide-placeholders');
 
-            // التقاط الصورة بدقة مضروبة بـ 3 (Scale 3) لضمان الدقة الفائقة (High Res)
+            // التقاط الصورة بدقة مضروبة بـ 3
             html2canvas(captureArea, { 
                 scale: 3, 
                 useCORS: true,
-                backgroundColor: "#ffffff"
+                backgroundColor: "#ffffff",
+                logging: false
             }).then(canvas => {
-                // إنشاء رابط التحميل الوهمي
                 const link = document.createElement('a');
-                // تسمية الملف بالتاريخ والوقت
                 link.download = 'موقف_الطلبات_المنجزة_' + Date.now() + '.jpg';
                 link.href = canvas.toDataURL('image/jpeg', 1.0);
                 link.click();
@@ -175,18 +175,19 @@
                 // إعادة كل شيء لطبيعته
                 btn.innerHTML = originalText;
                 btn.disabled = false;
-                inputs.forEach((inp, idx) => { inp.placeholder = placeholders[idx]; });
+                captureArea.classList.remove('hide-placeholders');
             }).catch(err => {
                 alert("حدث خطأ أثناء حفظ الصورة!");
                 btn.innerHTML = originalText;
                 btn.disabled = false;
+                captureArea.classList.remove('hide-placeholders');
             });
         }
 
-        // 3. دالة تفريغ الحقول لملء قائمة جديدة
+        // 3. دالة تفريغ الحقول
         function clearFields() {
             if(confirm("هل أنت متأكد من تفريغ كافة الحقول؟")) {
-                document.querySelectorAll('input').forEach(inp => inp.value = '');
+                document.querySelectorAll('.editable-cell').forEach(inp => inp.innerText = '');
             }
         }
     </script>
