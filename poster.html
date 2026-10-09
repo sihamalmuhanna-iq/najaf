@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مولد صور أرشيف الوارد للنشر</title>
+    <!-- مكتبة تحويل الشاشة إلى صورة عالية الدقة -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { 
+            background: #1e293b; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 20px; 
+            font-family: 'Tajawal', sans-serif; 
+            margin: 0;
+        }
+        .control-panel { 
+            background: white; 
+            padding: 15px 30px; 
+            border-radius: 10px; 
+            margin-bottom: 25px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: flex;
+            gap: 15px;
+            z-index: 10;
+        }
+        button { 
+            border: none; 
+            padding: 12px 20px; 
+            font-size: 16px; 
+            font-weight: 700;
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-family: 'Tajawal'; 
+            color: white;
+            transition: 0.2s;
+        }
+        .btn-download { background: #16a34a; }
+        .btn-download:hover { background: #15803d; }
+        .btn-clear { background: #dc2626; }
+        .btn-clear:hover { background: #b91c1c; }
+
+        /* حاوية الصورة الأساسية */
+        #capture-area {
+            width: 1080px;  /* عرض قياسي وممتاز للنشر */
+            height: 1350px; /* طول متوافق مع إنستغرام وفيسبوك (4:5) */
+            /* استدعاء الصورة التي قمت برفعها كخلفية */
+            background-image: url('طلبات المواطنين نشر اعتماد.jpg');
+            background-size: 100% 100%;
+            background-position: top center;
+            background-repeat: no-repeat;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            background-color: white; /* في حال تأخر تحميل الصورة */
+        }
+
+        /* شبكة الجدول الشفافة فوق الصورة */
+        .table-overlay {
+            position: absolute;
+            /* هذه النسب المئوية تحدد مكان بدء ونهاية الجدول فوق الصورة */
+            /* يمكنك تعديلها قليلاً إذا احتجت لمطابقة السطور بنسبة 100% */
+            top: 28.2%; 
+            bottom: 18.5%; 
+            left: 4.8%; 
+            right: 9.3%; /* تركنا مسافة لعمود الأرقام "ت" الموجود أصلاً بالصورة */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .row {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .cell {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5px;
+        }
+
+        /* توزيع عرض الأعمدة لتطابق التصميم (من اليمين لليسار) */
+        .col-name { flex: 4; }       /* اسم المواطن (المساحة الأكبر) */
+        .col-ministry { flex: 1.8; } /* الوزارة */
+        .col-type { flex: 1.8; }     /* نوع الطلب */
+        .col-margin { flex: 1.8; }   /* الهامش */
+
+        /* تصميم حقول الإدخال */
+        input {
+            width: 100%;
+            height: 80%;
+            background: transparent;
+            border: none;
+            text-align: center;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 21px; /* حجم الخط مناسب للطباعة */
+            font-weight: 700;
+            color: #0f172a;
+            outline: none;
+        }
+        
+        /* إخفاء نصوص المساعدة عند تحميل الصورة */
+        input::placeholder { color: rgba(0,0,0,0.15); font-weight: normal; }
+        
+        /* إخفاء واجهة التحكم عند أخذ اللقطة */
+        .hide-for-capture { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <!-- لوحة التحكم للموظف -->
+    <div class="control-panel" id="controls">
+        <button class="btn-download" onclick="downloadImage()"><i class="fas fa-camera"></i> حفظ الصورة بدقة عالية للنشر</button>
+        <button class="btn-clear" onclick="clearFields()"><i class="fas fa-trash-alt"></i> تفريغ الجدول</button>
+    </div>
+
+    <!-- المساحة التي سيتم تصويرها -->
+    <div id="capture-area">
+        <div class="table-overlay" id="rows-container">
+            <!-- سيتم توليد الـ 15 سطر هنا بواسطة الجافاسكربت -->
+        </div>
+    </div>
+
+    <script>
+        // 1. توليد حقول الإدخال الـ 15 لتطابق الصورة
+        const container = document.getElementById('rows-container');
+        for (let i = 1; i <= 15; i++) {
+            container.innerHTML += `
+                <div class="row">
+                    <div class="cell col-name"><input type="text" placeholder="اكتب الاسم"></div>
+                    <div class="cell col-ministry"><input type="text" placeholder="الوزارة"></div>
+                    <div class="cell col-type"><input type="text" placeholder="نوع الطلب"></div>
+                    <div class="cell col-margin"><input type="text" placeholder="الهامش"></div>
+                </div>
+            `;
+        }
+
+        // 2. دالة التقاط الشاشة وتحويلها لصورة
+        function downloadImage() {
+            const captureArea = document.getElementById('capture-area');
+            const btn = document.querySelector('.btn-download');
+            
+            // تغيير نص الزر أثناء المعالجة
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التصدير...';
+            btn.disabled = true;
+
+            // إزالة الـ Placeholders مؤقتاً حتى لا تظهر في الصورة النهائية إذا كان الحقل فارغاً
+            const inputs = document.querySelectorAll('input');
+            const placeholders = [];
+            inputs.forEach((inp, idx) => {
+                placeholders[idx] = inp.placeholder;
+                if(!inp.value) inp.placeholder = ''; 
+            });
+
+            // التقاط الصورة بدقة مضروبة بـ 3 (Scale 3) لضمان الدقة الفائقة (High Res)
+            html2canvas(captureArea, { 
+                scale: 3, 
+                useCORS: true,
+                backgroundColor: "#ffffff"
+            }).then(canvas => {
+                // إنشاء رابط التحميل الوهمي
+                const link = document.createElement('a');
+                // تسمية الملف بالتاريخ والوقت
+                link.download = 'موقف_الطلبات_المنجزة_' + Date.now() + '.jpg';
+                link.href = canvas.toDataURL('image/jpeg', 1.0);
+                link.click();
+
+                // إعادة كل شيء لطبيعته
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                inputs.forEach((inp, idx) => { inp.placeholder = placeholders[idx]; });
+            }).catch(err => {
+                alert("حدث خطأ أثناء حفظ الصورة!");
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            });
+        }
+
+        // 3. دالة تفريغ الحقول لملء قائمة جديدة
+        function clearFields() {
+            if(confirm("هل أنت متأكد من تفريغ كافة الحقول؟")) {
+                document.querySelectorAll('input').forEach(inp => inp.value = '');
+            }
+        }
+    </script>
+</body>
+</html>
