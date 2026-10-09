@@ -2,386 +2,470 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المنظومة الإدارية الشاملة - مكتب النائب سهام منعم المحنة</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>مكتب النائب سهام منعم المحنة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        :root { --primary: #1a2a3a; --gold: #d4af37; --bg: #f1f5f9; --green: #16a34a; --blue: #2563eb; --purple: #7e22ce; --teal: #0f766e; }
+        :root { --primary-color: #1a2a3a; --secondary-color: #d4af37; --bg-color: #f4f4f9; --text-color: #333; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg); color: #1e293b; padding-bottom: 50px; }
+        body { background-color: var(--bg-color); color: var(--text-color); overflow-x: hidden; }
 
-        #login-screen { position: fixed; inset: 0; background: linear-gradient(135deg, var(--primary), #0f172a); display: flex; justify-content: center; align-items: center; z-index: 9999; padding: 20px; }
-        .login-card { background: white; width: 100%; max-width: 390px; padding: 30px 25px; border-radius: 16px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border-top: 5px solid var(--gold); }
-        .login-card h2 { color: var(--primary); margin-bottom: 8px; font-size: 22px; }
-        .pin-input { width: 100%; padding: 14px; text-align: center; font-size: 22px; letter-spacing: 5px; border: 2px solid #cbd5e1; border-radius: 10px; margin-bottom: 15px; outline: none; font-weight: bold; }
-        .btn-main { width: 100%; background: var(--primary); color: white; border: none; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; }
-        .btn-main:hover { opacity: 0.92; }
+        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--primary-color), #0f1922); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.5s ease; }
+        .profile-img-container { width: 140px; height: 140px; border-radius: 50%; overflow: hidden; border: 4px solid var(--secondary-color); box-shadow: 0 0 20px rgba(212, 175, 55, 0.4); margin-bottom: 20px; background-color: white; display: flex; justify-content: center; align-items: center; }
+        .profile-img-container img { width: 100%; height: 100%; object-fit: cover; }
+        .splash-title { color: white; font-size: 26px; font-weight: 800; text-align: center; line-height: 1.4; margin-bottom: 5px; }
+        .splash-subtitle { color: var(--secondary-color); font-size: 16px; font-weight: 500; }
 
-        header { background: var(--primary); color: white; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid var(--gold); flex-wrap: wrap; gap: 10px; }
-        header h1 { font-size: 18px; color: var(--gold); }
-        .role-badge { background: rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: bold; }
+        .ticker-wrap { background-color: var(--secondary-color); color: var(--primary-color); padding: 8px 0; overflow: hidden; font-weight: 700; font-size: 14px; width: 100%; border-bottom: 3px solid var(--primary-color); }
+        .ticker-move { display: inline-block; white-space: nowrap; padding-right: 100%; animation: ticker-rtl 35s linear infinite; }
+        @keyframes ticker-rtl { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
-        .container { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
+        header { background-color: var(--primary-color); padding: 15px 20px; text-align: center; color: white; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        header h2 { font-size: 20px; color: var(--secondary-color); }
+        header p { font-size: 12px; margin-top: 3px; opacity: 0.9; }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 20px; }
-        .stat-card { background: white; padding: 14px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-right: 5px solid var(--gold); text-align: center; }
-        .stat-card h3 { font-size: 24px; color: var(--primary); margin-bottom: 4px; }
-        .stat-card span { font-size: 12px; color: #64748b; font-weight: 700; }
+        .nav-bar { position: fixed; bottom: 0; width: 100%; background-color: white; display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -2px 15px rgba(0,0,0,0.1); z-index: 1000; border-top: 1px solid #ddd; }
+        .nav-btn { background: none; border: none; font-size: 11px; font-weight: 700; color: #777; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; transition: 0.3s; }
+        .nav-btn.active { color: var(--primary-color); }
+        .nav-btn i { font-size: 20px; color: #777; transition: 0.3s; }
+        .nav-btn.active i { color: var(--secondary-color); }
 
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .tab-btn { flex: 1; min-width: 150px; padding: 13px; background: white; border: 1px solid #cbd5e1; border-radius: 10px; font-weight: 700; font-size: 14px; color: #475569; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
-        .tab-btn.active { background: var(--primary); color: var(--gold); border-color: var(--primary); }
-        .tab-btn.locked { background: #e2e8f0; color: #94a3b8; border-color: #cbd5e1; cursor: not-allowed; opacity: 0.75; }
+        .section-container { display: none; padding: 20px 15px 80px 15px; animation: fadeIn 0.4s ease; }
+        .section-container.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .sub-tabs { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
-        .sub-tab-btn { padding: 9px 15px; border-radius: 8px; border: 1px solid #cbd5e1; background: #f8fafc; font-weight: 700; font-size: 13px; color: #475569; cursor: pointer; }
-        .sub-tab-btn.active { background: var(--gold); color: var(--primary); border-color: var(--gold); }
+        .news-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-right: 4px solid var(--secondary-color); }
+        .news-img { width: 100%; border-radius: 8px; margin-bottom: 10px; height: 180px; object-fit: cover; }
+        .news-title { font-size: 17px; font-weight: 700; color: var(--primary-color); margin-bottom: 8px; }
+        .news-date { font-size: 12px; color: #888; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
+        .news-snippet { font-size: 14px; color: #555; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .read-more-btn { background: none; border: none; color: var(--secondary-color); font-weight: 700; font-size: 14px; margin-top: 8px; cursor: pointer; padding: 0; }
 
-        .panel { display: none; background: white; padding: 22px; border-radius: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .panel.active { display: block; }
-        .panel-title { color: var(--primary); margin-bottom: 18px; padding-bottom: 10px; border-bottom: 2px solid #f1f5f9; font-size: 18px; }
+        #news-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; justify-content: center; align-items: center; padding: 15px; }
+        .news-modal-content { background: white; width: 100%; max-width: 400px; max-height: 90vh; border-radius: 15px; overflow-y: auto; padding: 20px; position: relative; animation: popIn 0.3s ease; }
+        .close-news-btn { position: absolute; top: 15px; left: 15px; background: #eee; border: none; width: 35px; height: 35px; border-radius: 50%; font-size: 18px; cursor: pointer; color: #333; }
+        #modal-img { width: 100%; border-radius: 10px; margin-bottom: 15px; max-height: 250px; object-fit: cover; display: none; }
+        #modal-title { font-size: 20px; font-weight: 800; color: var(--primary-color); margin-bottom: 10px; }
+        #modal-date { font-size: 13px; color: #888; margin-bottom: 15px; }
+        #modal-details { font-size: 15px; color: #444; line-height: 1.8; }
 
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; }
-        .form-group { margin-bottom: 12px; }
-        .form-group.full { grid-column: 1 / -1; }
-        .form-group label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 14px; color: var(--primary); }
-        .form-control { width: 100%; padding: 11px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; outline: none; }
-        .form-control:focus { border-color: var(--primary); }
+        .tracking-box { background: white; border-radius: 12px; padding: 20px; margin-bottom: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-right: 4px solid var(--primary-color); }
+        .tracking-box h4 { color: var(--primary-color); margin-bottom: 10px; font-size: 16px; }
+        .tracking-flex { display: flex; gap: 10px; }
+        .tracking-flex input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; outline: none; }
+        .tracking-flex button { background: var(--primary-color); color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-weight: 700; margin-bottom: 8px; color: var(--primary-color); font-size: 14px; }
+        .form-control { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; background: #fff; }
+        .form-control:disabled { background: #f0f0f0; cursor: not-allowed; }
+        .file-upload-wrapper { border: 2px dashed #ccc; padding: 15px; text-align: center; border-radius: 8px; background: #fafafa; position: relative; }
+        .file-upload-wrapper input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+        .file-upload-wrapper i { font-size: 24px; color: var(--secondary-color); margin-bottom: 8px; }
+        .submit-btn { width: 100%; background-color: var(--primary-color); color: white; border: none; padding: 15px; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; }
 
-        .search-bar { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
-        .search-bar input { flex: 1; min-width: 240px; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; outline: none; }
-        .table-responsive { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 850px; font-size: 13.5px; }
-        th, td { padding: 12px 10px; text-align: right; border-bottom: 1px solid #e2e8f0; }
-        th { background: #f8fafc; color: var(--primary); font-weight: 800; white-space: nowrap; }
-        tr:hover { background: #f8fafc; }
-        .badge { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; display: inline-block; }
-        .badge-wait { background: #fef3c7; color: #b45309; }
-        .badge-out { background: #dbeafe; color: #1d4ed8; }
-        .badge-done { background: #dcfce7; color: #15803d; }
+        .offices-container { width: 100%; display: flex; flex-direction: column; gap: 15px; box-sizing: border-box; }
+        .office-card-pro { background: #ffffff; border-radius: 12px; padding: 16px 18px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06); border: 1px solid #e2e8f0; border-right: 6px solid #d4af37; width: 100%; }
+        .office-card-pro h3 { margin: 0 0 12px 0; color: var(--primary-color); font-size: 1.15rem; font-weight: bold; display: flex; align-items: center; gap: 8px; }
+        .office-card-pro .detail-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; font-size: 0.95rem; color: #334155; line-height: 1.5; }
+        .office-card-pro .detail-row i { color: var(--secondary-color); font-size: 1.1rem; margin-top: 3px; min-width: 18px; }
 
-        #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 12px 24px; border-radius: 30px; font-weight: 700; font-size: 14px; display: none; z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.2); text-align: center; }
+        .social-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .social-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 20px; border-radius: 12px; color: white; text-decoration: none; font-weight: 700; font-size: 16px; border: none; cursor: pointer; }
+        .social-btn i { font-size: 30px; }
+        .fb-btn { background: linear-gradient(45deg, #1877F2, #0e5a20); }
+        .ig-btn { background: linear-gradient(45deg, #833AB4, #FD1D1D, #F56040); }
+        .tg-btn { background: linear-gradient(45deg, #0088cc, #005580); }
+        .yt-btn { background: linear-gradient(45deg, #FF0000, #990000); }
+
+        #success-modal, #loading-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; justify-content: center; align-items: center; }
+        .popup-box { background: white; width: 85%; border-radius: 15px; padding: 30px 20px; text-align: center; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <div id="login-screen">
-        <div class="login-card">
-            <i class="fas fa-shield-alt" style="font-size: 48px; color: var(--gold); margin-bottom: 15px;"></i>
-            <h2>المنظومة الإدارية الشاملة</h2>
-            <p>مكتب النائب سهام منعم المحنة</p>
-            <input type="password" id="pin-input" class="pin-input" placeholder="الرمز السري" maxlength="15" onkeypress="if(event.key==='Enter') login()">
-            <button onclick="login()" class="btn-main"><i class="fas fa-sign-in-alt"></i> دخول للمنظومة</button>
-            <p id="login-err" style="color: #dc2626; margin-top: 12px; display: none; font-weight: bold;">رمز الدخول غير صحيح!</p>
-        </div>
+    <div id="splash-screen">
+        <div class="profile-img-container"><img src="https://g.top4top.io/p_3902fmj241.jpg" alt="صورة النائب"></div>
+        <h1 class="splash-title">النائب<br>سهام منعم المحنة</h1>
+        <p class="splash-subtitle">عضو مجلس النواب العراقي</p>
+    </div>
+
+    <div class="ticker-wrap">
+        <div class="ticker-move" id="news-ticker"> 🔹 مرحباً بكم في التطبيق الرسمي للمكتب الإعلامي للنائب سهام منعم المحنة &nbsp;&nbsp;&nbsp;&nbsp; 🔹 جاري مزامنة أحدث الأخبار...</div>
     </div>
 
     <header>
-        <div>
-            <h1><i class="fas fa-network-wired"></i> المنظومة الإدارية الشاملة</h1>
-            <small style="opacity: 0.85;">مكتب النائب سهام منعم المحنة</small>
-        </div>
-        <div style="display:flex; align-items:center; gap:10px;">
-            <div class="role-badge" id="user-role-label">الكادر</div>
-            <button onclick="location.reload()" style="background:#dc2626; color:white; border:none; padding:6px 12px; border-radius:15px; font-size:12px; font-weight:bold; cursor:pointer;"><i class="fas fa-power-off"></i></button>
-        </div>
+        <h2>مكتب النائب سهام منعم المحنة</h2>
+        <p>المكتب الإعلامي الرسمي</p>
     </header>
 
-    <div class="container">
-        <!-- الإحصائيات -->
-        <div class="stats-grid">
-            <div class="stat-card" id="card-st-out" style="border-color:#2563eb;"><h3 id="st-out">0</h3><span>الصادر</span></div>
-            <div class="stat-card" id="card-st-in" style="border-color:#16a34a;"><h3 id="st-in">0</h3><span>الوارد</span></div>
-            <div class="stat-card" id="card-st-badge" style="border-color:var(--purple); display:none;"><h3 id="st-badge">0</h3><span>باجات السيارات</span></div>
-            <div class="stat-card" id="card-st-local" style="border-color:var(--teal); display:none;"><h3 id="st-local">0</h3><span>الكتب المحلية</span></div>
-            <div class="stat-card" id="card-st-app" style="border-color:#f59e0b; display:none;"><h3 id="st-app">0</h3><span>طلبات التطبيق</span></div>
+    <div id="news-section" class="section-container active">
+        <div id="news-container">
+            <p style="text-align: center; padding: 20px; color: #888;"><i class="fas fa-spinner fa-spin fa-2x"></i><br>جاري جلب الأخبار...</p>
         </div>
+    </div>
 
-        <!-- التبويبات -->
-        <div class="tabs">
-            <button class="tab-btn active" id="tab-btn-out" onclick="tryOpenPanel('out-panel', this, 'outgoing')"><i class="fas fa-paper-plane"></i> كتاب صادر</button>
-            <button class="tab-btn" id="tab-btn-in" onclick="tryOpenPanel('in-panel', this, 'incoming')"><i class="fas fa-inbox"></i> إجابة وارد</button>
-            <button class="tab-btn" id="tab-btn-badge" onclick="tryOpenPanel('badge-panel', this, 'admin')" style="display:none;"><i class="fas fa-id-card"></i> باجات سيارات</button>
-            <button class="tab-btn" id="tab-btn-local" onclick="tryOpenPanel('local-panel', this, 'admin')" style="display:none;"><i class="fas fa-map-marker-alt"></i> كتب محلية</button>
-            <button class="tab-btn" id="tab-btn-arch" onclick="tryOpenPanel('arch-panel', this, 'archive')"><i class="fas fa-archive"></i> سجل الأرشيف</button>
-        </div>
-
-        <!-- 1. الصادر -->
-        <div id="out-panel" class="panel active">
-            <h3 class="panel-title"><i class="fas fa-file-export" style="color:var(--blue);"></i> تسجيل كتاب صادر</h3>
-            <form id="outgoing-form">
-                <div class="form-grid">
-                    <div class="form-group"><label>الاسم الكامل *</label><input type="text" class="form-control" id="out-name" required></div>
-                    <div class="form-group"><label>رقم الهاتف *</label><input type="tel" class="form-control" id="out-phone" required></div>
-                    <div class="form-group"><label>الوزارة / الجهة *</label><input type="text" class="form-control" id="out-ministry" required></div>
-                    <div class="form-group"><label>رقم كتاب الصادر *</label><input type="text" class="form-control" id="out-num" required></div>
-                    <div class="form-group"><label>تاريخ الكتاب *</label><input type="date" class="form-control" id="out-date" required></div>
-                    <div class="form-group"><label>المعرف (اختياري)</label><input type="text" class="form-control" id="out-identifier" placeholder="أدخل المعرف التنظيمي"></div>
-                    <div class="form-group full"><label>موضوع الكتاب *</label><textarea class="form-control" id="out-subject" rows="2" required></textarea></div>
-                </div>
-                <button type="submit" class="btn-main" style="background:var(--blue);"><i class="fas fa-save"></i> حفظ في الصادر</button>
-            </form>
-        </div>
-
-        <!-- 2. الوارد -->
-        <div id="in-panel" class="panel">
-            <h3 class="panel-title"><i class="fas fa-file-import" style="color:var(--green);"></i> تسجيل إجابة وارد</h3>
-            <form id="incoming-form">
-                <div class="form-grid">
-                    <div class="form-group"><label>الاسم الكامل *</label><input type="text" class="form-control" id="in-name" required></div>
-                    <div class="form-group"><label>الوزارة / الجهة *</label><input type="text" class="form-control" id="in-ministry" required></div>
-                    <div class="form-group"><label>رقم الوارد *</label><input type="text" class="form-control" id="in-num" required></div>
-                    <div class="form-group"><label>تاريخ الوارد *</label><input type="date" class="form-control" id="in-date" required></div>
-                    <div class="form-group full"><label>هامش الوزير أو الجهة *</label><input type="text" class="form-control" id="in-margin" required></div>
-                    <div class="form-group full"><label>الموضوع *</label><textarea class="form-control" id="in-subject" rows="2" required></textarea></div>
-                </div>
-                <button type="submit" class="btn-main" style="background:var(--green);"><i class="fas fa-check-double"></i> حفظ وإنجاز</button>
-            </form>
-        </div>
-
-        <!-- 3. باجات السيارات (سري للمدير) -->
-        <div id="badge-panel" class="panel">
-            <h3 class="panel-title"><i class="fas fa-id-card" style="color:var(--purple);"></i> تسجيل باج سيارة (سجل سري)</h3>
-            <form id="badge-form">
-                <div class="form-grid">
-                    <div class="form-group"><label>اسم صاحب الباج *</label><input type="text" class="form-control" id="badge-name" required></div>
-                    <div class="form-group"><label>نوع السيارة *</label><input type="text" class="form-control" id="badge-car" placeholder="مثال: جكسارة، تاهو..." required></div>
-                    <div class="form-group full"><label>الرقم (رقم السيارة والحرف والمحافظة) *</label><input type="text" class="form-control" id="badge-plate" placeholder="مثال: 12345 / أ / بغداد" required></div>
-                    <div class="form-group"><label>المعرف *</label><input type="text" class="form-control" id="badge-identifier" required></div>
-                    <div class="form-group"><label>عدد الباج *</label><input type="number" class="form-control" id="badge-count" required></div>
-                    <div class="form-group"><label>تاريخ الباج *</label><input type="date" class="form-control" id="badge-date" required></div>
-                </div>
-                <button type="submit" class="btn-main" style="background:var(--purple);"><i class="fas fa-save"></i> حفظ الباج</button>
-            </form>
-        </div>
-
-        <!-- 4. الكتب المحلية (سري للمدير) -->
-        <div id="local-panel" class="panel">
-            <h3 class="panel-title"><i class="fas fa-map-marker-alt" style="color:var(--teal);"></i> تسجيل كتاب محلي (سجل سري)</h3>
-            <form id="local-form">
-                <div class="form-grid">
-                    <div class="form-group"><label>الاسم الكامل *</label><input type="text" class="form-control" id="local-name" required></div>
-                    <div class="form-group"><label>رقم الهاتف *</label><input type="tel" class="form-control" id="local-phone" required></div>
-                    <div class="form-group full"><label>الجهة المعنون إليها *</label><input type="text" class="form-control" id="local-entity" placeholder="مثال: محافظ النجف، مديرية التربية..." required></div>
-                    <div class="form-group full"><label>الموضوع *</label><input type="text" class="form-control" id="local-subject" required></div>
-                    <div class="form-group full"><label>ملاحظات إضافية (اختياري)</label><textarea class="form-control" id="local-notes" rows="2"></textarea></div>
-                </div>
-                <button type="submit" class="btn-main" style="background:var(--teal);"><i class="fas fa-save"></i> حفظ في السجل المحلي</button>
-            </form>
-        </div>
-
-        <!-- 5. الأرشيف -->
-        <div id="arch-panel" class="panel">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
-                <h3 class="panel-title" style="margin:0; border:none;" id="archive-main-title"><i class="fas fa-database"></i> سجل الأرشيف</h3>
-                <button onclick="loadArchive()" class="btn-main" style="width:auto; padding:8px 15px; font-size:13px;"><i class="fas fa-sync-alt"></i> تحديث</button>
+    <div id="form-section" class="section-container">
+        
+        <div class="tracking-box">
+            <h4><i class="fas fa-search"></i> متابعة طلب سابق</h4>
+            <div class="tracking-flex">
+                <input type="text" id="track-name-input" placeholder="اكتب اسمك أو رقم الطلب...">
+                <button onclick="trackRequest()">استعلام</button>
             </div>
+            <p id="track-result" style="margin-top: 10px; font-size: 14px; font-weight: bold;"></p>
+        </div>
 
-            <div class="sub-tabs" id="admin-sub-tabs" style="display:none;">
-                <button class="sub-tab-btn active" onclick="switchArchiveView('outgoing', this)"><i class="fas fa-paper-plane"></i> الصادر</button>
-                <button class="sub-tab-btn" onclick="switchArchiveView('incoming', this)"><i class="fas fa-inbox"></i> الوارد</button>
-                <button class="sub-tab-btn" onclick="switchArchiveView('badges', this)" style="color:var(--purple);"><i class="fas fa-id-card"></i> الباجات</button>
-                <button class="sub-tab-btn" onclick="switchArchiveView('localLetters', this)" style="color:var(--teal);"><i class="fas fa-map-marker-alt"></i> المحلية</button>
-                <button class="sub-tab-btn" onclick="switchArchiveView('app', this)" style="color:#b45309;"><i class="fas fa-mobile-alt"></i> التطبيق العام</button>
+        <h3 style="color: var(--primary-color); margin-bottom: 20px; border-bottom: 2px solid var(--secondary-color); padding-bottom: 10px;">استمارة تقديم طلب جديد</h3>
+        <form id="contact-form">
+            <div class="form-group">
+                <label>الاسم الرباعي واللقب *</label>
+                <input type="text" class="form-control" name="name" required placeholder="اكتب اسمك الكامل هنا">
             </div>
+            <div class="form-group">
+                <label>رقم الهاتف *</label>
+                <input type="tel" class="form-control" name="phone" required placeholder="07...">
+            </div>
+            <div class="form-group">
+                <label>الوزارة أو الجهة المعنون إليها الطلب *</label>
+                <input type="text" class="form-control" name="ministry" required placeholder="مثال: وزارة التربية، محافظ النجف...">
+            </div>
+            <div class="form-group">
+                <label>المحافظة *</label>
+                <select class="form-control" id="gov" name="gov" required>
+                    <option value="">اختر المحافظة...</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>القضاء *</label>
+                <select class="form-control" id="district" name="district" required disabled>
+                    <option value="">اختر القضاء...</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>الناحية (إن وُجدت)</label>
+                <select class="form-control" id="subdistrict" name="subdistrict" disabled>
+                    <option value="">اختر الناحية...</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>الحي أو المنطقة *</label>
+                <input type="text" class="form-control" name="neighborhood" required placeholder="اكتب اسم الحي أو المنطقة">
+            </div>
+            <div class="form-group">
+                <label>تفاصيل الطلب أو المناشدة *</label>
+                <textarea class="form-control" name="request" rows="5" required placeholder="اكتب تفاصيل مناشدتك بوضوح..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>إرفاق صورة أو ملف (اختياري)</label>
+                <div class="file-upload-wrapper">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p id="file-name-display">اضغط هنا لاختيار صورة أو ملف</p>
+                    <input type="file" id="file-upload" accept="image/*,application/pdf">
+                </div>
+            </div>
+            <button type="submit" class="submit-btn" id="submit-btn"><i class="fas fa-paper-plane"></i> إرسال الطلب</button>
+        </form>
+    </div>
 
-            <div class="search-bar"><input type="text" id="arch-search" oninput="renderCurrentArchive()" placeholder="ابحث هنا..."></div>
-
-            <div class="table-responsive">
-                <table>
-                    <thead id="archive-thead"></thead>
-                    <tbody id="archive-tbody"><tr><td colspan="9" style="text-align:center; padding:30px;">جاري تحميل البيانات...</td></tr></tbody>
-                </table>
+    <div id="office-section" class="section-container">
+        <div class="offices-container">
+            <div class="office-card-pro">
+                <h3><i class="fas fa-building"></i> مكتب قضاء المناذرة</h3>
+                <div class="detail-row"><i class="fas fa-map-marker-alt"></i><span><strong>العنوان:</strong> مركز قضاء المناذرة - شارع المستشفى</span></div>
+                <div class="detail-row"><i class="fas fa-calendar-alt"></i><span><strong>أيام الدوام:</strong> الأحد، الاثنين، الأربعاء، الجمعة</span></div>
+                <div class="detail-row"><i class="fas fa-clock"></i><span><strong>الأوقات:</strong> 3:30 مساءً إلى 7:30 مساءً</span></div>
+            </div>
+            <div class="office-card-pro">
+                <h3><i class="fas fa-landmark"></i> مكتب النجف الأشرف</h3>
+                <div class="detail-row"><i class="fas fa-map-marker-alt"></i><span><strong>العنوان:</strong> شارع نجف كوفة - خلف محكمة النجف مباشرةً</span></div>
+                <div class="detail-row"><i class="fas fa-calendar-alt"></i><span><strong>أيام الدوام:</strong> السبت، الثلاثاء</span></div>
+                <div class="detail-row"><i class="fas fa-clock"></i><span><strong>الأوقات:</strong> 3:30 مساءً إلى 7:30 مساءً</span></div>
             </div>
         </div>
     </div>
 
-    <div id="toast">تم الحفظ</div>
+    <div id="social-section" class="section-container">
+        <h3 style="color: var(--primary-color); margin-bottom: 10px; text-align: center;">تواصل معنا</h3>
+        <p style="text-align: center; color: #666; font-size: 14px;">تابع المنصات الرسمية للنائب</p>
+        <div class="social-grid">
+            <button onclick="openExternalApp('https://www.facebook.com/sihamalmuhanna')" class="social-btn fb-btn"><i class="fab fa-facebook-f"></i> فيسبوك</button>
+            <button onclick="openExternalApp('https://t.me/sihamalmuhanna')" class="social-btn tg-btn"><i class="fab fa-telegram-plane"></i> تليكرام</button>
+            <button onclick="openExternalApp('https://www.instagram.com/sihamalmuhanna/')" class="social-btn ig-btn"><i class="fab fa-instagram"></i> انستغرام</button>
+            <button onclick="openExternalApp('https://www.youtube.com/@sihamalmuhanna')" class="social-btn yt-btn"><i class="fab fa-youtube"></i> يوتيوب</button>
+        </div>
+    </div>
+
+    <nav class="nav-bar">
+        <button class="nav-btn active" onclick="switchTab('news-section', this)"><i class="fas fa-newspaper"></i> الأخبار</button>
+        <button class="nav-btn" onclick="switchTab('form-section', this)"><i class="fas fa-file-signature"></i> الاستمارة</button>
+        <button class="nav-btn" onclick="switchTab('office-section', this)"><i class="fas fa-building"></i> المكتب</button>
+        <button class="nav-btn" onclick="switchTab('social-section', this)"><i class="fas fa-users"></i> التواصل</button>
+    </nav>
+
+    <div id="news-modal">
+        <div class="news-modal-content">
+            <button class="close-news-btn" onclick="closeNewsModal()"><i class="fas fa-times"></i></button>
+            <img id="modal-img" src="" alt="صورة الخبر">
+            <h2 id="modal-title"></h2>
+            <div id="modal-date"><i class="far fa-calendar-alt"></i> <span id="modal-date-text"></span></div>
+            <div id="modal-details"></div>
+        </div>
+    </div>
+
+    <div id="success-modal">
+        <div class="popup-box">
+            <i class="fas fa-check-circle" style="font-size: 50px; color: #28a745; margin-bottom: 10px;"></i>
+            <h2 style="color: var(--primary-color); margin-bottom: 10px;">تم استلام طلبك بنجاح</h2>
+            <div style="background: #f8f9fa; border: 1px dashed #ccc; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <p style="font-size: 14px; color: #555; margin-bottom: 5px;">رقم الطلب الخاص بك:</p>
+                <h3 id="generated-req-id" style="color: var(--secondary-color); font-weight: bold; font-size: 30px; letter-spacing: 3px;"></h3>
+                <p style="font-size: 12px; color: #dc3545; margin-top: 8px;">* يرجى حفظ هذا الرقم لمتابعة حالة طلبك</p>
+            </div>
+            <button onclick="document.getElementById('success-modal').style.display='none'" style="background: var(--primary-color); color: white; border: none; padding: 10px 30px; border-radius: 25px; font-weight: 700;">حسناً</button>
+        </div>
+    </div>
+
+    <div id="loading-modal">
+        <div class="popup-box">
+            <i class="fas fa-spinner fa-spin" style="font-size: 40px; color: var(--secondary-color); margin-bottom: 15px;"></i>
+            <h3 style="color: var(--primary-color);">جاري معالجة وإرسال الطلب...</h3>
+            <p style="color: #666; font-size: 13px; mt-2">يرجى الانتظار ثوانٍ معدودة</p>
+        </div>
+    </div>
 
     <script>
-        // ⚠️ ضع الرابط الخاص بك هنا 
+        // ⚠️ ضع الرابط الجديد هنا:
         const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbxIpu80rI5mIsiS5Pho-VoA7U8FwYPvmAd4AEj7mDoK9gZ9gaxwsG2h-s2YkSf1MBvncQ/exec";
+        
+        let globalNewsData = [];
 
-        const PINS = {
-            "199701997": { role: "admin", title: "المدير العام (المنظومة الكاملة)" },
-            "300300":    { role: "outgoing", title: "موظف الصادر" },
-            "009900":    { role: "incoming", title: "موظف الوارد" }
-        };
+        setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            splash.style.opacity = '0';
+            setTimeout(() => { splash.style.display = 'none'; }, 500);
+        }, 2500);
 
-        let currentUserRole = "";
-        let currentArchiveView = "outgoing";
-        let archiveData = { outgoing: [], incoming: [], badges: [], localLetters: [], appRequests: [] };
-
-        function login() {
-            const pin = document.getElementById('pin-input').value.trim();
-            if (PINS[pin]) {
-                currentUserRole = PINS[pin].role;
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('user-role-label').innerText = PINS[pin].title;
-                applyRoleRestrictions();
-                loadArchive();
-            } else { document.getElementById('login-err').style.display = 'block'; }
-        }
-
-        function applyRoleRestrictions() {
-            if (currentUserRole === "admin") {
-                document.getElementById('tab-btn-badge').style.display = 'flex';
-                document.getElementById('tab-btn-local').style.display = 'flex';
-                document.getElementById('card-st-badge').style.display = 'block';
-                document.getElementById('card-st-local').style.display = 'block';
-                document.getElementById('card-st-app').style.display = 'block';
-                document.getElementById('admin-sub-tabs').style.display = "flex";
-            } else if (currentUserRole === "outgoing") {
-                document.getElementById('tab-btn-in').style.display = 'none';
-                document.getElementById('archive-main-title').innerHTML = '<i class="fas fa-paper-plane" style="color:var(--blue);"></i> أرشيف سجل الصادر';
-                activatePanel('out-panel', document.getElementById('tab-btn-out'));
-            } else if (currentUserRole === "incoming") {
-                document.getElementById('tab-btn-out').style.display = 'none';
-                currentArchiveView = "incoming";
-                document.getElementById('archive-main-title').innerHTML = '<i class="fas fa-inbox" style="color:var(--green);"></i> أرشيف سجل الوارد';
-                activatePanel('in-panel', document.getElementById('tab-btn-in'));
-            }
-        }
-
-        function tryOpenPanel(panelId, btn, requiredAccess) {
-            if (requiredAccess === "admin" && currentUserRole !== "admin") return showToast("🔒 قسم مخصص للمدير العام فقط");
-            if (currentUserRole === "outgoing" && requiredAccess === "incoming") return;
-            if (currentUserRole === "incoming" && requiredAccess === "outgoing") return;
-            activatePanel(panelId, btn);
-            if (requiredAccess === "archive") loadArchive();
-        }
-
-        function activatePanel(panelId, btn) {
-            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(panelId).classList.add('active');
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.section-container').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
             btn.classList.add('active');
         }
 
-        function switchArchiveView(viewName, btn) {
-            if (currentUserRole !== "admin") return;
-            currentArchiveView = viewName;
-            document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            renderCurrentArchive();
-        }
-
-        function showToast(msg) {
-            const t = document.getElementById('toast'); t.innerText = msg; t.style.display = 'block';
-            setTimeout(() => { t.style.display = 'none'; }, 4000);
-        }
-
-        // إرسال الصادر
-        document.getElementById('outgoing-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const btn = this.querySelector('button[type="submit"]'); btn.disabled = true;
-            fetch(WEBHOOK_URL, { method: 'POST', body: JSON.stringify({
-                action: "staff_entry", entryType: "outgoing",
-                name: document.getElementById('out-name').value, phone: document.getElementById('out-phone').value,
-                ministry: document.getElementById('out-ministry').value, bookNum: document.getElementById('out-num').value,
-                bookDate: document.getElementById('out-date').value, subject: document.getElementById('out-subject').value,
-                identifier: document.getElementById('out-identifier').value
-            })}).then(r=>r.json()).then(res=>{
-                btn.disabled=false; if(res.result==="success"){ showToast("✅ تم حفظ كتاب الصادر"); e.target.reset(); loadArchive(); }
-            }).catch(()=>{ btn.disabled=false; alert("خطأ بالاتصال"); });
-        });
-
-        // إرسال الوارد
-        document.getElementById('incoming-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const btn = this.querySelector('button[type="submit"]'); btn.disabled = true;
-            fetch(WEBHOOK_URL, { method: 'POST', body: JSON.stringify({
-                action: "staff_entry", entryType: "incoming",
-                name: document.getElementById('in-name').value, ministry: document.getElementById('in-ministry').value,
-                bookNum: document.getElementById('in-num').value, bookDate: document.getElementById('in-date').value,
-                margin: document.getElementById('in-margin').value, subject: document.getElementById('in-subject').value
-            })}).then(r=>r.json()).then(res=>{
-                btn.disabled=false; if(res.result==="success"){ showToast("✅ تم حفظ الوارد والتأشير"); e.target.reset(); loadArchive(); }
-            }).catch(()=>{ btn.disabled=false; alert("خطأ بالاتصال"); });
-        });
-
-        // إرسال الباجات (خاص بالمدير)
-        document.getElementById('badge-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const btn = this.querySelector('button[type="submit"]'); btn.disabled = true;
-            fetch(WEBHOOK_URL, { method: 'POST', body: JSON.stringify({
-                action: "staff_entry", entryType: "badge",
-                name: document.getElementById('badge-name').value, carType: document.getElementById('badge-car').value,
-                plateDetails: document.getElementById('badge-plate').value, identifier: document.getElementById('badge-identifier').value,
-                badgeCount: document.getElementById('badge-count').value, badgeDate: document.getElementById('badge-date').value
-            })}).then(r=>r.json()).then(res=>{
-                btn.disabled=false; if(res.result==="success"){ showToast("✅ تم حفظ الباج بالسجل السري"); e.target.reset(); loadArchive(); }
-            }).catch(()=>{ btn.disabled=false; alert("خطأ بالاتصال"); });
-        });
-
-        // إرسال الكتب المحلية (خاص بالمدير)
-        document.getElementById('local-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const btn = this.querySelector('button[type="submit"]'); btn.disabled = true;
-            fetch(WEBHOOK_URL, { method: 'POST', body: JSON.stringify({
-                action: "staff_entry", entryType: "local_letter",
-                name: document.getElementById('local-name').value, phone: document.getElementById('local-phone').value,
-                entity: document.getElementById('local-entity').value, subject: document.getElementById('local-subject').value,
-                notes: document.getElementById('local-notes').value
-            })}).then(r=>r.json()).then(res=>{
-                btn.disabled=false; if(res.result==="success"){ showToast("✅ تم حفظ الكتاب المحلي بالسجل السري"); e.target.reset(); loadArchive(); }
-            }).catch(()=>{ btn.disabled=false; alert("خطأ بالاتصال"); });
-        });
-
-        function loadArchive() {
-            fetch(WEBHOOK_URL + "?action=archive").then(r => r.json()).then(res => {
-                if (res.result === "success") {
-                    archiveData = res;
-                    document.getElementById('st-out').innerText = res.outgoing.length;
-                    document.getElementById('st-in').innerText = res.incoming.length;
-                    if(currentUserRole === "admin") {
-                        document.getElementById('st-badge').innerText = res.badges.length;
-                        document.getElementById('st-local').innerText = res.localLetters.length;
-                        document.getElementById('st-app').innerText = res.appRequests.length;
-                    }
-                    renderCurrentArchive();
+        fetch(WEBHOOK_URL)
+            .then(res => res.json())
+            .then(data => {
+                globalNewsData = data;
+                let html = '';
+                let tickerText = '';
+                if(data.length > 0){
+                    data.forEach((item, index) => {
+                        tickerText += ` 🔹 ${item.title} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; `;
+                        html += `
+                        <div class="news-card">
+                            ${item.image ? `<img src="${item.image}" class="news-img">` : ''}
+                            <div class="news-title">${item.title}</div>
+                            <div class="news-date"><i class="far fa-calendar-alt"></i> ${item.date}</div>
+                            <div class="news-snippet">${item.details}</div>
+                            <button class="read-more-btn" onclick="openNewsModal(${index})">اقرأ المزيد <i class="fas fa-angle-double-left"></i></button>
+                        </div>`;
+                    });
+                    document.getElementById('news-container').innerHTML = html;
+                    document.getElementById('news-ticker').innerHTML = tickerText;
+                } else {
+                    document.getElementById('news-ticker').innerHTML = 'لا توجد أخبار حالياً.';
                 }
+            });
+
+        function openNewsModal(index) {
+            const item = globalNewsData[index];
+            document.getElementById('modal-title').innerText = item.title;
+            document.getElementById('modal-date-text').innerText = item.date;
+            document.getElementById('modal-details').innerHTML = item.details.replace(/\n/g, '<br>');
+            const imgEl = document.getElementById('modal-img');
+            if(item.image) { imgEl.src = item.image; imgEl.style.display = 'block'; } else { imgEl.style.display = 'none'; }
+            document.getElementById('news-modal').style.display = 'flex';
+        }
+        function closeNewsModal() { document.getElementById('news-modal').style.display = 'none'; }
+
+        function openExternalApp(url) {
+            if (window.AppInventor) { window.AppInventor.setWebViewString(url); } else { window.open(url, '_blank'); }
+        }
+
+        function trackRequest() {
+            const searchVal = document.getElementById('track-name-input').value.trim();
+            const resultP = document.getElementById('track-result');
+            if(!searchVal) { resultP.innerText = "يرجى كتابة الاسم أو رقم الطلب للبحث!"; resultP.style.color = "red"; return; }
+            
+            resultP.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري البحث...';
+            resultP.style.color = "#666";
+
+            fetch(WEBHOOK_URL + "?action=track&query=" + encodeURIComponent(searchVal))
+            .then(res => res.json())
+            .then(data => {
+                if(data.result === "success") {
+                    let resultsHTML = "<span style='color:#0f1d36;'>نتائج البحث:</span><br>";
+                    data.data.forEach(req => {
+                        resultsHTML += `
+                        <div style="background:#fff; padding:15px; margin-top:10px; border-radius:8px; border:1px solid #e2e8f0; border-right:4px solid var(--secondary-color); text-align:right;">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <strong style="color:var(--primary-color);">${req.name}</strong>
+                                <span style="background:#eef2f6; padding:3px 8px; border-radius:5px; font-size:12px; font-weight:bold; color:var(--primary-color);">رقم: ${req.id}</span>
+                            </div>
+                            <span style="font-size:12px; color:#888;"><i class="far fa-calendar-alt"></i> ${req.date}</span><br>
+                            <div style="margin-top:8px; font-weight:bold;">حالة الطلب: <span style="color: #28a745;">${req.status}</span></div>
+                        </div>`;
+                    });
+                    resultP.innerHTML = resultsHTML;
+                } else {
+                    resultP.innerHTML = "لم يتم العثور على طلب مطابق.";
+                    resultP.style.color = "red";
+                }
+            }).catch(() => {
+                resultP.innerText = "حدث خطأ بالاتصال.";
+                resultP.style.color = "red";
             });
         }
 
-        function renderCurrentArchive() {
-            const q = document.getElementById('arch-search').value.toLowerCase();
-            const thead = document.getElementById('archive-thead');
-            const tbody = document.getElementById('archive-tbody');
-            let html = '';
+        // قاعدة بيانات المحافظات والأقضية والنواحي
+        const locations = {
+            "النجف الأشرف": { "النجف": ["الحيدرية", "الشبكة"], "الكوفة": ["العباسية", "الحرية"], "المناذرة": ["الحيرة"], "المشخاب": ["القادسية"] },
+            "بغداد": { "الرصافة": ["الكرادة", "المنصور"], "الأعظمية": ["الفحامة", "بوب الشام"], "الصدر الأول": ["الفرات"], "الصدر الثاني": ["الصديق"], "الكرخ": ["المنصور", "المأمون", "الصالحية"], "الكاظمية": ["التاجي", "ذات السلاسل"], "المحمودية": ["اليوسفية", "الرشيد", "اللطيفية"], "أبي غريب": ["النصر والسلام"], "الطارمية": ["المشاهدة", "العبايجي"], "المدائن": ["الجسر", "الوحدة", "النهروان"], "الحسينية": ["الراشدية"], "الشعب": ["بوب الشام", "الثعالبة"] },
+            "نينوى": { "الموصل": ["حمام العليل", "الشورة", "القيارة", "بعشيقة", "المحلبية", "بادوش"], "تلعفر": ["العياضية", "ربيعة", "زمار"], "سنجار": ["الشمال", "القيروان"], "البعاج": ["القحطانية"], "الحضر": ["تل عبطة"], "الحمدانية": ["برطلة", "النمرود"], "تلكيف": ["الوند", "القوش"], "مخمور": ["الكوير", "قراج", "ملا قرا"], "الشيخان": ["زيلكان", "باعدرة"] },
+            "البصرة": { "البصرة": ["الرباط", "العشار"], "أبي الخصيب": ["السيبة"], "الزبير": ["سفوان", "أم قصر"], "القرنة": ["الثغر", "الدير"], "شط العرب": ["عتبة"], "الفاو": ["البحار"], "المدينة": ["طلحة", "الهوير"], "الهارثة": ["كرمة علي"] },
+            "الأنبار": { "الرمادي": ["السجارية", "الحميرية"], "الفلوجة": ["الصقلاوية", "الكرمة"], "الخالدية": ["الحبانية"], "هيت": ["كبيسة", "الفرات", "المحمدي"], "حديثة": ["الحقلانية", "بروانة"], "عانة": ["الريحانة"], "راوة": [], "القائم": ["العبيدي", "الكرابلة", "الرمانة"], "الرطبة": ["الوليد", "النخيب"] },
+            "بابل": { "الحلة": ["الكفل", "أبي غرق", "السدة", "سنجار"], "المحاويل": ["المشروع", "الإمام", "النيل"], "المسيب": ["الإسكندرية", "جرف النصر", "الحصوة"], "الهاشمية": ["القاسم", "الطليعة", "الحمزة الغربي", "المدحتية"] },
+            "كربلاء المقدسة": { "كربلاء": ["الحر"], "الهندية": ["الجدول الغربي", "الخيرات"], "الحسينية": ["عون"], "عين تمر": ["شثاثة"] },
+            "ذي قار": { "الناصرية": ["أور", "البطحاء", "الفضيلية", "سید دخیل"], "الشطرة": ["الغراف", "الدواية"], "الرفاعي": ["النصر", "الفجر"], "قلعة سكر": [], "سوق الشيوخ": ["كرمة بني سعيد", "العكيكة", "الطار"], "الجبايش": ["المنار", "الفهود"] },
+            "القادسية": { "الديوانية": ["السنية", "الشافعية", "الدغارة"], "الشامية": ["غماس", "المهناوية", "الصلاحية"], "عفك": ["آل بدير", "سومر", "نفر"], "الحمزة": ["السدير", "الشنافية"] },
+            "ديالى": { "بعقوبة": ["بهرز", "كنعان", "بني سعد", "العبارة"], "المقدادية": ["أبي صيدا", "الوجيهية"], "الخالص": ["المنصورية", "هبهب", "السلام", "العظيم"], "خانقين": ["السعدية", "جلولاء", "قورة تو", "ميدان"], "بلدروز": ["مندلي", "قزانية"], "كفري": ["جبارة", "كوكس"] },
+            "صلاح الدين": { "تكريت": ["العلم"], "سامراء": ["دجلة", "المعتصم"], "بلد": ["الضلوعية", "يثرب", "الإسحاقي"], "الدجيل": [], "بيجي": ["الصينية", "مكحول"], "الشرقاط": ["آشور", "الساحل الأيسر"], "الدور": ["حمرين"], "طوزخورماتو": ["آمرلي", "سليمان بيك", "ينكجة"] },
+            "كركوك": { "كركوك": ["التون كوبري", "ليلان", "تازة خورماتو", "الشوان", "يايجي"], "الحويجة": ["الرياض", "العباسي", "الزاب"], "داقوق": ["الرشاد"], "دبس": ["سرجران"] },
+            "واسط": { "الكوت": ["الشيخ سعد", "واسط"], "الحي": ["الموفقية", "البشائر"], "الصويرة": ["الحفرية", "الزبيدية"], "العزيزية": ["تاج الدين", "الدبوني"], "النعمانية": ["الأحرار"], "بدرة": ["جصان", "زرباطية"] },
+            "ميسان": { "العمارة": ["كميت", "المشرح"], "علي الغربي": ["علي الشرقي"], "المجر الكبير": ["العدل"], "قلعة صالح": ["العزير"], "الكحلاء": ["بني هاشم"], "الميمونة": ["السلام", "الخير"] },
+            "المثنى": { "السماوة": ["السوير", "الهلال"], "الرميثة": ["النجمي", "المجد", "الوركاء"], "الخضر": ["الدراجي"], "السلمان": ["بصية"] },
+            "حلبجة": { "حلبجة": ["سيروان", "خورمال", "بيارة", "بمو"] }
+        };
 
-            if (currentArchiveView === "outgoing") {
-                thead.innerHTML = `<tr><th>الكود</th><th>الاسم الكامل</th><th>الهاتف</th><th>الجهة</th><th>رقم وتاريخ</th><th>الموضوع</th><th>المعرف</th><th>الحالة</th></tr>`;
-                archiveData.outgoing.filter(i => (i.name+" "+i.ministry+" "+i.subject+" "+i.identifier).toLowerCase().includes(q)).forEach(item => {
-                    const cl = item.linkStatus.includes("وصلت") ? 'badge-done' : 'badge-wait';
-                    html += `<tr><td>${item.id}</td><td><strong>${item.name}</strong></td><td dir="ltr">${item.phone}</td><td>${item.ministry}</td><td>رقم: ${item.bookNum}<br><small>${item.bookDate}</small></td><td style="max-width:200px;">${item.subject}</td><td><strong>${item.identifier || '-'}</strong></td><td><span class="badge ${cl}">${item.linkStatus}</span></td></tr>`;
-                });
-            } else if (currentArchiveView === "incoming") {
-                thead.innerHTML = `<tr><th>الكود</th><th>الاسم الكامل</th><th>الجهة</th><th>رقم وتاريخ</th><th>هامش الوزير</th><th>الموضوع</th><th>الحالة</th></tr>`;
-                archiveData.incoming.filter(i => (i.name+" "+i.ministry+" "+i.margin+" "+i.subject).toLowerCase().includes(q)).forEach(item => {
-                    const cl = item.linkStatus.includes("مرتبط") ? 'badge-done' : 'badge-out';
-                    html += `<tr><td>${item.id}</td><td><strong>${item.name}</strong></td><td>${item.ministry}</td><td>رقم: ${item.bookNum}<br><small>${item.bookDate}</small></td><td><strong style="color:var(--green);">${item.margin}</strong></td><td style="max-width:200px;">${item.subject}</td><td><span class="badge ${cl}">${item.linkStatus}</span></td></tr>`;
-                });
-            } else if (currentArchiveView === "badges" && currentUserRole === "admin") {
-                thead.innerHTML = `<tr><th>صاحب الباج</th><th>نوع السيارة</th><th>تفاصيل الرقم والمحافظة</th><th>المعرف</th><th>العدد</th><th>تاريخ الباج</th></tr>`;
-                archiveData.badges.filter(i => (i.name+" "+i.carType+" "+i.plate+" "+i.identifier).toLowerCase().includes(q)).forEach(item => {
-                    html += `<tr><td><strong>${item.name}</strong></td><td>${item.carType}</td><td>${item.plate}</td><td><strong style="color:var(--purple);">${item.identifier}</strong></td><td>${item.count}</td><td>${item.badgeDate}</td></tr>`;
-                });
-            } else if (currentArchiveView === "localLetters" && currentUserRole === "admin") {
-                thead.innerHTML = `<tr><th>الاسم الكامل</th><th>الهاتف</th><th>الجهة المعنون إليها</th><th>الموضوع</th><th>ملاحظات</th><th>تاريخ التسجيل</th></tr>`;
-                archiveData.localLetters.filter(i => (i.name+" "+i.entity+" "+i.subject+" "+i.notes).toLowerCase().includes(q)).forEach(item => {
-                    html += `<tr><td><strong>${item.name}</strong></td><td dir="ltr">${item.phone}</td><td><strong style="color:var(--teal);">${item.entity}</strong></td><td style="max-width:200px;">${item.subject}</td><td>${item.notes || '-'}</td><td><small>${item.regDate}</small></td></tr>`;
-                });
-            } else if (currentArchiveView === "app" && currentUserRole === "admin") {
-                thead.innerHTML = `<tr><th>الاسم</th><th>الجهة</th><th>الموضوع</th><th>الحالة العامة</th></tr>`;
-                archiveData.appRequests.filter(i => (i.name+" "+i.ministry+" "+i.subject).toLowerCase().includes(q)).forEach(item => {
-                    html += `<tr><td><strong>${item.name}</strong><br><small>${item.gov}</small></td><td>${item.ministry}</td><td style="max-width:200px;">${item.subject}</td><td><span class="badge badge-wait">${item.status}</span></td></tr>`;
-                });
-            }
+        const govSelect = document.getElementById('gov');
+        const districtSelect = document.getElementById('district');
+        const subdistrictSelect = document.getElementById('subdistrict');
 
-            tbody.innerHTML = html || '<tr><td colspan="8" style="text-align:center; padding:20px;">لا توجد بيانات مطابقة</td></tr>';
+        for (const gov in locations) {
+            let option = document.createElement('option');
+            option.value = gov;
+            option.textContent = gov;
+            govSelect.appendChild(option);
         }
+
+        govSelect.addEventListener('change', function() {
+            districtSelect.innerHTML = '<option value="">اختر القضاء...</option>';
+            subdistrictSelect.innerHTML = '<option value="">اختر الناحية...</option>';
+            subdistrictSelect.disabled = true;
+
+            if (this.value) {
+                districtSelect.disabled = false;
+                for (const dist in locations[this.value]) {
+                    let option = document.createElement('option');
+                    option.value = dist;
+                    option.textContent = dist;
+                    districtSelect.appendChild(option);
+                }
+            } else {
+                districtSelect.disabled = true;
+            }
+        });
+
+        districtSelect.addEventListener('change', function() {
+            subdistrictSelect.innerHTML = '<option value="">اختر الناحية...</option>';
+            if (this.value && locations[govSelect.value][this.value]) {
+                const subs = locations[govSelect.value][this.value];
+                if (subs.length > 0) {
+                    subdistrictSelect.disabled = false;
+                    subs.forEach(sub => {
+                        let option = document.createElement('option');
+                        option.value = sub;
+                        option.textContent = sub;
+                        subdistrictSelect.appendChild(option);
+                    });
+                } else {
+                    subdistrictSelect.disabled = true;
+                }
+            } else {
+                subdistrictSelect.disabled = true;
+            }
+        });
+
+        let fileBase64 = "", fileName = "", mimeType = "";
+        document.getElementById('file-upload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('file-name-display').innerText = file.name + " (جاري التجهيز...)";
+                fileName = file.name; mimeType = file.type || "image/jpeg";
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(evt) {
+                        const img = new Image();
+                        img.onload = function() {
+                            const canvas = document.createElement('canvas');
+                            let width = img.width, height = img.height;
+                            const maxDim = 1200;
+                            if (width > maxDim || height > maxDim) {
+                                if (width > height) { height = Math.round((height * maxDim) / width); width = maxDim; } 
+                                else { width = Math.round((width * maxDim) / height); height = maxDim; }
+                            }
+                            canvas.width = width; canvas.height = height;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, width, height);
+                            fileBase64 = canvas.toDataURL('image/jpeg', 0.7);
+                            document.getElementById('file-name-display').innerText = file.name + " ✅";
+                        };
+                        img.src = evt.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    const reader = new FileReader();
+                    reader.onload = function(evt) {
+                        fileBase64 = evt.target.result;
+                        document.getElementById('file-name-display').innerText = file.name + " ✅";
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        });
+
+        document.getElementById('contact-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            document.getElementById('loading-modal').style.display = 'flex';
+            
+            const formData = new FormData(e.target);
+            const dataObj = {
+                name: formData.get('name'), phone: formData.get('phone'),
+                gov: formData.get('gov'), district: formData.get('district'),
+                subdistrict: formData.get('subdistrict'), neighborhood: formData.get('neighborhood'),
+                ministry: formData.get('ministry'), request: formData.get('request'),
+                fileBase64: fileBase64, fileName: fileName, mimeType: mimeType
+            };
+
+            fetch(WEBHOOK_URL, { method: 'POST', body: JSON.stringify(dataObj) })
+            .then(res => res.json())
+            .then(resData => {
+                document.getElementById('loading-modal').style.display = 'none';
+                if(resData.result === "success") { document.getElementById('generated-req-id').innerText = resData.reqId; }
+                document.getElementById('success-modal').style.display = 'flex';
+                e.target.reset(); document.getElementById('file-name-display').innerText = 'اضغط هنا لاختيار صورة أو ملف';
+                districtSelect.disabled = true; subdistrictSelect.disabled = true;
+                fileBase64 = ""; fileName = ""; mimeType = "";
+            })
+            .catch(() => {
+                document.getElementById('loading-modal').style.display = 'none';
+                alert("حدث خطأ في الإرسال، يرجى التأكد من اتصال الإنترنت.");
+            });
+        });
     </script>
 </body>
 </html>
