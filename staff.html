@@ -13,7 +13,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
         body { background: var(--bg); color: #1e293b; padding-bottom: 50px; }
 
-        /* 1. نظام المصادقة الأمنية (شاشة الدخول والأنيميشن) */
+        /* --- 1. المصادقة الأمنية --- */
         #login-screen { position: fixed; inset: 0; background: linear-gradient(135deg, var(--primary), #0f172a); display: flex; justify-content: center; align-items: center; z-index: 9999; padding: 20px; }
         .login-card { background: white; width: 100%; max-width: 390px; padding: 30px 25px; border-radius: 16px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border-top: 5px solid var(--gold); position: relative; overflow: hidden; }
         .login-card h2 { color: var(--primary); margin-bottom: 8px; font-size: 22px; }
@@ -26,6 +26,7 @@
         .scan-line { width: 100%; height: 2px; background: #00ff00; position: absolute; top: 0; animation: scanAnim 1.5s linear infinite; box-shadow: 0 0 10px #00ff00; }
         @keyframes scanAnim { 0% { top: 0; } 100% { top: 100%; } }
 
+        /* --- 2. الهيكل العام --- */
         header { background: var(--primary); color: white; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid var(--gold); flex-wrap: wrap; gap: 10px; }
         header h1 { font-size: 18px; color: var(--gold); }
         .role-badge { background: rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: bold; }
@@ -58,6 +59,7 @@
 
         .search-bar { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
         .search-bar input { flex: 1; min-width: 240px; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; outline: none; }
+        
         .table-responsive { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; min-width: 850px; font-size: 13.5px; }
         th, td { padding: 12px 10px; text-align: right; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
@@ -69,8 +71,8 @@
         .badge-out { background: #dbeafe; color: #1d4ed8; }
         .badge-done { background: #dcfce7; color: #15803d; }
 
-        /* أزرار الإجراءات في الجداول (رفع صورة، تسليم، طباعة) */
-        .action-btn { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 12px; color: var(--primary); transition: 0.2s; display: inline-flex; align-items: center; gap: 5px; }
+        /* أزرار الإجراءات */
+        .action-btn { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 12px; color: var(--primary); transition: 0.2s; display: inline-flex; align-items: center; gap: 5px; margin: 2px; }
         .action-btn:hover { background: #e2e8f0; }
         .btn-upload { color: var(--blue); border-color: var(--blue); }
         .btn-view { background: var(--blue); color: white; border-color: var(--blue); }
@@ -79,55 +81,51 @@
 
         #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 12px 24px; border-radius: 30px; font-weight: 700; font-size: 14px; display: none; z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.2); text-align: center; }
 
-       <!-- شاشة الطباعة الشفافة للباج (A5) -->
-    <div id="print-area">
-        <div class="print-header">
-            <!-- مربع الصورة اللي راح ينطبع بداخله الـ QR Code -->
-            <div class="print-qr-box" id="p-qr"></div>
-            
-            <div class="print-address">
-                <h3>إلى/ كافة السيطرات الداخلية والخارجية</h3>
-                <h3>/ كافة السيطرات في المدينة القديمة</h3>
-                <h2>م / تسهيل مهمة</h2>
-            </div>
-        </div>
-
-        <div class="print-body">
-            نود إعلامكم بأن المركبة المدرجة تفاصيلها أدناه معرفة من قبلنا وسائقها السيد (<span id="p-name"></span>) الملصقة صورته أعلاه راجين تسهيل مهمته وحسب التعليمات والضوابط النافذة ولمدة سنة واحدة من تاريخ صدور هذا الكتاب.
-            <br><br>
-            <center>شاكرين تعاونكم معنا مع التقدير...</center>
-        </div>
-
-        <table class="print-table">
-            <tr>
-                <th>نوع العجلة</th>
-                <th>رقم العجلة</th>
-                <th>المحافظة</th>
-                <th>لون العجلة</th>
-            </tr>
-            <tr>
-                <td id="p-car"></td>
-                <td id="p-plate-num"></td>
-                <td id="p-plate-gov"></td>
-                <td id="p-color"></td>
-            </tr>
-        </table>
-
-        <div class="print-footer">
-            <u>نسخة منه الى:</u><br>
-            - مكتب السيد رئيس مجلس النواب / للتفضل بالاطلاع.. مع التقدير.<br>
-            - اللجنة الامنية / للتفضل بالاطلاع.. مع التقدير.<br>
-            - اضبارة الحفظ.
-        </div>
-    </div>
-        
-        /* إخفاء input الملفات */
         .hidden-file-input { display: none; }
+
+        /* --- 3. إعدادات طباعة باج تسهيل المهمة (A5 طبق الأصل) --- */
+        #print-area { display: none; }
+        @media print {
+            body * { visibility: hidden; }
+            #print-area, #print-area * { visibility: visible; }
+            @page { size: A5 portrait; margin: 0; }
+            
+            #print-area { 
+                display: block; 
+                position: absolute; 
+                top: 0; left: 0; 
+                width: 148mm; 
+                height: 210mm; 
+                padding: 30mm 15mm 20mm 15mm; /* مساحة علوية للترويسة الذهبية */
+                background: white;
+                font-family: 'Arial', sans-serif;
+                color: black;
+                direction: rtl;
+            }
+
+            .print-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px; }
+            .print-qr-box { width: 35mm; height: 45mm; border: 2px solid black; display: flex; justify-content: center; align-items: center; }
+            .print-qr-box img { width: 30mm; height: 30mm; }
+            
+            .print-address { flex: 1; text-align: right; margin-right: 20px; line-height: 1.5; }
+            .print-address h3 { font-size: 16px; margin: 3px 0; font-weight: bold; }
+            .print-address h2 { font-size: 18px; margin: 15px 0 5px 0; font-weight: bold; }
+
+            .print-body { font-size: 15px; font-weight: bold; line-height: 1.8; text-align: justify; margin-bottom: 20px; }
+            .print-body span { font-size: 16px; }
+            
+            .print-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; font-weight: bold; text-align: center; }
+            .print-table th, .print-table td { border: 2px solid black; padding: 8px; font-size: 14px; }
+            .print-table th { background-color: #d1d1d1 !important; -webkit-print-color-adjust: exact; }
+
+            .print-footer { font-size: 12px; font-weight: bold; line-height: 1.6; text-align: right; }
+            .print-footer u { font-size: 13px; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- واجهة تسجيل الدخول والمصادقة الأمنية -->
+    <!-- المصادقة الأمنية -->
     <div id="login-screen">
         <div class="login-card">
             <div id="security-scanner">
@@ -165,18 +163,16 @@
             <div class="stat-card" id="card-st-app" style="border-color:#f59e0b; display:none;"><h3 id="st-app">0</h3><span>طلبات التطبيق</span></div>
         </div>
 
-        <!-- التبويبات الرئيسية -->
+        <!-- التبويبات -->
         <div class="tabs">
             <button class="tab-btn active" id="tab-btn-out" onclick="tryOpenPanel('out-panel', this, 'outgoing')"><i class="fas fa-paper-plane"></i> كتاب صادر</button>
             <button class="tab-btn" id="tab-btn-in" onclick="tryOpenPanel('in-panel', this, 'incoming')"><i class="fas fa-inbox"></i> إجابة وارد</button>
             <button class="tab-btn" id="tab-btn-badge" onclick="tryOpenPanel('badge-panel', this, 'admin')" style="display:none;"><i class="fas fa-id-card"></i> باجات سيارات</button>
             <button class="tab-btn" id="tab-btn-local" onclick="tryOpenPanel('local-panel', this, 'admin')" style="display:none;"><i class="fas fa-map-marker-alt"></i> كتب محلية</button>
-            <!-- تبويب لوحة الإعلام (جديد) -->
             <button class="tab-btn" id="tab-btn-media" onclick="tryOpenPanel('media-panel', this, 'admin')" style="display:none; color:var(--primary);"><i class="fas fa-bullhorn"></i> لوحة الإعلام</button>
             <button class="tab-btn" id="tab-btn-arch" onclick="tryOpenPanel('arch-panel', this, 'archive')"><i class="fas fa-archive"></i> سجل الأرشيف</button>
         </div>
 
-        <!-- الأقسام (صادر، وارد، باجات، محلية) تبقى كما هي من الكود الأصلي -->
         <!-- 1. الصادر -->
         <div id="out-panel" class="panel active">
             <h3 class="panel-title"><i class="fas fa-file-export" style="color:var(--blue);"></i> تسجيل كتاب صادر</h3>
@@ -213,14 +209,15 @@
         <!-- 3. الباجات -->
         <div id="badge-panel" class="panel">
             <h3 class="panel-title"><i class="fas fa-id-card" style="color:var(--purple);"></i> تسجيل باج سيارة (سجل سري)</h3>
-            <form id="badge-form" onsubmit="event.preventDefault();">
+            <form id="badge-form">
                 <div class="form-grid">
                     <div class="form-group"><label>اسم صاحب الباج *</label><input type="text" class="form-control" id="badge-name" required></div>
-                    <div class="form-group"><label>نوع السيارة *</label><input type="text" class="form-control" id="badge-car" placeholder="مثال: جكسارة، تاهو..." required></div>
-                    <div class="form-group full"><label>الرقم (رقم السيارة والحرف والمحافظة) *</label><input type="text" class="form-control" id="badge-plate" placeholder="مثال: 12345 / أ / بغداد" required></div>
+                    <div class="form-group"><label>نوع العجلة *</label><input type="text" class="form-control" id="badge-car" placeholder="مثال: سوناتا، تاهو..." required></div>
+                    <div class="form-group"><label>رقم العجلة *</label><input type="text" class="form-control" id="badge-plate-num" placeholder="مثال: H 55697" required></div>
+                    <div class="form-group"><label>المحافظة *</label><input type="text" class="form-control" id="badge-gov" placeholder="مثال: 11 (بغداد) أو بابل" required></div>
+                    <div class="form-group"><label>لون العجلة *</label><input type="text" class="form-control" id="badge-color" placeholder="مثال: رصاصي فضي" required></div>
                     <div class="form-group"><label>المعرف *</label><input type="text" class="form-control" id="badge-identifier" required></div>
-                    <div class="form-group"><label>عدد الباج *</label><input type="number" class="form-control" id="badge-count" required></div>
-                    <div class="form-group"><label>تاريخ الباج *</label><input type="date" class="form-control" id="badge-date" required></div>
+                    <div class="form-group"><label>تاريخ الصدور *</label><input type="date" class="form-control" id="badge-date" required></div>
                 </div>
                 <button type="submit" class="btn-main" style="background:var(--purple);"><i class="fas fa-save"></i> حفظ الباج</button>
             </form>
@@ -241,25 +238,24 @@
             </form>
         </div>
 
-        <!-- 5. لوحة الإعلام (جديد) -->
+        <!-- 5. لوحة الإعلام -->
         <div id="media-panel" class="panel">
-            <h3 class="panel-title"><i class="fas fa-bullhorn" style="color:var(--primary);"></i> لوحة الإحصائيات الإعلامية (البيانات الصحفية)</h3>
+            <h3 class="panel-title"><i class="fas fa-bullhorn" style="color:var(--primary);"></i> لوحة الإحصائيات الإعلامية</h3>
             <div style="background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #cbd5e1; text-align: center;">
                 <h2 style="color: var(--primary); margin-bottom: 15px;">الموقف الإنجازي العام لمكتب النائب</h2>
                 <div class="stats-grid" style="grid-template-columns: 1fr 1fr 1fr;">
                     <div class="stat-card" style="border-color:var(--gold);"><h3 id="media-total">0</h3><span>إجمالي المناشدات المستلمة</span></div>
                     <div class="stat-card" style="border-color:var(--green);"><h3 id="media-done">0</h3><span>القضايا المنجزة والمستحصلة</span></div>
-                    <div class="stat-card" style="border-color:var(--blue);"><h3 id="media-rate">0%</h3><span>نسبة الاستجابة للطلبات</span></div>
+                    <div class="stat-card" style="border-color:var(--blue);"><h3 id="media-rate">0%</h3><span>نسبة الاستجابة</span></div>
                 </div>
-                <p style="font-size: 14px; color: #64748b; margin-top: 15px;">* هذه الأرقام تسحب تلقائياً من الأرشيف وهي جاهزة للاقتباس في البيانات الصحفية دون تحديد مناطق جغرافية.</p>
             </div>
         </div>
 
-        <!-- 6. الأرشيف والتعديلات الجديدة -->
+        <!-- 6. الأرشيف -->
         <div id="arch-panel" class="panel">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
                 <h3 class="panel-title" style="margin:0; border:none;" id="archive-main-title"><i class="fas fa-database"></i> سجل الأرشيف</h3>
-                <button onclick="loadArchive()" class="btn-main" style="width:auto; padding:8px 15px; font-size:13px;"><i class="fas fa-sync-alt"></i> تحديث</button>
+                <button onclick="loadArchive()" class="btn-main" style="width:auto; padding:8px 15px; font-size:13px;"><i class="fas fa-sync-alt"></i> تحديث الأرشيف</button>
             </div>
 
             <div class="sub-tabs" id="admin-sub-tabs" style="display:none;">
@@ -267,12 +263,11 @@
                 <button class="sub-tab-btn" onclick="switchArchiveView('incoming', this)"><i class="fas fa-inbox"></i> الوارد</button>
                 <button class="sub-tab-btn" onclick="switchArchiveView('badges', this)" style="color:var(--purple);"><i class="fas fa-id-card"></i> الباجات</button>
                 <button class="sub-tab-btn" onclick="switchArchiveView('localLetters', this)" style="color:var(--teal);"><i class="fas fa-map-marker-alt"></i> المحلية</button>
-                <button class="sub-tab-btn" onclick="switchArchiveView('app', this)" style="color:#b45309;"><i class="fas fa-mobile-alt"></i> التطبيق العام</button>
-                <!-- تبويب سجل الرقابة الصارم (مخفي للمدير فقط) -->
-                <button class="sub-tab-btn" onclick="switchArchiveView('audit', this)" style="color:#dc2626; border-color:#dc2626;"><i class="fas fa-user-secret"></i> سجل الرقابة</button>
+                <button class="sub-tab-btn" onclick="switchArchiveView('app', this)" style="color:#b45309;"><i class="fas fa-mobile-alt"></i> التطبيق</button>
+                <button class="sub-tab-btn" onclick="switchArchiveView('audit', this)" style="color:#dc2626; border-color:#dc2626;"><i class="fas fa-user-secret"></i> الرقابة</button>
             </div>
 
-            <div class="search-bar"><input type="text" id="arch-search" oninput="renderCurrentArchive()" placeholder="ابحث هنا..."></div>
+            <div class="search-bar"><input type="text" id="arch-search" oninput="renderCurrentArchive()" placeholder="ابحث بالاسم أو الدائرة..."></div>
 
             <div class="table-responsive">
                 <table>
@@ -283,52 +278,51 @@
         </div>
     </div>
 
-    <!-- input مخفي لرفع الصور -->
     <input type="file" id="global-file-upload" class="hidden-file-input" accept="image/*">
 
-    <!-- شاشة الطباعة الشفافة للباج (مخفية تظهر فقط عند الطباعة) -->
-    /* إعدادات الطباعة للباج (A5) طبق الأصل */
-        #print-area { display: none; }
-        @media print {
-            body * { visibility: hidden; }
-            #print-area, #print-area * { visibility: visible; }
-            @page { size: A5 portrait; margin: 0; }
-            
-            #print-area { 
-                display: block; 
-                position: absolute; 
-                top: 0; left: 0; 
-                width: 148mm; /* عرض A5 */
-                height: 210mm; /* طول A5 */
-                padding: 20mm 15mm; 
-                background: white;
-                font-family: 'Arial', sans-serif; /* خط رسمي للمخاطبات */
-                color: black;
-            }
+    <!-- هيكل طباعة باج A5 طبق الأصل للصورة -->
+    <div id="print-area">
+        <div class="print-header">
+            <div class="print-qr-box" id="p-qr"></div>
+            <div class="print-address">
+                <h3>إلى/ كافة السيطرات الداخلية والخارجية</h3>
+                <h3>/ كافة السيطرات في المدينة القديمة</h3>
+                <h2>م / تسهيل مهمة</h2>
+            </div>
+        </div>
 
-            .print-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
-            .print-qr-box { width: 35mm; height: 45mm; border: 2px solid black; display: flex; justify-content: center; align-items: center; }
-            .print-qr-box img { width: 30mm; height: 30mm; } /* حجم الباركود داخل المربع */
-            
-            .print-address { text-align: center; font-weight: bold; flex: 1; margin-right: 15px; }
-            .print-address h3 { font-size: 16px; margin: 5px 0; }
-            .print-address h2 { font-size: 18px; margin: 15px 0 5px 0; }
+        <div class="print-body">
+            نود إعلامكم بأن المركبة المدرجة تفاصيلها أدناه معرفة من قبلنا وسائقها السيد (<span id="p-name"></span>) الملصقة صورته أعلاه راجين تسهيل مهمته وحسب التعليمات والضوابط النافذة ولمدة سنة واحدة من تاريخ صدور هذا الكتاب.
+            <br><br>
+            <center>شاكرين تعاونكم معنا مع التقدير...</center>
+        </div>
 
-            .print-body { font-size: 15px; font-weight: bold; line-height: 1.8; text-align: justify; margin-bottom: 20px; }
-            .print-body span { font-size: 16px; }
-            
-            .print-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; font-weight: bold; text-align: center; }
-            .print-table th, .print-table td { border: 2px solid black; padding: 8px; font-size: 14px; }
-            .print-table th { background-color: #e5e5e5 !important; -webkit-print-color-adjust: exact; }
+        <table class="print-table">
+            <tr>
+                <th>نوع العجلة</th>
+                <th>رقم العجلة</th>
+                <th>المحافظة</th>
+                <th>لون العجلة</th>
+            </tr>
+            <tr>
+                <td id="p-car"></td>
+                <td id="p-plate-num"></td>
+                <td id="p-plate-gov"></td>
+                <td id="p-color"></td>
+            </tr>
+        </table>
 
-            .print-footer { font-size: 12px; font-weight: bold; line-height: 1.6; }
-            .print-footer u { font-size: 13px; }
-        }
+        <div class="print-footer">
+            <u>نسخة منه الى:</u><br>
+            - مكتب السيد رئيس مجلس النواب / للتفضل بالاطلاع.. مع التقدير.<br>
+            - اللجنة الامنية / للتفضل بالاطلاع.. مع التقدير.<br>
+            - اضبارة الحفظ.
+        </div>
+    </div>
 
     <div id="toast">تم الحفظ</div>
 
     <script>
-        // ⚠️ ضع رابطك هنا 
         const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbxIpu80rI5mIsiS5Pho-VoA7U8FwYPvmAd4AEj7mDoK9gZ9gaxwsG2h-s2YkSf1MBvncQ/exec";
 
         const PINS = {
@@ -339,42 +333,30 @@
 
         let currentUserRole = "";
         let currentArchiveView = "outgoing";
-        // إضافة مصفوفة audit للتجربة
         let archiveData = { outgoing: [], incoming: [], badges: [], localLetters: [], appRequests: [], audit: [] };
         
         let currentUploadRowId = null;
         let currentUploadType = null;
 
-        // --- 1. المصادقة الأمنية (الأنيميشن) للمدير ---
+        // --- المصادقة الأمنية ---
         function login() {
             const pin = document.getElementById('pin-input').value.trim();
             if (PINS[pin]) {
                 if(PINS[pin].role === "admin") {
-                    // تشغيل شاشة فك التشفير الوهمية
-                    const scanner = document.getElementById('security-scanner');
-                    scanner.style.display = 'flex';
+                    document.getElementById('security-scanner').style.display = 'flex';
                     setTimeout(() => { document.getElementById('scan-text').innerText = "تمت المطابقة الأمنية.. فتح السجلات السرية"; }, 1000);
-                    
-                    setTimeout(() => {
-                        finalizeLogin(pin);
-                        scanner.style.display = 'none';
-                    }, 2000);
+                    setTimeout(() => { finalizeLogin(pin); document.getElementById('security-scanner').style.display = 'none'; }, 2000);
                 } else {
                     finalizeLogin(pin);
                 }
-            } else { 
-                document.getElementById('login-err').style.display = 'block'; 
-            }
+            } else { document.getElementById('login-err').style.display = 'block'; }
         }
 
         function finalizeLogin(pin) {
             currentUserRole = PINS[pin].role;
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('user-role-label').innerText = PINS[pin].title;
-            
-            // تسجيل الدخول في سجل الرقابة
             logAuditAction(`تسجيل دخول للنظام من قبل: ${PINS[pin].title}`);
-            
             applyRoleRestrictions();
             loadArchive();
         }
@@ -384,7 +366,6 @@
                 document.getElementById('tab-btn-badge').style.display = 'flex';
                 document.getElementById('tab-btn-local').style.display = 'flex';
                 document.getElementById('tab-btn-media').style.display = 'flex';
-                
                 document.getElementById('card-st-badge').style.display = 'block';
                 document.getElementById('card-st-local').style.display = 'block';
                 document.getElementById('card-st-app').style.display = 'block';
@@ -430,36 +411,24 @@
             setTimeout(() => { t.style.display = 'none'; }, 4000);
         }
 
-        // --- سجل الرقابة الصارم ---
         function logAuditAction(actionDesc) {
-            // بالوضع الحقيقي، هذا يرسل بيانات للـ Webhook
-            // fetch(WEBHOOK_URL, { method: 'POST', body: JSON.stringify({ action: "audit_log", desc: actionDesc, role: currentUserRole }) });
-            
-            // محاكاة محلية للواجهة
             const now = new Date();
-            archiveData.audit.unshift({
-                time: now.toLocaleString('ar-IQ'),
-                user: document.getElementById('user-role-label').innerText,
-                action: actionDesc
-            });
+            archiveData.audit.unshift({ time: now.toLocaleString('ar-IQ'), user: document.getElementById('user-role-label').innerText, action: actionDesc });
         }
 
-        // --- لوحة الإحصائيات الإعلامية ---
         function updateMediaDashboard() {
             const totalOut = archiveData.outgoing.length;
             const totalIn = archiveData.incoming.length;
             const totalApp = archiveData.appRequests.length;
-            
             const totalReceived = totalOut + totalApp; 
             const completed = totalIn; 
             const rate = totalReceived > 0 ? Math.round((completed / totalReceived) * 100) : 0;
-            
             document.getElementById('media-total').innerText = totalReceived;
             document.getElementById('media-done').innerText = completed;
             document.getElementById('media-rate').innerText = rate + "%";
         }
 
-        // --- إرسال الصادر ---
+        // --- إرسال الفورمات بدون خروج (preventDefault) ---
         document.getElementById('outgoing-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const btn = this.querySelector('button[type="submit"]'); btn.disabled = true;
@@ -471,15 +440,10 @@
                 identifier: document.getElementById('out-identifier').value
             })}).then(r=>r.json()).then(res=>{
                 btn.disabled=false; 
-                if(res.result==="success"){ 
-                    showToast("✅ تم حفظ كتاب الصادر"); 
-                    logAuditAction(`إضافة كتاب صادر باسم: ${document.getElementById('out-name').value}`);
-                    e.target.reset(); loadArchive(); 
-                }
+                if(res.result==="success"){ showToast("✅ تم حفظ كتاب الصادر"); logAuditAction(`إضافة كتاب صادر باسم: ${document.getElementById('out-name').value}`); e.target.reset(); loadArchive(); }
             }).catch(()=>{ btn.disabled=false; alert("خطأ بالاتصال"); });
         });
 
-        // --- إرسال الوارد ---
         document.getElementById('incoming-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const btn = this.querySelector('button[type="submit"]'); btn.disabled = true;
@@ -490,21 +454,44 @@
                 margin: document.getElementById('in-margin').value, subject: document.getElementById('in-subject').value
             })}).then(r=>r.json()).then(res=>{
                 btn.disabled=false; 
-                if(res.result==="success"){ 
-                    showToast("✅ تم حفظ الوارد والتأشير"); 
-                    logAuditAction(`إضافة كتاب وارد باسم: ${document.getElementById('in-name').value}`);
-                    e.target.reset(); loadArchive(); 
-                }
+                if(res.result==="success"){ showToast("✅ تم حفظ الوارد والتأشير"); logAuditAction(`إضافة كتاب وارد باسم: ${document.getElementById('in-name').value}`); e.target.reset(); loadArchive(); }
             }).catch(()=>{ btn.disabled=false; alert("خطأ بالاتصال"); });
         });
 
-        // --- تحميل الأرشيف ---
+        document.getElementById('badge-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button[type="submit"]'); btn.disabled = true;
+            fetch(WEBHOOK_URL, { method: 'POST', body: JSON.stringify({
+                action: "staff_entry", entryType: "badge",
+                name: document.getElementById('badge-name').value, carType: document.getElementById('badge-car').value,
+                plateNum: document.getElementById('badge-plate-num').value, gov: document.getElementById('badge-gov').value,
+                color: document.getElementById('badge-color').value, identifier: document.getElementById('badge-identifier').value,
+                badgeDate: document.getElementById('badge-date').value
+            })}).then(r=>r.json()).then(res=>{
+                btn.disabled=false; 
+                if(res.result==="success"){ showToast("✅ تم حفظ الباج بالسجل السري"); logAuditAction(`تسجيل باج للمواطن: ${document.getElementById('badge-name').value}`); e.target.reset(); loadArchive(); }
+            }).catch(()=>{ btn.disabled=false; alert("خطأ بالاتصال"); });
+        });
+
+        document.getElementById('local-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button[type="submit"]'); btn.disabled = true;
+            fetch(WEBHOOK_URL, { method: 'POST', body: JSON.stringify({
+                action: "staff_entry", entryType: "local_letter",
+                name: document.getElementById('local-name').value, phone: document.getElementById('local-phone').value,
+                entity: document.getElementById('local-entity').value, subject: document.getElementById('local-subject').value,
+                notes: document.getElementById('local-notes').value
+            })}).then(r=>r.json()).then(res=>{
+                btn.disabled=false; 
+                if(res.result==="success"){ showToast("✅ تم حفظ الكتاب المحلي بالسجل السري"); e.target.reset(); loadArchive(); }
+            }).catch(()=>{ btn.disabled=false; alert("خطأ بالاتصال"); });
+        });
+
+        // --- الأرشيف ووظائفه ---
         function loadArchive() {
             fetch(WEBHOOK_URL + "?action=archive").then(r => r.json()).then(res => {
                 if (res.result === "success") {
-                    // دمج البيانات المستلمة، مع الحفاظ على audit الوهمي
                     archiveData = { ...res, audit: archiveData.audit };
-                    
                     document.getElementById('st-out').innerText = res.outgoing.length;
                     document.getElementById('st-in').innerText = res.incoming.length;
                     if(currentUserRole === "admin") {
@@ -517,7 +504,6 @@
             });
         }
 
-        // --- مرفقات الصور ---
         function triggerImageUpload(rowId, type) {
             currentUploadRowId = rowId;
             currentUploadType = type;
@@ -528,59 +514,37 @@
             const file = e.target.files[0];
             if(file) {
                 showToast("⏳ جاري رفع الصورة للأرشيف...");
-                logAuditAction(`إرفاق صورة للقيد رقم: ${currentUploadRowId}`);
-                // في التطبيق الفعلي سيتم تحويل الصورة لـ base64 وإرسالها للـ Webhook
-                // هنا سنحاكي نجاح العملية وتغيير الزر:
-                setTimeout(() => {
-                    showToast("✅ تم رفع الصورة بنجاح");
-                    e.target.value = "";
-                }, 1500);
+                logAuditAction(`إرفاق صورة للقيد: ${currentUploadRowId}`);
+                setTimeout(() => { showToast("✅ تم رفع الصورة بنجاح"); e.target.value = ""; }, 1500);
             }
         });
 
-        function viewImage(url) {
-            window.open(url, '_blank');
-            logAuditAction(`استعراض صورة مرفقة`);
-        }
+        function viewImage(url) { window.open(url, '_blank'); logAuditAction(`استعراض صورة مرفقة`); }
 
-        // --- تم التسليم (الوارد) ---
         function markAsDelivered(rowId, name) {
-            const confirmDel = confirm(`هل أنت متأكد من تسليم الإجابة للمواطن: ${name}؟`);
-            if(confirmDel) {
+            if(confirm(`هل أنت متأكد من تسليم الإجابة للمواطن: ${name}؟`)) {
                 showToast("✅ تم توثيق التسليم بنجاح");
                 logAuditAction(`تسليم إجابة وارد للمواطن: ${name}`);
-                // إرسال للـ Webhook لتحديث الحالة في Google Sheets
-                // fetch(WEBHOOK_URL, { method: 'POST', body: JSON.stringify({ action: "mark_delivered", id: rowId }) });
                 loadArchive();
             }
         }
 
-        // --- طباعة الباج (Smart Badge) ---
-        function printBadge(id, name, car, plate, date) {
-            // 1. تعبئة بيانات الطباعة الشفافة
+        // --- الطباعة (A5) ---
+        function printBadge(id, name, car, plateNum, plateGov, color) {
             document.getElementById('p-name').innerText = name;
             document.getElementById('p-car').innerText = car;
-            document.getElementById('p-plate').innerText = plate;
-            document.getElementById('p-date').innerText = date;
+            document.getElementById('p-plate-num').innerText = plateNum;
+            document.getElementById('p-plate-gov').innerText = plateGov;
+            document.getElementById('p-color').innerText = color;
             
-            // 2. توليد الباركود (رابط التحقق الخاص بمنصتكم)
             const verifyUrl = "https://your-public-app-url.com/?verify_badge=" + id;
-            document.getElementById('p-qr').innerHTML = ""; // مسح القديم
-            new QRCode(document.getElementById("p-qr"), {
-                text: verifyUrl,
-                width: 150,
-                height: 150
-            });
+            document.getElementById('p-qr').innerHTML = ""; 
+            new QRCode(document.getElementById("p-qr"), { text: verifyUrl, width: 100, height: 100 });
 
             logAuditAction(`طباعة باج سيارة للمواطن: ${name}`);
-            
-            // 3. تأخير بسيط ليتمكن الـ QR من الرسم ثم الطباعة
-            setTimeout(() => {
-                window.print();
-            }, 300);
+            setTimeout(() => { window.print(); }, 500);
         }
 
-        // --- رسم جداول الأرشيف (مع الميزات الجديدة) ---
         function renderCurrentArchive() {
             const q = document.getElementById('arch-search').value.toLowerCase();
             const thead = document.getElementById('archive-thead');
@@ -588,53 +552,47 @@
             let html = '';
 
             if (currentArchiveView === "outgoing") {
-                thead.innerHTML = `<tr><th>الكود</th><th>الاسم الكامل</th><th>الجهة</th><th>رقم وتاريخ</th><th>الموضوع</th><th>الحالة</th><th>المرفقات (صورة)</th></tr>`;
+                thead.innerHTML = `<tr><th>الكود</th><th>الاسم الكامل</th><th>الجهة</th><th>رقم وتاريخ</th><th>الموضوع</th><th>الحالة</th><th>المرفقات</th></tr>`;
                 archiveData.outgoing.filter(i => (i.name+" "+i.ministry+" "+i.subject).toLowerCase().includes(q)).forEach(item => {
                     const cl = item.linkStatus.includes("وصلت") ? 'badge-done' : 'badge-wait';
-                    
-                    // زر المرفقات
                     let imgBtn = `<button class="action-btn btn-upload" onclick="triggerImageUpload('${item.id}', 'out')"><i class="fas fa-plus"></i> إرفاق صورة</button>`;
-                    if(item.imageUrl) { imgBtn = `<button class="action-btn btn-view" onclick="viewImage('${item.imageUrl}')"><i class="fas fa-image"></i> عرض الكتاب</button>`; }
-
+                    if(item.imageUrl) imgBtn = `<button class="action-btn btn-view" onclick="viewImage('${item.imageUrl}')"><i class="fas fa-image"></i> عرض</button>`;
                     html += `<tr><td>${item.id}</td><td><strong>${item.name}</strong></td><td>${item.ministry}</td><td>رقم: ${item.bookNum}<br><small>${item.bookDate}</small></td><td style="max-width:200px;">${item.subject}</td><td><span class="badge ${cl}">${item.linkStatus}</span></td><td>${imgBtn}</td></tr>`;
                 });
             } else if (currentArchiveView === "incoming") {
-                thead.innerHTML = `<tr><th>الكود</th><th>الاسم</th><th>الجهة</th><th>الموضوع</th><th>الحالة</th><th>المرفقات</th><th>حالة التسليم</th></tr>`;
+                thead.innerHTML = `<tr><th>الكود</th><th>الاسم</th><th>الجهة</th><th>الموضوع</th><th>الحالة</th><th>المرفقات</th><th>التسليم</th></tr>`;
                 archiveData.incoming.filter(i => (i.name+" "+i.ministry+" "+i.subject).toLowerCase().includes(q)).forEach(item => {
                     const cl = item.linkStatus.includes("مرتبط") ? 'badge-done' : 'badge-out';
                     
-                    // زر المرفقات
                     let imgBtn = `<button class="action-btn btn-upload" onclick="triggerImageUpload('${item.id}', 'in')"><i class="fas fa-plus"></i> إرفاق صورة</button>`;
-                    if(item.imageUrl) { imgBtn = `<button class="action-btn btn-view" onclick="viewImage('${item.imageUrl}')"><i class="fas fa-image"></i> عرض الكتاب</button>`; }
+                    if(item.imageUrl) imgBtn = `<button class="action-btn btn-view" onclick="viewImage('${item.imageUrl}')"><i class="fas fa-image"></i> عرض</button>`;
 
-                    // زر تم التسليم
-                    let deliveryStatus = `<button class="action-btn btn-deliver" onclick="markAsDelivered('${item.id}', '${item.name}')"><i class="fas fa-box-open"></i> تسليم للمواطن</button>`;
-                    if(item.deliveryDate) { deliveryStatus = `<span style="font-size:11px; color:var(--green); font-weight:bold;"><i class="fas fa-check-circle"></i> تم التسليم<br>${item.deliveryDate}</span>`; }
+                    let deliveryStatus = `<button class="action-btn btn-deliver" onclick="markAsDelivered('${item.id}', '${item.name}')"><i class="fas fa-box-open"></i> تسليم</button>`;
+                    if(item.deliveryDate) deliveryStatus = `<span style="font-size:11px; color:var(--green); font-weight:bold;"><i class="fas fa-check-circle"></i> تم التسليم<br>${item.deliveryDate}</span>`;
 
                     html += `<tr><td>${item.id}</td><td><strong>${item.name}</strong></td><td>${item.ministry}</td><td style="max-width:200px;">${item.subject}</td><td><span class="badge ${cl}">${item.linkStatus}</span></td><td>${imgBtn}</td><td>${deliveryStatus}</td></tr>`;
                 });
             } else if (currentArchiveView === "badges" && currentUserRole === "admin") {
-                thead.innerHTML = `<tr><th>صاحب الباج</th><th>نوع السيارة</th><th>تفاصيل الرقم</th><th>المعرف</th><th>تاريخ الباج</th><th>إجراء الطباعة</th></tr>`;
-                archiveData.badges.filter(i => (i.name+" "+i.carType+" "+i.plate+" "+i.identifier).toLowerCase().includes(q)).forEach(item => {
-                    // زر الطباعة الذكي
-                    let printBtn = `<button class="action-btn btn-print" onclick="printBadge('${item.id}', '${item.name}', '${item.carType}', '${item.plate}', '${item.badgeDate}')"><i class="fas fa-print"></i> طباعة الباج 🖨️</button>`;
-
-                    html += `<tr><td><strong>${item.name}</strong></td><td>${item.carType}</td><td>${item.plate}</td><td><strong style="color:var(--purple);">${item.identifier}</strong></td><td>${item.badgeDate}</td><td>${printBtn}</td></tr>`;
+                thead.innerHTML = `<tr><th>صاحب الباج</th><th>العجلة</th><th>الرقم</th><th>المحافظة</th><th>اللون</th><th>إجراء الطباعة</th></tr>`;
+                archiveData.badges.filter(i => (i.name+" "+i.carType+" "+i.plateNum).toLowerCase().includes(q)).forEach(item => {
+                    // تم فصل الحقول بالفورم لتسهيل الطباعة
+                    let printBtn = `<button class="action-btn btn-print" onclick="printBadge('${item.id}', '${item.name}', '${item.carType}', '${item.plateNum || item.plate}', '${item.gov || "-"}', '${item.color || "-"}')"><i class="fas fa-print"></i> طباعة 🖨️</button>`;
+                    html += `<tr><td><strong>${item.name}</strong></td><td>${item.carType}</td><td>${item.plateNum || item.plate}</td><td>${item.gov || "-"}</td><td>${item.color || "-"}</td><td>${printBtn}</td></tr>`;
                 });
             } else if (currentArchiveView === "audit" && currentUserRole === "admin") {
-                thead.innerHTML = `<tr><th>التاريخ والوقت</th><th>المستخدم</th><th>وصف الإجراء / الرقابة</th></tr>`;
+                thead.innerHTML = `<tr><th>التاريخ والوقت</th><th>المستخدم</th><th>الإجراء</th></tr>`;
                 archiveData.audit.filter(i => (i.action+" "+i.user).toLowerCase().includes(q)).forEach(item => {
-                    html += `<tr><td style="direction:ltr; text-align:right;">${item.time}</td><td><strong style="color:var(--primary);">${item.user}</strong></td><td style="color:#dc2626; font-weight:bold;">${item.action}</td></tr>`;
+                    html += `<tr><td style="direction:ltr; text-align:right;">${item.time}</td><td><strong>${item.user}</strong></td><td style="color:#dc2626; font-weight:bold;">${item.action}</td></tr>`;
                 });
             } else if (currentArchiveView === "localLetters" && currentUserRole === "admin") {
-                thead.innerHTML = `<tr><th>الاسم الكامل</th><th>الهاتف</th><th>الجهة المعنون إليها</th><th>الموضوع</th><th>ملاحظات</th></tr>`;
+                thead.innerHTML = `<tr><th>الاسم</th><th>الهاتف</th><th>الجهة</th><th>الموضوع</th></tr>`;
                 archiveData.localLetters.filter(i => (i.name+" "+i.entity+" "+i.subject).toLowerCase().includes(q)).forEach(item => {
-                    html += `<tr><td><strong>${item.name}</strong></td><td dir="ltr">${item.phone}</td><td><strong style="color:var(--teal);">${item.entity}</strong></td><td style="max-width:200px;">${item.subject}</td><td>${item.notes || '-'}</td></tr>`;
+                    html += `<tr><td><strong>${item.name}</strong></td><td dir="ltr">${item.phone}</td><td><strong style="color:var(--teal);">${item.entity}</strong></td><td style="max-width:200px;">${item.subject}</td></tr>`;
                 });
             } else if (currentArchiveView === "app" && currentUserRole === "admin") {
-                thead.innerHTML = `<tr><th>الاسم</th><th>الجهة</th><th>الموضوع</th><th>الحالة العامة</th></tr>`;
+                thead.innerHTML = `<tr><th>الاسم</th><th>الجهة</th><th>الموضوع</th><th>الحالة</th></tr>`;
                 archiveData.appRequests.filter(i => (i.name+" "+i.ministry+" "+i.subject).toLowerCase().includes(q)).forEach(item => {
-                    html += `<tr><td><strong>${item.name}</strong><br><small>${item.gov}</small></td><td>${item.ministry}</td><td style="max-width:200px;">${item.subject}</td><td><span class="badge badge-wait">${item.status}</span></td></tr>`;
+                    html += `<tr><td><strong>${item.name}</strong></td><td>${item.ministry}</td><td style="max-width:200px;">${item.subject}</td><td><span class="badge badge-wait">${item.status}</span></td></tr>`;
                 });
             }
 
