@@ -317,7 +317,7 @@
     <div id="toast">تم الحفظ</div>
 
     <script>
-        // ⚠️ خلي رابط النشر الفعلي مالتك هنا (بعد أن تسوي إدارة النشر / إصدار جديد)
+        // ⚠️ لا تنسى: خلي الرابط الجديد هنــــا
         const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwCY7EfFvztvHT9F_v2PThX4-k-tp8-9Gd_2Qjyd3Bb6TMuXo1x9BDxNE3fLRwPOJ6o/exec";
 
         const PINS = {
@@ -341,6 +341,19 @@
             });
         }
 
+        // دالة إرسال ذكية ترصد الأخطاء
+        async function safeFetch(payload) {
+            try {
+                let res = await fetch(WEBHOOK_URL, { method: 'POST', body: JSON.stringify(payload) });
+                let text = await res.text();
+                return JSON.parse(text);
+            } catch (err) {
+                showToast("❌ فشل الاتصال! تأكد من صلاحية النشر (Anyone)");
+                console.error(err);
+                return { result: "error" };
+            }
+        }
+
         function login() {
             const pin = document.getElementById('pin-input').value.trim();
             if (PINS[pin]) {
@@ -348,9 +361,7 @@
                     document.getElementById('security-scanner').style.display = 'flex';
                     setTimeout(() => { document.getElementById('scan-text').innerText = "تمت المطابقة الأمنية.. فتح السجلات السرية"; }, 1000);
                     setTimeout(() => { finalizeLogin(pin); document.getElementById('security-scanner').style.display = 'none'; }, 2000);
-                } else {
-                    finalizeLogin(pin);
-                }
+                } else { finalizeLogin(pin); }
             } else { document.getElementById('login-err').style.display = 'block'; }
         }
 
@@ -420,12 +431,8 @@
             setTimeout(() => { t.style.display = 'none'; }, 4000);
         }
 
-        function logAuditAction(actionDesc) {
-            fetch(WEBHOOK_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({ action: "audit_log", actionDesc: actionDesc, user: document.getElementById('user-role-label').innerText })
-            });
+        async function logAuditAction(actionDesc) {
+            await safeFetch({ action: "audit_log", actionDesc: actionDesc, user: document.getElementById('user-role-label').innerText });
         }
 
         function updateTopStats() {
@@ -443,7 +450,6 @@
             const totalApp = archiveData.appRequests ? archiveData.appRequests.length : 0;
             const totalIn = archiveData.incoming ? archiveData.incoming.length : 0;
             const totalDel = archiveData.delivered ? archiveData.delivered.length : 0;
-            
             const completed = totalIn + totalDel;
             const totalReceived = totalOut + totalApp; 
             const rate = totalReceived > 0 ? Math.round((completed / totalReceived) * 100) : 0;
@@ -453,37 +459,141 @@
             document.getElementById('media-rate').innerText = rate + "%";
         }
 
-        function loadArchive() {
-            fetch(WEBHOOK_URL + "?action=archive").then(r => r.json()).then(res => {
-                if (res.result === "success") {
-                    archiveData = res;
+        async function submitForm(type) {
+            showToast("⏳ جاري الحفظ والأرشفة...");
+            let payload = { action: "staff_entry", entryType: type };
+            let formId = type === 'outgoing' ? 'outgoing-form' : (type === 'incoming' ? 'incoming-form' : 'local-form');
+            let form = document.getElementById(formId);
+
+            if (type === 'outgoing') {
+                payload.name = document.getElementById('out-name').value;
+                payload.phone = document.getElementById('out-phone').value;
+                payload.ministry = document.getElementById('out-ministry').value;
+                payload.bookNum = document.getElementById('out-num').value;
+                payload.bookDate = document.getElementById('out-date').value;
+                payload.identifier = document.getElementById('out-identifier').value;
+                payload.subject = document.getElementById('out-subject').value;
+            } else if (type === 'incoming') {
+                payload.name = document.getElementById('in-name').value;
+                payload.ministry = document.getElementById('in-ministry').value;
+                payload.bookNum = document.getElementById('in-num').value;
+                payload.bookDate = document.getElementById('in-date').value;
+                payload.margin = document.getElementById('in-margin').value;
+                payload.subject = document.getElementById('in-subject').value;
+            } else if (type === 'local_letter') {
+                payload.name = document.getElementById('l-name').value;
+                payload.phone = document.getElementById('l-phone').value;
+                payload.entity = document.getElementById('l-entity').value;
+                payload.subject = document.getElementById('l-subject').value;
+            }
+
+            let fileInput = form.querySelector('input[type="file"]');
+            if (fileInput && fileInput.files[0]) {
+                showToast("⏳ جاري رفع الصورة... (قد يستغرق قليلاً)");
+                payload.imageBase64 = await getBase64(fileInput.files[0]);
+                payload.imageName = fileInput.files[0].name;
+            }
+
+            let res = await safeFetch(payload);
+            if (res && res.result === "success") {
+                showToast("✅ تم الحفظ بنجاح وتوثيق القيد");
+                logAuditAction(`إضافة قيد جديد: ${payload.name}`);
+                form.reset();
+                loadArchive();
+            } else {
+                showToast("❌ حدث خطأ أثناء الحفظ");
+            }
+        }
+
+        async function submitBadge() {
+            showToast("⏳ جاري إنشاء الباج أمنياً...");
+            let name = document.getElementById('b-name').value;
+            let carType = document.getElementById('b-type').value;
+            let num = document.getElementById('b-num').value;
+            let letter = document.getElementById('b-letter').value;
+            let gov = document.getElementById('b-gov').value;
+            let color = document.getElementById('b-color').value;
+            let count = document.getElementById('b-count').value;
+            let identifier = document.getElementById('b-identifier').value;
+            let bDate = document.getElementById('b-date').value;
+
+            let combinedPlate = num + " / " + letter;
+            let payload = { action: "staff_entry", entryType: "badge", name: name, carType: carType, plateNum: combinedPlate, gov: gov, color: color, badgeCount: count, identifier: identifier, badgeDate: bDate };
+
+            let res = await safeFetch(payload);
+            if (res && res.result === "success") {
+                showToast("✅ تم حفظ الباج بنجاح");
+                logAuditAction(`توليد باج للمواطن: ${name}`);
+                document.getElementById('badge-form').reset();
+                loadArchive();
+                
+                let carInfo = carType + " - " + color;
+                let plateInfo = combinedPlate + " / " + gov;
+                showArchiveBarcode(res.reqId, name, carInfo, plateInfo, bDate);
+            }
+        }
+
+        async function revokeBadge(id, name) {
+            if(confirm(`تأكيد إلغاء الباج الأمني للمواطن: ${name}؟`)) {
+                showToast("⏳ جاري الإلغاء...");
+                let res = await safeFetch({ action: "revoke_badge", id: id });
+                if(res && res.result === "success") {
+                    showToast("❌ تم إلغاء الباج");
+                    logAuditAction(`إلغاء باج السيارة لـ: ${name}`);
+                    loadArchive();
+                }
+            }
+        }
+
+        function showArchiveBarcode(id, name, carInfo, plateInfo, issueDate) {
+            let d = new Date(issueDate);
+            d.setFullYear(d.getFullYear() + 1);
+            let expiryDate = d.toISOString().split('T')[0];
+            
+            lastBadgeData = { name: name, car: carInfo, plate: plateInfo, issue: issueDate.split('T')[0], expiry: expiryDate };
+            const verifyUrl = WEBHOOK_URL + "?verify_badge=" + id;
+            document.getElementById('qr-container').innerHTML = "";
+            new QRCode(document.getElementById("qr-container"), { text: verifyUrl, width: 180, height: 180, colorDark : "#1e293b" });
+            document.getElementById('qr-modal').style.display = 'flex';
+        }
+
+        function previewVerificationUI() {
+            if(!lastBadgeData) return;
+            document.getElementById('v-name').innerText = lastBadgeData.name;
+            document.getElementById('v-car').innerText = lastBadgeData.car;
+            document.getElementById('v-plate').innerText = lastBadgeData.plate;
+            document.getElementById('v-issue').innerText = lastBadgeData.issue;
+            document.getElementById('v-expiry').innerText = lastBadgeData.expiry;
+            document.getElementById('verify-ui').style.display = 'flex';
+        }
+
+        async function loadArchive() {
+            try {
+                let res = await fetch(WEBHOOK_URL + "?action=archive");
+                let data = await res.json();
+                if (data.result === "success") {
+                    archiveData = data;
                     if(!archiveData.delivered) archiveData.delivered = [];
                     updateTopStats();
                     renderCurrentArchive();
                 }
-            });
-        }
-
-        function markAsDelivered(rowId, name) {
-            if(confirm(`تأكيد تسليم الإجابة للمواطن: ${name}؟`)) {
-                showToast("⏳ جاري التأشير في سجل التسليم...");
-                fetch(WEBHOOK_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ action: "mark_delivered", id: rowId })
-                }).then(r => r.json()).then(res => {
-                    if(res.result === "success") {
-                        showToast("✅ تم التوثيق في سجل التسليم");
-                        logAuditAction(`تسليم إجابة وارد للمواطن: ${name}`);
-                        loadArchive();
-                    } else {
-                        showToast("❌ حدث خطأ، يرجى تحديث الصفحة والمحاولة");
-                    }
-                });
+            } catch(e) {
+                console.error(e);
             }
         }
 
-        // --- ميزة إرفاق الصور بنقرة واحدة من الأرشيف ---
+        async function markAsDelivered(rowId, name) {
+            if(confirm(`تأكيد تسليم الإجابة للمواطن: ${name}؟`)) {
+                showToast("⏳ جاري التأشير بالتسليم...");
+                let res = await safeFetch({ action: "mark_delivered", id: rowId });
+                if(res && res.result === "success") {
+                    showToast("✅ تم التوثيق بنجاح");
+                    logAuditAction(`تسليم إجابة وارد للمواطن: ${name}`);
+                    loadArchive();
+                }
+            }
+        }
+
         function triggerImageUpload(rowId) {
             currentUploadRowId = rowId;
             document.getElementById('global-file-upload').click();
@@ -491,26 +601,18 @@
         
         document.getElementById('global-file-upload').addEventListener('change', async function(e) {
             if(e.target.files[0]) {
-                showToast("⏳ جاري رفع الصورة للسيرفر السري... (يرجى الانتظار)");
+                showToast("⏳ جاري رفع الصورة... (يرجى الانتظار ثواني)");
                 let base64 = await getBase64(e.target.files[0]);
                 
-                fetch(WEBHOOK_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ action: "upload_archive_image", id: currentUploadRowId, imageBase64: base64, imageName: e.target.files[0].name })
-                }).then(r => r.json()).then(res => {
-                    if(res.result === "success") {
-                        showToast("✅ تم رفع الصورة بنجاح وتحديث الأرشيف");
-                        logAuditAction("إرفاق صورة جديدة لقيد في الأرشيف");
-                        loadArchive(); // إجبار التحديث ليتحول الزر إلى "عرض"
-                    } else { 
-                        showToast("❌ فشل الرفع، قد يكون حجم الصورة كبيراً"); 
-                    }
-                    e.target.value = "";
-                }).catch(err => {
-                    showToast("❌ خطأ بالاتصال");
-                    e.target.value = "";
-                });
+                let res = await safeFetch({ action: "upload_archive_image", id: currentUploadRowId, imageBase64: base64, imageName: e.target.files[0].name });
+                if(res && res.result === "success") {
+                    showToast("✅ تم رفع الصورة بنجاح");
+                    logAuditAction("إرفاق صورة جديدة في الأرشيف");
+                    loadArchive(); 
+                } else { 
+                    showToast("❌ فشل الرفع"); 
+                }
+                e.target.value = "";
             }
         });
         
@@ -578,29 +680,6 @@
             }
 
             tbody.innerHTML = html || '<tr><td colspan="8" style="text-align:center; padding:40px; font-weight:bold; color:#94a3b8;">لا توجد بيانات في هذا السجل</td></tr>';
-        }
-        
-        // ربط دوال الباركود الفخمة
-        function showArchiveBarcode(id, name, carInfo, plateInfo, issueDate) {
-            let d = new Date(issueDate);
-            d.setFullYear(d.getFullYear() + 1);
-            let expiryDate = d.toISOString().split('T')[0];
-            
-            lastBadgeData = { name: name, car: carInfo, plate: plateInfo, issue: issueDate.split('T')[0], expiry: expiryDate };
-            const verifyUrl = WEBHOOK_URL + "?verify_badge=" + id;
-            document.getElementById('qr-container').innerHTML = "";
-            new QRCode(document.getElementById("qr-container"), { text: verifyUrl, width: 180, height: 180, colorDark : "#1e293b" });
-            document.getElementById('qr-modal').style.display = 'flex';
-        }
-        
-        function previewVerificationUI() {
-            if(!lastBadgeData) return;
-            document.getElementById('v-name').innerText = lastBadgeData.name;
-            document.getElementById('v-car').innerText = lastBadgeData.car;
-            document.getElementById('v-plate').innerText = lastBadgeData.plate;
-            document.getElementById('v-issue').innerText = lastBadgeData.issue;
-            document.getElementById('v-expiry').innerText = lastBadgeData.expiry;
-            document.getElementById('verify-ui').style.display = 'flex';
         }
     </script>
 </body>
