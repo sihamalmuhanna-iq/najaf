@@ -285,7 +285,7 @@
     <div id="print-qr-area"></div>
 
     <script>
-        // ⚠️ ضع رابط النشر (Deployment) الخاص بك هنا بعد التحديث ⚠️
+        // ⚠️ لا تنسى: خلي رابط النشر الجديد مالتك هنــــا ⚠️
         const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwCY7EfFvztvHT9F_v2PThX4-k-tp8-9Gd_2Qjyd3Bb6TMuXo1x9BDxNE3fLRwPOJ6o/exec";
 
         const PINS = {
@@ -299,8 +299,8 @@
         let archiveData = { outgoing: [], incoming: [], delivered: [], badges: [], localLetters: [], appRequests: [], audit: [] };
         let lastBadgeData = null; 
         let currentUploadRowId = null;
+        let currentUploadViewType = ""; // لحفظ نوع السجل أثناء الرفع
 
-        // دالة ضغط الصور (تمنع توقف السيرفر)
         function getBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -310,25 +310,24 @@
                     img.src = e.target.result;
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 800; // تصغير الحجم
+                        const MAX_WIDTH = 800;
                         const scaleSize = MAX_WIDTH / img.width;
                         canvas.width = MAX_WIDTH;
                         canvas.height = img.height * scaleSize;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        resolve(canvas.toDataURL('image/jpeg', 0.6)); // جودة 60%
+                        resolve(canvas.toDataURL('image/jpeg', 0.6));
                     };
                 };
                 reader.onerror = error => reject(error);
             });
         }
 
-        // دالة إرسال ذكية لا تفشل بصمت
         async function safeFetch(payload) {
             try {
                 let res = await fetch(WEBHOOK_URL, {
                     method: 'POST',
-                    redirect: 'follow', // ضروري لـ Google Apps Script
+                    redirect: 'follow',
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify(payload)
                 });
@@ -486,7 +485,7 @@
                 logAuditAction(`إضافة قيد جديد: ${payload.name}`);
                 form.reset();
                 loadArchive();
-            }
+            } else { showToast("❌ حدث خطأ أثناء الحفظ"); }
         }
 
         async function submitBadge() {
@@ -541,11 +540,16 @@
             document.getElementById('qr-modal').style.display = 'flex';
         }
 
-        // دالة الطباعة الخاصة بالباج (A5 للجهة الخلفية)
+        // دالة الطباعة الخاصة بالباج (تعرض المنطقة المخفية للرسم ثم تطبع)
         function printQR() {
             if(!lastBadgeData) return;
             const verifyUrl = WEBHOOK_URL + "?verify_badge=" + lastBadgeData.id;
             let printArea = document.getElementById('print-qr-area');
+            
+            // إظهار الإطار مؤقتاً بالخلفية لضمان رسم الباركود
+            printArea.style.display = 'flex';
+            printArea.style.position = 'fixed';
+            printArea.style.left = '-9999px';
             
             printArea.innerHTML = `
                 <div class="qr-print-frame">
@@ -557,9 +561,14 @@
                 </div>
             `;
             
+            document.getElementById("p-qr-box").innerHTML = "";
             new QRCode(document.getElementById("p-qr-box"), { text: verifyUrl, width: 160, height: 160, colorDark : "#000000" });
             
-            setTimeout(() => { window.print(); }, 500);
+            setTimeout(() => { 
+                window.print(); 
+                printArea.style.display = 'none'; // الإخفاء بعد الطباعة
+                printArea.style.left = '0';
+            }, 500);
         }
 
         async function loadArchive() {
@@ -578,26 +587,30 @@
         async function markAsDelivered(rowId, name) {
             if(confirm(`تأكيد تسليم الإجابة للمواطن: ${name}؟`)) {
                 showToast("⏳ جاري التأشير بالتسليم...");
+                // الإرسال يتم برقم الـ ID فقط، لذلك لن يحدث تداخل بين الأسماء
                 let res = await safeFetch({ action: "mark_delivered", id: rowId });
                 if(res && res.result === "success") {
                     showToast("✅ تم التوثيق بنجاح");
                     logAuditAction(`تسليم إجابة وارد للمواطن: ${name}`);
                     loadArchive();
-                }
+                } else { showToast("❌ حدث خطأ، يرجى المحاولة"); }
             }
         }
 
-        function triggerImageUpload(rowId) {
+        // تم التعديل لتمرير نوع السجل (currentArchiveView) للبحث المخصص
+        function triggerImageUpload(rowId, viewType) {
             currentUploadRowId = rowId;
+            currentUploadViewType = viewType;
             document.getElementById('global-file-upload').click();
         }
         
         document.getElementById('global-file-upload').addEventListener('change', async function(e) {
             if(e.target.files[0]) {
-                showToast("⏳ جاري ضغط ورفع الصورة... (الرجاء الانتظار)");
+                showToast("⏳ جاري ضغط ورفع الصورة... (يرجى الانتظار)");
                 let base64 = await getBase64(e.target.files[0]);
                 
-                let res = await safeFetch({ action: "upload_archive_image", id: currentUploadRowId, imageBase64: base64, imageName: e.target.files[0].name });
+                // إضافة sheetType للبايلود لضمان الرفع في السجل الصحيح فقط
+                let res = await safeFetch({ action: "upload_archive_image", id: currentUploadRowId, sheetType: currentUploadViewType, imageBase64: base64, imageName: e.target.files[0].name });
                 if(res && res.result === "success") {
                     showToast("✅ تم رفع الصورة وتحديث الأرشيف بنجاح");
                     logAuditAction("إرفاق صورة جديدة في الأرشيف");
@@ -621,7 +634,7 @@
                     let dateStr = item.bookDate ? new Date(item.bookDate).toISOString().split('T')[0] : "";
                     let cl = item.linkStatus && item.linkStatus.includes("وصلت") ? 'badge-done' : 'badge-wait';
                     
-                    let imgBtn = `<button class="action-btn btn-upload" onclick="triggerImageUpload('${item.id}')"><i class="fas fa-plus"></i> إرفاق</button>`;
+                    let imgBtn = `<button class="action-btn btn-upload" onclick="triggerImageUpload('${item.id}', 'outgoing')"><i class="fas fa-plus"></i> إرفاق</button>`;
                     if(item.imageUrl && item.imageUrl !== "") imgBtn = `<button class="action-btn btn-view" onclick="viewImage('${item.imageUrl}')"><i class="fas fa-image"></i> عرض</button>`;
                     
                     html += `<tr><td><strong>${item.name}</strong></td><td dir="ltr">${item.phone || '-'}</td><td>${item.ministry}</td><td>رقم: ${item.bookNum}<br><small>${dateStr}</small></td><td style="max-width:200px;">${item.subject}</td><td><span class="badge ${cl}">${item.linkStatus}</span></td><td>${imgBtn}</td></tr>`;
@@ -631,7 +644,7 @@
                 archiveData.incoming.filter(i => (i.name+" "+i.ministry).toLowerCase().includes(q)).forEach(item => {
                     let cl = item.linkStatus && item.linkStatus.includes("مرتبط") ? 'badge-done' : 'badge-out';
                     
-                    let imgBtn = `<button class="action-btn btn-upload" onclick="triggerImageUpload('${item.id}')"><i class="fas fa-plus"></i> إرفاق</button>`;
+                    let imgBtn = `<button class="action-btn btn-upload" onclick="triggerImageUpload('${item.id}', 'incoming')"><i class="fas fa-plus"></i> إرفاق</button>`;
                     if(item.imageUrl && item.imageUrl !== "") imgBtn = `<button class="action-btn btn-view" onclick="viewImage('${item.imageUrl}')"><i class="fas fa-image"></i> عرض</button>`;
                     
                     let deliveryBtn = `<button class="action-btn btn-deliver" onclick="markAsDelivered('${item.id}', '${item.name}')"><i class="fas fa-handshake"></i> تأشير التسليم</button>`;
@@ -660,7 +673,7 @@
             } else if (currentArchiveView === "localLetters" && currentUserRole === "admin") {
                 thead.innerHTML = `<tr><th>الاسم</th><th>الهاتف</th><th>الجهة</th><th>الموضوع</th><th>المرفقات</th></tr>`;
                 archiveData.localLetters.filter(i => (i.name+" "+i.entity).toLowerCase().includes(q)).forEach(item => {
-                    let imgBtn = `<button class="action-btn btn-upload" onclick="triggerImageUpload('${item.id}')"><i class="fas fa-plus"></i> إرفاق</button>`;
+                    let imgBtn = `<button class="action-btn btn-upload" onclick="triggerImageUpload('${item.id}', 'localLetters')"><i class="fas fa-plus"></i> إرفاق</button>`;
                     if(item.imageUrl && item.imageUrl !== "") imgBtn = `<button class="action-btn btn-view" onclick="viewImage('${item.imageUrl}')"><i class="fas fa-image"></i> عرض</button>`;
                     
                     html += `<tr><td><strong>${item.name}</strong></td><td dir="ltr">${item.phone || '-'}</td><td><strong style="color:var(--teal);">${item.entity}</strong></td><td style="max-width:200px;">${item.subject}</td><td>${imgBtn}</td></tr>`;
