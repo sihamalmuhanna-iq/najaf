@@ -317,7 +317,7 @@
     <div id="toast">تم الحفظ</div>
 
     <script>
-        // ⚠️ خلي رابط النشر الفعلي مالتك هنا!
+        // ⚠️ خلي رابط النشر الفعلي مالتك هنا (بعد أن تسوي إدارة النشر / إصدار جديد)
         const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbxIpu80rI5mIsiS5Pho-VoA7U8FwYPvmAd4AEj7mDoK9gZ9gaxwsG2h-s2YkSf1MBvncQ/exec";
 
         const PINS = {
@@ -332,7 +332,6 @@
         let lastBadgeData = null; 
         let currentUploadRowId = null;
 
-        // دالة تحويل الصور لمعالجتها برمجياً
         function getBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -424,6 +423,7 @@
         function logAuditAction(actionDesc) {
             fetch(WEBHOOK_URL, {
                 method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify({ action: "audit_log", actionDesc: actionDesc, user: document.getElementById('user-role-label').innerText })
             });
         }
@@ -438,7 +438,6 @@
             }
         }
 
-        // تحديث لوحة الإعلام (تعمل الآن بشكل دقيق)
         function updateMediaDashboard() {
             const totalOut = archiveData.outgoing ? archiveData.outgoing.length : 0;
             const totalApp = archiveData.appRequests ? archiveData.appRequests.length : 0;
@@ -452,119 +451,6 @@
             document.getElementById('media-total').innerText = totalReceived;
             document.getElementById('media-done').innerText = completed;
             document.getElementById('media-rate').innerText = rate + "%";
-        }
-
-        async function submitForm(type) {
-            showToast("⏳ جاري رفع البيانات والصور للمنظومة...");
-            let payload = { action: "staff_entry", entryType: type };
-            let formId = type === 'outgoing' ? 'outgoing-form' : (type === 'incoming' ? 'incoming-form' : 'local-form');
-            let form = document.getElementById(formId);
-
-            if (type === 'outgoing') {
-                payload.name = document.getElementById('out-name').value;
-                payload.phone = document.getElementById('out-phone').value;
-                payload.ministry = document.getElementById('out-ministry').value;
-                payload.bookNum = document.getElementById('out-num').value;
-                payload.bookDate = document.getElementById('out-date').value;
-                payload.identifier = document.getElementById('out-identifier').value;
-                payload.subject = document.getElementById('out-subject').value;
-            } else if (type === 'incoming') {
-                payload.name = document.getElementById('in-name').value;
-                payload.ministry = document.getElementById('in-ministry').value;
-                payload.bookNum = document.getElementById('in-num').value;
-                payload.bookDate = document.getElementById('in-date').value;
-                payload.margin = document.getElementById('in-margin').value;
-                payload.subject = document.getElementById('in-subject').value;
-            } else if (type === 'local_letter') {
-                payload.name = document.getElementById('l-name').value;
-                payload.phone = document.getElementById('l-phone').value;
-                payload.entity = document.getElementById('l-entity').value;
-                payload.subject = document.getElementById('l-subject').value;
-            }
-
-            // قراءة الصورة المرفقة إن وجدت
-            let fileInput = form.querySelector('input[type="file"]');
-            if (fileInput && fileInput.files[0]) {
-                payload.imageBase64 = await getBase64(fileInput.files[0]);
-                payload.imageName = fileInput.files[0].name;
-            }
-
-            fetch(WEBHOOK_URL, { method: 'POST', body: JSON.stringify(payload) })
-            .then(res => res.json()).then(res => {
-                if (res.result === "success") {
-                    showToast("✅ تم الحفظ بنجاح وتوثيق القيد");
-                    logAuditAction(`إضافة قيد جديد: ${payload.name}`);
-                    form.reset();
-                    loadArchive();
-                }
-            });
-        }
-
-        function submitBadge() {
-            showToast("⏳ جاري إنشاء الباج وتوثيقه أمنياً...");
-            let name = document.getElementById('b-name').value;
-            let carType = document.getElementById('b-type').value;
-            let num = document.getElementById('b-num').value;
-            let letter = document.getElementById('b-letter').value;
-            let gov = document.getElementById('b-gov').value;
-            let color = document.getElementById('b-color').value;
-            let count = document.getElementById('b-count').value;
-            let identifier = document.getElementById('b-identifier').value;
-            let bDate = document.getElementById('b-date').value;
-
-            let combinedPlate = num + " / " + letter;
-            let payload = { action: "staff_entry", entryType: "badge", name: name, carType: carType, plateNum: combinedPlate, gov: gov, color: color, badgeCount: count, identifier: identifier, badgeDate: bDate };
-
-            fetch(WEBHOOK_URL, { method: 'POST', body: JSON.stringify(payload) })
-            .then(res => res.json()).then(res => {
-                if (res.result === "success") {
-                    showToast("✅ تم حفظ الباج بنجاح");
-                    logAuditAction(`توليد باج سيارة للمواطن: ${name}`);
-                    document.getElementById('badge-form').reset();
-                    loadArchive();
-                    
-                    let carInfo = carType + " - " + color;
-                    let plateInfo = combinedPlate + " / " + gov;
-                    showArchiveBarcode(res.reqId, name, carInfo, plateInfo, bDate);
-                }
-            });
-        }
-
-        function revokeBadge(id, name) {
-            if(confirm(`هل أنت متأكد من إلغاء الباج الأمني للمواطن: ${name}؟\n(الباج سيظهر باللون الأحمر للسيطرات)`)) {
-                showToast("⏳ جاري الإلغاء...");
-                fetch(WEBHOOK_URL, { method: 'POST', body: JSON.stringify({ action: "revoke_badge", id: id }) })
-                .then(r => r.json()).then(res => {
-                    if(res.result === "success") {
-                        showToast("❌ تم إلغاء الباج بنجاح");
-                        logAuditAction(`إلغاء باج السيارة العائد لـ: ${name}`);
-                        loadArchive();
-                    }
-                });
-            }
-        }
-
-        function showArchiveBarcode(id, name, carInfo, plateInfo, issueDate) {
-            let d = new Date(issueDate);
-            d.setFullYear(d.getFullYear() + 1);
-            let expiryDate = d.toISOString().split('T')[0];
-            
-            lastBadgeData = { name: name, car: carInfo, plate: plateInfo, issue: issueDate.split('T')[0], expiry: expiryDate };
-            const verifyUrl = WEBHOOK_URL + "?verify_badge=" + id;
-            document.getElementById('qr-container').innerHTML = "";
-            new QRCode(document.getElementById("qr-container"), { text: verifyUrl, width: 180, height: 180, colorDark : "#1e293b" });
-            document.getElementById('qr-modal').style.display = 'flex';
-        }
-
-        // تم ربط هذه الدالة بشكل صحيح الآن
-        function previewVerificationUI() {
-            if(!lastBadgeData) return;
-            document.getElementById('v-name').innerText = lastBadgeData.name;
-            document.getElementById('v-car').innerText = lastBadgeData.car;
-            document.getElementById('v-plate').innerText = lastBadgeData.plate;
-            document.getElementById('v-issue').innerText = lastBadgeData.issue;
-            document.getElementById('v-expiry').innerText = lastBadgeData.expiry;
-            document.getElementById('verify-ui').style.display = 'flex';
         }
 
         function loadArchive() {
@@ -581,18 +467,23 @@
         function markAsDelivered(rowId, name) {
             if(confirm(`تأكيد تسليم الإجابة للمواطن: ${name}؟`)) {
                 showToast("⏳ جاري التأشير في سجل التسليم...");
-                fetch(WEBHOOK_URL, { method: 'POST', body: JSON.stringify({ action: "mark_delivered", id: rowId }) })
-                .then(r => r.json()).then(res => {
+                fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: "mark_delivered", id: rowId })
+                }).then(r => r.json()).then(res => {
                     if(res.result === "success") {
                         showToast("✅ تم التوثيق في سجل التسليم");
                         logAuditAction(`تسليم إجابة وارد للمواطن: ${name}`);
                         loadArchive();
+                    } else {
+                        showToast("❌ حدث خطأ، يرجى تحديث الصفحة والمحاولة");
                     }
                 });
             }
         }
 
-        // الرفع الفعلي لصور الأرشيف القديم
+        // --- ميزة إرفاق الصور بنقرة واحدة من الأرشيف ---
         function triggerImageUpload(rowId) {
             currentUploadRowId = rowId;
             document.getElementById('global-file-upload').click();
@@ -600,17 +491,24 @@
         
         document.getElementById('global-file-upload').addEventListener('change', async function(e) {
             if(e.target.files[0]) {
-                showToast("⏳ جاري رفع الصورة... (قد يستغرق بضع ثوانٍ)");
+                showToast("⏳ جاري رفع الصورة للسيرفر السري... (يرجى الانتظار)");
                 let base64 = await getBase64(e.target.files[0]);
+                
                 fetch(WEBHOOK_URL, {
                     method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({ action: "upload_archive_image", id: currentUploadRowId, imageBase64: base64, imageName: e.target.files[0].name })
                 }).then(r => r.json()).then(res => {
                     if(res.result === "success") {
-                        showToast("✅ تم رفع الصورة بنجاح وتحديث السجل");
-                        logAuditAction("إرفاق صورة جديدة في الأرشيف");
-                        loadArchive(); // سيعيد تحميل الجدول ويحول الزر إلى "عرض"
-                    } else { showToast("❌ فشل الرفع"); }
+                        showToast("✅ تم رفع الصورة بنجاح وتحديث الأرشيف");
+                        logAuditAction("إرفاق صورة جديدة لقيد في الأرشيف");
+                        loadArchive(); // إجبار التحديث ليتحول الزر إلى "عرض"
+                    } else { 
+                        showToast("❌ فشل الرفع، قد يكون حجم الصورة كبيراً"); 
+                    }
+                    e.target.value = "";
+                }).catch(err => {
+                    showToast("❌ خطأ بالاتصال");
                     e.target.value = "";
                 });
             }
@@ -631,17 +529,9 @@
                     let cl = item.linkStatus && item.linkStatus.includes("وصلت") ? 'badge-done' : 'badge-wait';
                     
                     let imgBtn = `<button class="action-btn btn-upload" onclick="triggerImageUpload('${item.id}')"><i class="fas fa-plus"></i> إرفاق</button>`;
-                    if(item.imageUrl) imgBtn = `<button class="action-btn btn-view" onclick="viewImage('${item.imageUrl}')"><i class="fas fa-image"></i> عرض</button>`;
+                    if(item.imageUrl && item.imageUrl !== "") imgBtn = `<button class="action-btn btn-view" onclick="viewImage('${item.imageUrl}')"><i class="fas fa-image"></i> عرض</button>`;
                     
-                    html += `<tr>
-                        <td><strong>${item.name}</strong></td>
-                        <td dir="ltr">${item.phone || '-'}</td>
-                        <td>${item.ministry}</td>
-                        <td>رقم: ${item.bookNum}<br><small>${dateStr}</small></td>
-                        <td style="max-width:200px;">${item.subject}</td>
-                        <td><span class="badge ${cl}">${item.linkStatus}</span></td>
-                        <td>${imgBtn}</td>
-                    </tr>`;
+                    html += `<tr><td><strong>${item.name}</strong></td><td dir="ltr">${item.phone || '-'}</td><td>${item.ministry}</td><td>رقم: ${item.bookNum}<br><small>${dateStr}</small></td><td style="max-width:200px;">${item.subject}</td><td><span class="badge ${cl}">${item.linkStatus}</span></td><td>${imgBtn}</td></tr>`;
                 });
             } else if (currentArchiveView === "incoming") {
                 thead.innerHTML = `<tr><th>الاسم</th><th>الجهة</th><th>الموضوع</th><th>حالة الكتاب</th><th>المرفقات</th><th>إجراء التسليم</th></tr>`;
@@ -649,19 +539,12 @@
                     let cl = item.linkStatus && item.linkStatus.includes("مرتبط") ? 'badge-done' : 'badge-out';
                     
                     let imgBtn = `<button class="action-btn btn-upload" onclick="triggerImageUpload('${item.id}')"><i class="fas fa-plus"></i> إرفاق</button>`;
-                    if(item.imageUrl) imgBtn = `<button class="action-btn btn-view" onclick="viewImage('${item.imageUrl}')"><i class="fas fa-image"></i> عرض</button>`;
+                    if(item.imageUrl && item.imageUrl !== "") imgBtn = `<button class="action-btn btn-view" onclick="viewImage('${item.imageUrl}')"><i class="fas fa-image"></i> عرض</button>`;
                     
                     let deliveryBtn = `<button class="action-btn btn-deliver" onclick="markAsDelivered('${item.id}', '${item.name}')"><i class="fas fa-handshake"></i> تأشير التسليم</button>`;
                     if(item.deliveryDate) deliveryBtn = `<span style="color:var(--green); font-weight:bold; font-size:12px;"><i class="fas fa-check-circle"></i> تم التسليم<br>${item.deliveryDate}</span>`;
                     
-                    html += `<tr>
-                        <td><strong>${item.name}</strong></td>
-                        <td>${item.ministry}</td>
-                        <td style="max-width:200px;">${item.subject}</td>
-                        <td><span class="badge ${cl}">${item.linkStatus}</span></td>
-                        <td>${imgBtn}</td>
-                        <td>${deliveryBtn}</td>
-                    </tr>`;
+                    html += `<tr><td><strong>${item.name}</strong></td><td>${item.ministry}</td><td style="max-width:200px;">${item.subject}</td><td><span class="badge ${cl}">${item.linkStatus}</span></td><td>${imgBtn}</td><td>${deliveryBtn}</td></tr>`;
                 });
             } else if (currentArchiveView === "delivered") {
                 thead.innerHTML = `<tr><th>الاسم</th><th>الجهة</th><th>الموضوع</th><th>تاريخ التسليم</th></tr>`;
@@ -685,15 +568,9 @@
                 thead.innerHTML = `<tr><th>الاسم</th><th>الهاتف</th><th>الجهة</th><th>الموضوع</th><th>المرفقات</th></tr>`;
                 archiveData.localLetters.filter(i => (i.name+" "+i.entity).toLowerCase().includes(q)).forEach(item => {
                     let imgBtn = `<button class="action-btn btn-upload" onclick="triggerImageUpload('${item.id}')"><i class="fas fa-plus"></i> إرفاق</button>`;
-                    if(item.imageUrl) imgBtn = `<button class="action-btn btn-view" onclick="viewImage('${item.imageUrl}')"><i class="fas fa-image"></i> عرض</button>`;
+                    if(item.imageUrl && item.imageUrl !== "") imgBtn = `<button class="action-btn btn-view" onclick="viewImage('${item.imageUrl}')"><i class="fas fa-image"></i> عرض</button>`;
                     
-                    html += `<tr>
-                        <td><strong>${item.name}</strong></td>
-                        <td dir="ltr">${item.phone || '-'}</td>
-                        <td><strong style="color:var(--teal);">${item.entity}</strong></td>
-                        <td style="max-width:200px;">${item.subject}</td>
-                        <td>${imgBtn}</td>
-                    </tr>`;
+                    html += `<tr><td><strong>${item.name}</strong></td><td dir="ltr">${item.phone || '-'}</td><td><strong style="color:var(--teal);">${item.entity}</strong></td><td style="max-width:200px;">${item.subject}</td><td>${imgBtn}</td></tr>`;
                 });
             } else if (currentArchiveView === "audit" && currentUserRole === "admin") {
                 thead.innerHTML = `<tr><th>التاريخ والوقت</th><th>المستخدم</th><th>الإجراء</th></tr>`;
@@ -701,6 +578,29 @@
             }
 
             tbody.innerHTML = html || '<tr><td colspan="8" style="text-align:center; padding:40px; font-weight:bold; color:#94a3b8;">لا توجد بيانات في هذا السجل</td></tr>';
+        }
+        
+        // ربط دوال الباركود الفخمة
+        function showArchiveBarcode(id, name, carInfo, plateInfo, issueDate) {
+            let d = new Date(issueDate);
+            d.setFullYear(d.getFullYear() + 1);
+            let expiryDate = d.toISOString().split('T')[0];
+            
+            lastBadgeData = { name: name, car: carInfo, plate: plateInfo, issue: issueDate.split('T')[0], expiry: expiryDate };
+            const verifyUrl = WEBHOOK_URL + "?verify_badge=" + id;
+            document.getElementById('qr-container').innerHTML = "";
+            new QRCode(document.getElementById("qr-container"), { text: verifyUrl, width: 180, height: 180, colorDark : "#1e293b" });
+            document.getElementById('qr-modal').style.display = 'flex';
+        }
+        
+        function previewVerificationUI() {
+            if(!lastBadgeData) return;
+            document.getElementById('v-name').innerText = lastBadgeData.name;
+            document.getElementById('v-car').innerText = lastBadgeData.car;
+            document.getElementById('v-plate').innerText = lastBadgeData.plate;
+            document.getElementById('v-issue').innerText = lastBadgeData.issue;
+            document.getElementById('v-expiry').innerText = lastBadgeData.expiry;
+            document.getElementById('verify-ui').style.display = 'flex';
         }
     </script>
 </body>
