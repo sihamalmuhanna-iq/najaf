@@ -317,7 +317,7 @@
     <div id="toast">تم الحفظ</div>
 
     <script>
-        // ⚠️ خلي رابط النشر الفعلي مالتك هنا
+        // ⚠️ خلي رابط النشر الفعلي مالتك هنا!
         const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbxIpu80rI5mIsiS5Pho-VoA7U8FwYPvmAd4AEj7mDoK9gZ9gaxwsG2h-s2YkSf1MBvncQ/exec";
 
         const PINS = {
@@ -330,6 +330,17 @@
         let currentArchiveView = "outgoing";
         let archiveData = { outgoing: [], incoming: [], delivered: [], badges: [], localLetters: [], appRequests: [], audit: [] };
         let lastBadgeData = null; 
+        let currentUploadRowId = null;
+
+        // دالة تحويل الصور لمعالجتها برمجياً
+        function getBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
 
         function login() {
             const pin = document.getElementById('pin-input').value.trim();
@@ -356,7 +367,6 @@
         function applyRoleRestrictions() {
             const adminTabs = document.getElementById('admin-sub-tabs');
             const subBtns = document.querySelectorAll('.sub-tab-btn');
-            
             if (currentUserRole === "admin") {
                 document.getElementById('tab-btn-badge').style.display = 'flex';
                 document.getElementById('tab-btn-local').style.display = 'flex';
@@ -389,6 +399,7 @@
             if (currentUserRole === "incoming" && requiredAccess === "outgoing") return;
             activatePanel(panelId, btn);
             if (requiredAccess === "archive") loadArchive();
+            if (panelId === "media-panel") updateMediaDashboard();
         }
 
         function activatePanel(panelId, btn) {
@@ -418,22 +429,38 @@
         }
 
         function updateTopStats() {
-            document.getElementById('st-out').innerText = archiveData.outgoing.length;
-            document.getElementById('st-in').innerText = archiveData.incoming.length;
-            document.getElementById('st-del').innerText = archiveData.delivered.length;
+            document.getElementById('st-out').innerText = archiveData.outgoing ? archiveData.outgoing.length : 0;
+            document.getElementById('st-in').innerText = archiveData.incoming ? archiveData.incoming.length : 0;
+            document.getElementById('st-del').innerText = archiveData.delivered ? archiveData.delivered.length : 0;
             if(currentUserRole === "admin") {
-                document.getElementById('st-badge').innerText = archiveData.badges.length;
-                document.getElementById('st-local').innerText = archiveData.localLetters.length;
+                document.getElementById('st-badge').innerText = archiveData.badges ? archiveData.badges.length : 0;
+                document.getElementById('st-local').innerText = archiveData.localLetters ? archiveData.localLetters.length : 0;
             }
         }
 
-        function submitForm(type) {
-            showToast("⏳ جاري حفظ البيانات في المنظومة...");
+        // تحديث لوحة الإعلام (تعمل الآن بشكل دقيق)
+        function updateMediaDashboard() {
+            const totalOut = archiveData.outgoing ? archiveData.outgoing.length : 0;
+            const totalApp = archiveData.appRequests ? archiveData.appRequests.length : 0;
+            const totalIn = archiveData.incoming ? archiveData.incoming.length : 0;
+            const totalDel = archiveData.delivered ? archiveData.delivered.length : 0;
+            
+            const completed = totalIn + totalDel;
+            const totalReceived = totalOut + totalApp; 
+            const rate = totalReceived > 0 ? Math.round((completed / totalReceived) * 100) : 0;
+            
+            document.getElementById('media-total').innerText = totalReceived;
+            document.getElementById('media-done').innerText = completed;
+            document.getElementById('media-rate').innerText = rate + "%";
+        }
+
+        async function submitForm(type) {
+            showToast("⏳ جاري رفع البيانات والصور للمنظومة...");
             let payload = { action: "staff_entry", entryType: type };
-            let formId = "";
+            let formId = type === 'outgoing' ? 'outgoing-form' : (type === 'incoming' ? 'incoming-form' : 'local-form');
+            let form = document.getElementById(formId);
 
             if (type === 'outgoing') {
-                formId = 'outgoing-form';
                 payload.name = document.getElementById('out-name').value;
                 payload.phone = document.getElementById('out-phone').value;
                 payload.ministry = document.getElementById('out-ministry').value;
@@ -442,7 +469,6 @@
                 payload.identifier = document.getElementById('out-identifier').value;
                 payload.subject = document.getElementById('out-subject').value;
             } else if (type === 'incoming') {
-                formId = 'incoming-form';
                 payload.name = document.getElementById('in-name').value;
                 payload.ministry = document.getElementById('in-ministry').value;
                 payload.bookNum = document.getElementById('in-num').value;
@@ -450,19 +476,25 @@
                 payload.margin = document.getElementById('in-margin').value;
                 payload.subject = document.getElementById('in-subject').value;
             } else if (type === 'local_letter') {
-                formId = 'local-form';
                 payload.name = document.getElementById('l-name').value;
                 payload.phone = document.getElementById('l-phone').value;
                 payload.entity = document.getElementById('l-entity').value;
                 payload.subject = document.getElementById('l-subject').value;
             }
 
+            // قراءة الصورة المرفقة إن وجدت
+            let fileInput = form.querySelector('input[type="file"]');
+            if (fileInput && fileInput.files[0]) {
+                payload.imageBase64 = await getBase64(fileInput.files[0]);
+                payload.imageName = fileInput.files[0].name;
+            }
+
             fetch(WEBHOOK_URL, { method: 'POST', body: JSON.stringify(payload) })
             .then(res => res.json()).then(res => {
                 if (res.result === "success") {
                     showToast("✅ تم الحفظ بنجاح وتوثيق القيد");
-                    logAuditAction(`تمت إضافة قيد جديد باسم: ${payload.name}`);
-                    document.getElementById(formId).reset();
+                    logAuditAction(`إضافة قيد جديد: ${payload.name}`);
+                    form.reset();
                     loadArchive();
                 }
             });
@@ -490,12 +522,16 @@
                     logAuditAction(`توليد باج سيارة للمواطن: ${name}`);
                     document.getElementById('badge-form').reset();
                     loadArchive();
+                    
+                    let carInfo = carType + " - " + color;
+                    let plateInfo = combinedPlate + " / " + gov;
+                    showArchiveBarcode(res.reqId, name, carInfo, plateInfo, bDate);
                 }
             });
         }
 
         function revokeBadge(id, name) {
-            if(confirm(`هل أنت متأكد من إلغاء الباج الأمني للمواطن: ${name}؟\n(هذا الإجراء سيظهر الباج باللون الأحمر للسيطرات)`)) {
+            if(confirm(`هل أنت متأكد من إلغاء الباج الأمني للمواطن: ${name}؟\n(الباج سيظهر باللون الأحمر للسيطرات)`)) {
                 showToast("⏳ جاري الإلغاء...");
                 fetch(WEBHOOK_URL, { method: 'POST', body: JSON.stringify({ action: "revoke_badge", id: id }) })
                 .then(r => r.json()).then(res => {
@@ -508,11 +544,27 @@
             }
         }
 
-        function showArchiveBarcode(id) {
+        function showArchiveBarcode(id, name, carInfo, plateInfo, issueDate) {
+            let d = new Date(issueDate);
+            d.setFullYear(d.getFullYear() + 1);
+            let expiryDate = d.toISOString().split('T')[0];
+            
+            lastBadgeData = { name: name, car: carInfo, plate: plateInfo, issue: issueDate.split('T')[0], expiry: expiryDate };
             const verifyUrl = WEBHOOK_URL + "?verify_badge=" + id;
             document.getElementById('qr-container').innerHTML = "";
             new QRCode(document.getElementById("qr-container"), { text: verifyUrl, width: 180, height: 180, colorDark : "#1e293b" });
             document.getElementById('qr-modal').style.display = 'flex';
+        }
+
+        // تم ربط هذه الدالة بشكل صحيح الآن
+        function previewVerificationUI() {
+            if(!lastBadgeData) return;
+            document.getElementById('v-name').innerText = lastBadgeData.name;
+            document.getElementById('v-car').innerText = lastBadgeData.car;
+            document.getElementById('v-plate').innerText = lastBadgeData.plate;
+            document.getElementById('v-issue').innerText = lastBadgeData.issue;
+            document.getElementById('v-expiry').innerText = lastBadgeData.expiry;
+            document.getElementById('verify-ui').style.display = 'flex';
         }
 
         function loadArchive() {
@@ -540,13 +592,30 @@
             }
         }
 
-        function triggerImageUpload() { document.getElementById('global-file-upload').click(); }
-        document.getElementById('global-file-upload').addEventListener('change', function(e) {
+        // الرفع الفعلي لصور الأرشيف القديم
+        function triggerImageUpload(rowId) {
+            currentUploadRowId = rowId;
+            document.getElementById('global-file-upload').click();
+        }
+        
+        document.getElementById('global-file-upload').addEventListener('change', async function(e) {
             if(e.target.files[0]) {
-                showToast("⏳ جاري رفع الصورة للأرشيف...");
-                setTimeout(() => { showToast("✅ تم التحديث بنجاح"); e.target.value = ""; }, 1500);
+                showToast("⏳ جاري رفع الصورة... (قد يستغرق بضع ثوانٍ)");
+                let base64 = await getBase64(e.target.files[0]);
+                fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: "upload_archive_image", id: currentUploadRowId, imageBase64: base64, imageName: e.target.files[0].name })
+                }).then(r => r.json()).then(res => {
+                    if(res.result === "success") {
+                        showToast("✅ تم رفع الصورة بنجاح وتحديث السجل");
+                        logAuditAction("إرفاق صورة جديدة في الأرشيف");
+                        loadArchive(); // سيعيد تحميل الجدول ويحول الزر إلى "عرض"
+                    } else { showToast("❌ فشل الرفع"); }
+                    e.target.value = "";
+                });
             }
         });
+        
         function viewImage(url) { window.open(url || '#', '_blank'); }
 
         function renderCurrentArchive() {
@@ -556,13 +625,12 @@
             let html = '';
 
             if (currentArchiveView === "outgoing") {
-                // إرجاع رقم الهاتف، حالة الربط، والمرفقات
                 thead.innerHTML = `<tr><th>الاسم الكامل</th><th>الهاتف</th><th>الجهة</th><th>رقم وتاريخ</th><th>الموضوع</th><th>حالة الكتاب</th><th>المرفقات</th></tr>`;
                 archiveData.outgoing.filter(i => (i.name+" "+i.ministry).toLowerCase().includes(q)).forEach(item => {
                     let dateStr = item.bookDate ? new Date(item.bookDate).toISOString().split('T')[0] : "";
                     let cl = item.linkStatus && item.linkStatus.includes("وصلت") ? 'badge-done' : 'badge-wait';
                     
-                    let imgBtn = `<button class="action-btn btn-upload" onclick="triggerImageUpload()"><i class="fas fa-plus"></i> إرفاق</button>`;
+                    let imgBtn = `<button class="action-btn btn-upload" onclick="triggerImageUpload('${item.id}')"><i class="fas fa-plus"></i> إرفاق</button>`;
                     if(item.imageUrl) imgBtn = `<button class="action-btn btn-view" onclick="viewImage('${item.imageUrl}')"><i class="fas fa-image"></i> عرض</button>`;
                     
                     html += `<tr>
@@ -576,18 +644,15 @@
                     </tr>`;
                 });
             } else if (currentArchiveView === "incoming") {
-                // إرجاع حالة الربط والمرفقات، وإبقاء ميزة التسليم
                 thead.innerHTML = `<tr><th>الاسم</th><th>الجهة</th><th>الموضوع</th><th>حالة الكتاب</th><th>المرفقات</th><th>إجراء التسليم</th></tr>`;
                 archiveData.incoming.filter(i => (i.name+" "+i.ministry).toLowerCase().includes(q)).forEach(item => {
                     let cl = item.linkStatus && item.linkStatus.includes("مرتبط") ? 'badge-done' : 'badge-out';
                     
-                    let imgBtn = `<button class="action-btn btn-upload" onclick="triggerImageUpload()"><i class="fas fa-plus"></i> إرفاق</button>`;
+                    let imgBtn = `<button class="action-btn btn-upload" onclick="triggerImageUpload('${item.id}')"><i class="fas fa-plus"></i> إرفاق</button>`;
                     if(item.imageUrl) imgBtn = `<button class="action-btn btn-view" onclick="viewImage('${item.imageUrl}')"><i class="fas fa-image"></i> عرض</button>`;
                     
                     let deliveryBtn = `<button class="action-btn btn-deliver" onclick="markAsDelivered('${item.id}', '${item.name}')"><i class="fas fa-handshake"></i> تأشير التسليم</button>`;
-                    if(item.deliveryDate) {
-                        deliveryBtn = `<span style="color:var(--green); font-weight:bold; font-size:12px;"><i class="fas fa-check-circle"></i> تم التسليم<br>${item.deliveryDate}</span>`;
-                    }
+                    if(item.deliveryDate) deliveryBtn = `<span style="color:var(--green); font-weight:bold; font-size:12px;"><i class="fas fa-check-circle"></i> تم التسليم<br>${item.deliveryDate}</span>`;
                     
                     html += `<tr>
                         <td><strong>${item.name}</strong></td>
@@ -611,16 +676,15 @@
                     let dateStr = item.badgeDate ? new Date(item.badgeDate).toISOString().split('T')[0] : "";
                     
                     let statusLabel = item.status === "ملغى" ? `<span class="badge" style="background:#fecaca; color:#dc2626;">ملغى</span>` : `<span class="badge badge-done">فعال</span>`;
-                    let qrBtn = `<button class="action-btn btn-qr" onclick="showArchiveBarcode('${item.id}')"><i class="fas fa-qrcode"></i> عرض الباركود</button>`;
+                    let qrBtn = `<button class="action-btn btn-qr" onclick="showArchiveBarcode('${item.id}', '${item.name}', '${carInfo}', '${plateInfo}', '${item.badgeDate}')"><i class="fas fa-qrcode"></i> عرض الباركود</button>`;
                     let revokeBtn = item.status !== "ملغى" ? `<button class="action-btn" style="color:#ef4444; border-color:#ef4444; background:#fef2f2;" onclick="revokeBadge('${item.id}', '${item.name}')"><i class="fas fa-ban"></i> إلغاء الباج</button>` : '';
 
                     html += `<tr><td><strong>${item.name}</strong></td><td>${carInfo}<br><small dir="ltr">${plateInfo}</small></td><td>${dateStr}</td><td>${statusLabel}</td><td>${qrBtn} ${revokeBtn}</td></tr>`;
                 });
             } else if (currentArchiveView === "localLetters" && currentUserRole === "admin") {
-                // إرجاع رقم الهاتف والمرفقات للمحلي
                 thead.innerHTML = `<tr><th>الاسم</th><th>الهاتف</th><th>الجهة</th><th>الموضوع</th><th>المرفقات</th></tr>`;
                 archiveData.localLetters.filter(i => (i.name+" "+i.entity).toLowerCase().includes(q)).forEach(item => {
-                    let imgBtn = `<button class="action-btn btn-upload" onclick="triggerImageUpload()"><i class="fas fa-plus"></i> إرفاق</button>`;
+                    let imgBtn = `<button class="action-btn btn-upload" onclick="triggerImageUpload('${item.id}')"><i class="fas fa-plus"></i> إرفاق</button>`;
                     if(item.imageUrl) imgBtn = `<button class="action-btn btn-view" onclick="viewImage('${item.imageUrl}')"><i class="fas fa-image"></i> عرض</button>`;
                     
                     html += `<tr>
