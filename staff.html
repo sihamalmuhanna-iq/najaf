@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المنظومة الإدارية الشاملة - مكتب النائب سهام منعم المحنة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <title>المنظومة الإدارية الشاملة - مجلس النواب</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
@@ -19,7 +19,7 @@
         .login-card p { color: #cbd5e1; margin-bottom: 25px; }
         .pin-input { width: 100%; padding: 15px; text-align: center; font-size: 24px; letter-spacing: 8px; border: 2px solid #334155; background: rgba(0,0,0,0.2); color: white; border-radius: 12px; margin-bottom: 20px; outline: none; font-weight: bold; transition: 0.3s; }
         .pin-input:focus { border-color: var(--gold); box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); }
-        .btn-main { width: 100%; background: linear-gradient(45deg, var(--gold), #b38f22); color: var(--primary); border: none; padding: 15px; border-radius: 12px; font-size: 17px; font-weight: 800; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); }
+        .btn-main { width: 100%; background: linear-gradient(45deg, var(--gold), #b38f22); color: var(--primary); border: none; padding: 15px; border-radius: 12px; font-size: 17px; font-weight: 900; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); }
         .btn-main:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5); }
         
         #security-scanner { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(18, 30, 45, 0.95); color: var(--gold); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 10; font-family: monospace; font-size: 18px; font-weight: bold; }
@@ -33,59 +33,57 @@
 
         .container { max-width: 1250px; margin: 25px auto; padding: 0 15px; }
 
-        /* البطاقات الإحصائية */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 25px; }
         .stat-card { background: white; padding: 18px 15px; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border-right: 5px solid var(--gold); text-align: center; transition: 0.3s; }
         .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.06); }
         .stat-card h3 { font-size: 26px; color: var(--primary); margin-bottom: 5px; font-weight: 800; }
-        .stat-card span { font-size: 13px; color: #64748b; font-weight: 700; }
+        .stat-card span { font-size: 13px; color: #64748b; font-weight: 800; }
 
-        /* التبويبات */
         .tabs { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
         .tab-btn { flex: 1; min-width: 140px; padding: 14px; background: white; border: 1px solid #e2e8f0; border-radius: 12px; font-weight: 800; font-size: 14px; color: #475569; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
         .tab-btn:hover { background: #f8fafc; border-color: #cbd5e1; }
         .tab-btn.active { background: var(--primary); color: var(--gold) !important; border-color: var(--primary); box-shadow: 0 5px 15px rgba(26, 42, 58, 0.2); }
 
         .sub-tabs { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
-        .sub-tab-btn { padding: 10px 18px; border-radius: 10px; border: 1px solid #e2e8f0; background: white; font-weight: 700; font-size: 13px; color: #475569; cursor: pointer; transition: 0.2s; }
+        .sub-tab-btn { padding: 10px 18px; border-radius: 10px; border: 1px solid #e2e8f0; background: white; font-weight: 800; font-size: 13px; color: #475569; cursor: pointer; transition: 0.2s; }
         .sub-tab-btn:hover { background: #f1f5f9; }
         .sub-tab-btn.active { background: var(--gold); color: var(--primary) !important; border-color: var(--gold); box-shadow: 0 3px 10px rgba(212, 175, 55, 0.2); }
 
         .panel { display: none; background: white; padding: 25px; border-radius: 16px; box-shadow: 0 5px 20px rgba(0,0,0,0.04); border: 1px solid #e2e8f0; }
         .panel.active { display: block; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .panel-title { color: var(--primary); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #f1f5f9; font-size: 18px; font-weight: 800; }
+        .panel-title { color: var(--primary); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #f1f5f9; font-size: 18px; font-weight: 900; }
 
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-bottom: 20px; }
         .form-group.full { grid-column: 1 / -1; }
-        .form-group label { display: block; font-weight: 700; margin-bottom: 8px; font-size: 14px; color: #334155; }
-        .form-control { width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; outline: none; transition: 0.2s; background: #f8fafc; }
+        .form-group label { display: block; font-weight: 800; margin-bottom: 8px; font-size: 14px; color: #334155; }
+        .form-control { width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; outline: none; transition: 0.2s; background: #f8fafc; font-weight: bold; }
         .form-control:focus { border-color: var(--gold); background: white; box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1); }
 
         .search-bar { display: flex; gap: 10px; margin-bottom: 20px; }
-        .search-bar input { flex: 1; padding: 12px 18px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; outline: none; transition: 0.2s; }
+        .search-bar input { flex: 1; padding: 12px 18px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; outline: none; transition: 0.2s; font-weight: bold; }
         .search-bar input:focus { border-color: var(--primary); }
         
         .table-responsive { overflow-x: auto; border-radius: 12px; border: 1px solid #e2e8f0; }
         table { width: 100%; border-collapse: collapse; min-width: 900px; font-size: 14px; background: white; }
         th, td { padding: 15px 12px; text-align: right; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
-        th { background: #f8fafc; color: var(--primary); font-weight: 800; white-space: nowrap; border-bottom: 2px solid #e2e8f0; }
+        th { background: #f8fafc; color: var(--primary); font-weight: 900; white-space: nowrap; border-bottom: 2px solid #e2e8f0; }
         tr:hover { background: #f1f5f9; }
         
-        .badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 800; display: inline-block; }
+        .badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 900; display: inline-block; }
         .badge-wait { background: #fef3c7; color: #b45309; }
         .badge-out { background: #dbeafe; color: #1d4ed8; }
         .badge-done { background: #dcfce7; color: #15803d; }
 
         /* أزرار الإجراءات */
-        .action-btn { background: white; border: 1px solid #cbd5e1; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 800; font-size: 12px; color: #475569; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; margin: 2px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .action-btn { background: white; border: 1px solid #cbd5e1; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 900; font-size: 12px; color: #475569; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; margin: 2px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         .action-btn:hover { background: #f8fafc; transform: translateY(-1px); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .btn-upload { color: var(--blue); border-color: #bfdbfe; background: #eff6ff; }
         .btn-view { background: var(--blue); color: white; border-color: var(--blue); }
         .btn-deliver { color: var(--green); border-color: #bbf7d0; background: #f0fdf4; }
         .btn-qr { color: white; background: var(--purple); border-color: var(--purple); }
 
-        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 14px 28px; border-radius: 30px; font-weight: 800; font-size: 14px; display: none; z-index: 9999; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; }
+        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 14px 28px; border-radius: 30px; font-weight: 900; font-size: 14px; display: none; z-index: 9999; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; }
         .hidden-file-input { display: none; }
 
         /* --- نافذة عرض الباركود --- */
@@ -95,38 +93,30 @@
         .btn-close-modal { position: absolute; top: 15px; left: 15px; background: #f1f5f9; border: none; width: 35px; height: 35px; border-radius: 50%; font-size: 16px; color: #64748b; cursor: pointer; transition: 0.2s; }
         .btn-close-modal:hover { background: #e2e8f0; color: #ef4444; }
 
-        /* --- واجهة التحقق الأمنية הפخمة جدًا --- */
-        #verify-ui { display: none; position: fixed; inset: 0; background: radial-gradient(circle at center, #1e3046 0%, #080d14 100%); z-index: 99999; color: white; flex-direction: column; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
-        .verify-card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(212, 175, 55, 0.15); border-radius: 24px; width: 100%; max-width: 420px; padding: 40px 25px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.6), inset 0 0 20px rgba(212, 175, 55, 0.05); backdrop-filter: blur(20px); position: relative; overflow: hidden; }
-        
-        /* تأثير الإضاءة الخلفية */
-        .verify-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(212,175,55,0.1) 0%, transparent 60%); z-index: -1; pointer-events: none; }
-        
-        /* شعار مجلس النواب (أيقونة فخمة محاكية) */
-        .v-logo-wrapper { width: 100px; height: 100px; margin: 0 auto 20px auto; background: linear-gradient(135deg, #d4af37, #997a15); border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 30px rgba(212, 175, 55, 0.4), inset 0 0 15px rgba(255,255,255,0.3); padding: 5px; }
-        .v-logo-inner { width: 100%; height: 100%; background: #0f172a; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 2px solid rgba(212, 175, 55, 0.5); }
-        .v-logo-inner i { font-size: 40px; background: -webkit-linear-gradient(#f9e596, #d4af37); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        .v-title { color: var(--gold-light); font-size: 24px; font-weight: 800; margin-bottom: 5px; letter-spacing: 1px; text-shadow: 0 2px 10px rgba(212,175,55,0.3); }
-        .v-subtitle { font-size: 15px; color: #cbd5e1; margin-bottom: 30px; font-weight: 700; border-bottom: 1px solid rgba(212, 175, 55, 0.2); padding-bottom: 20px; }
-        
-        .v-status { display: inline-flex; align-items: center; gap: 8px; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); padding: 12px 30px; border-radius: 50px; font-size: 19px; font-weight: 800; margin-bottom: 30px; box-shadow: 0 0 20px rgba(16, 185, 129, 0.2); }
-        
-        .v-info-box { background: rgba(0,0,0,0.3); border-radius: 16px; padding: 5px 20px; border: 1px solid rgba(255,255,255,0.05); }
-        .v-info-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: right; }
-        .v-info-row:last-child { border-bottom: none; }
-        .v-label { color: #94a3b8; font-size: 14px; font-weight: 700; }
-        .v-val { font-size: 16px; font-weight: 800; color: white; text-align: left; }
-        .v-val-gold { color: var(--gold-light); text-shadow: 0 0 10px rgba(212,175,55,0.3); }
-        
-        .v-footer { margin-top: 35px; font-size: 12px; color: #64748b; font-weight: 700; }
-        .v-close-btn { margin-top: 25px; padding: 12px 30px; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); border-radius: 30px; cursor: pointer; font-weight: 800; transition: 0.3s; font-size: 14px; }
-        .v-close-btn:hover { background: rgba(255,255,255,0.1); }
+        /* --- إعدادات الطباعة للباركود على A5 --- */
+        @media print {
+            body * { visibility: hidden; }
+            #print-qr-area, #print-qr-area * { visibility: visible; }
+            @page { size: A5 portrait; margin: 0; }
+            #print-qr-area { 
+                display: flex; flex-direction: column; justify-content: center; align-items: center; 
+                position: absolute; top: 0; left: 0; width: 148mm; height: 210mm; background: white; 
+            }
+            .qr-print-frame { 
+                border: 4px solid #121e2d; padding: 30px; text-align: center; 
+                border-radius: 20px; width: 90mm; background: white; 
+                outline: 2px solid #d4af37; outline-offset: 5px; 
+            }
+            .qr-print-frame h3 { font-size: 22px; color: #121e2d; margin-bottom: 5px; font-weight: 900; }
+            .qr-print-frame p { font-size: 14px; color: #333; margin-bottom: 20px; font-weight: bold; }
+            .qr-print-frame .qr-actual-box { display: inline-block; padding: 15px; border: 2px dashed #999; border-radius: 10px; margin-bottom: 15px; }
+            .qr-print-frame small { font-size: 14px; font-weight: 900; color: #121e2d; display: block; border-top: 1px solid #ccc; padding-top: 10px; }
+        }
+        #print-qr-area { display: none; }
     </style>
 </head>
 <body>
 
-    <!-- المصادقة الأمنية -->
     <div id="login-screen">
         <div class="login-card">
             <div id="security-scanner"><div class="scan-line"></div><i class="fas fa-fingerprint" style="font-size: 60px; margin-bottom:20px;"></i><span id="scan-text">جاري فك التشفير...</span></div>
@@ -145,7 +135,6 @@
     </header>
 
     <div class="container">
-        <!-- الإحصائيات الفوك (6 بطاقات مرتبة) -->
         <div class="stats-grid">
             <div class="stat-card" id="card-st-out" style="border-color:#3b82f6;"><h3 id="st-out">0</h3><span>الصادر الكلي</span></div>
             <div class="stat-card" id="card-st-in" style="border-color:#10b981;"><h3 id="st-in">0</h3><span>الوارد الكلي</span></div>
@@ -155,7 +144,6 @@
             <div class="stat-card" id="card-st-app" style="border-color:#f59e0b; display:none;"><h3 id="st-app">0</h3><span>طلبات التطبيق</span></div>
         </div>
 
-        <!-- التبويبات الرئيسية -->
         <div class="tabs">
             <button class="tab-btn active" id="tab-btn-out" onclick="tryOpenPanel('out-panel', this, 'outgoing')"><i class="fas fa-paper-plane"></i> كتاب صادر</button>
             <button class="tab-btn" id="tab-btn-in" onclick="tryOpenPanel('in-panel', this, 'incoming')"><i class="fas fa-inbox"></i> إجابة وارد</button>
@@ -200,7 +188,7 @@
             </form>
         </div>
 
-        <!-- 3. الباجات (حقول مفصلة) -->
+        <!-- 3. الباجات -->
         <div id="badge-panel" class="panel">
             <h3 class="panel-title"><i class="fas fa-id-card" style="color:var(--purple);"></i> تسجيل باج سيارة وتوليد باركود</h3>
             <form id="badge-form" onsubmit="event.preventDefault(); submitBadge();">
@@ -219,7 +207,7 @@
             </form>
         </div>
 
-        <!-- 4. المحلية (بدون كلمة سري) -->
+        <!-- 4. المحلية -->
         <div id="local-panel" class="panel">
             <h3 class="panel-title"><i class="fas fa-map-marker-alt" style="color:var(--teal);"></i> تسجيل كتاب محلي</h3>
             <form id="local-form" onsubmit="event.preventDefault(); submitForm('local_letter');">
@@ -277,47 +265,27 @@
 
     <input type="file" id="global-file-upload" class="hidden-file-input" accept="image/*">
 
-    <!-- نافذة عرض الباركود المصغرة -->
+    <!-- نافذة عرض الباركود المصغرة مع زر الطباعة -->
     <div class="modal-overlay" id="qr-modal">
         <div class="qr-modal">
             <button class="btn-close-modal" onclick="document.getElementById('qr-modal').style.display='none'"><i class="fas fa-times"></i></button>
-            <h3 style="color:var(--primary); margin-bottom:8px; font-weight:800;">تم توليد الباركود بنجاح</h3>
-            <p style="font-size:13px; color:#64748b; margin-bottom: 10px;">امسح الباركود بكاميرا الهاتف للتحقق</p>
+            <h3 style="color:var(--primary); margin-bottom:8px; font-weight:900;">تم توليد الباركود بنجاح</h3>
+            <p style="font-size:13px; color:#64748b; margin-bottom: 10px; font-weight:bold;">هذا الباركود جاهز للطباعة على ظهر الباج</p>
             <div class="qr-box" id="qr-container"></div>
-            <button class="btn-main" onclick="previewVerificationUI()" style="margin-top:15px; background:linear-gradient(45deg, var(--primary), #1e3046); color:var(--gold);"><i class="fas fa-shield-alt"></i> معاينة واجهة التحقق الأمنية</button>
-        </div>
-    </div>
-
-    <!-- واجهة التحقق الأمنية الفخمة جداً -->
-    <div id="verify-ui">
-        <div class="verify-card">
-            <div class="v-logo-wrapper">
-                <div class="v-logo-inner"><i class="fas fa-landmark"></i></div>
-            </div>
-            <div class="v-title">مجلس النواب العراقي</div>
-            <div class="v-subtitle">مكتب النائب سهام منعم المحنة</div>
             
-            <div class="v-status"><i class="fas fa-check-circle"></i> الباج فعال ومصرح له</div>
-            
-            <div class="v-info-box">
-                <div class="v-info-row"><span class="v-label">اسم حامل الباج:</span><span class="v-val" id="v-name"></span></div>
-                <div class="v-info-row"><span class="v-label">نوع ولون العجلة:</span><span class="v-val" id="v-car"></span></div>
-                <div class="v-info-row"><span class="v-label">رقم العجلة:</span><span class="v-val" id="v-plate" style="direction:ltr;"></span></div>
-                <div class="v-info-row"><span class="v-label">تاريخ الإصدار:</span><span class="v-val" id="v-issue"></span></div>
-                <div class="v-info-row"><span class="v-label">صالح لغاية:</span><span class="v-val v-val-gold" id="v-expiry"></span></div>
+            <div style="display:flex; flex-direction:column; gap:10px; margin-top:15px;">
+                <button class="btn-main" onclick="printQR()" style="background:var(--gold); color:var(--primary);"><i class="fas fa-print"></i> طباعة للجهة الخلفية (A5)</button>
             </div>
-            
-            <div class="v-footer">
-                <i class="fas fa-lock" style="color:var(--gold);"></i> نظام المطابقة الأمنية الإلكتروني الموحد<br>محمي ومشفّر ضد التزوير
-            </div>
-            <button class="v-close-btn" onclick="document.getElementById('verify-ui').style.display='none'">إغلاق المعاينة</button>
         </div>
     </div>
 
     <div id="toast">تم الحفظ</div>
 
+    <!-- منطقة الطباعة المخفية -->
+    <div id="print-qr-area"></div>
+
     <script>
-        // ⚠️ لا تنسى: خلي الرابط الجديد هنــــا
+        // ⚠️ ضع رابط النشر (Deployment) الخاص بك هنا بعد التحديث ⚠️
         const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwCY7EfFvztvHT9F_v2PThX4-k-tp8-9Gd_2Qjyd3Bb6TMuXo1x9BDxNE3fLRwPOJ6o/exec";
 
         const PINS = {
@@ -332,24 +300,42 @@
         let lastBadgeData = null; 
         let currentUploadRowId = null;
 
+        // دالة ضغط الصور (تمنع توقف السيرفر)
         function getBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const MAX_WIDTH = 800; // تصغير الحجم
+                        const scaleSize = MAX_WIDTH / img.width;
+                        canvas.width = MAX_WIDTH;
+                        canvas.height = img.height * scaleSize;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        resolve(canvas.toDataURL('image/jpeg', 0.6)); // جودة 60%
+                    };
+                };
                 reader.onerror = error => reject(error);
             });
         }
 
-        // دالة إرسال ذكية ترصد الأخطاء
+        // دالة إرسال ذكية لا تفشل بصمت
         async function safeFetch(payload) {
             try {
-                let res = await fetch(WEBHOOK_URL, { method: 'POST', body: JSON.stringify(payload) });
-                let text = await res.text();
-                return JSON.parse(text);
+                let res = await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    redirect: 'follow', // ضروري لـ Google Apps Script
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify(payload)
+                });
+                return await res.json();
             } catch (err) {
-                showToast("❌ فشل الاتصال! تأكد من صلاحية النشر (Anyone)");
                 console.error(err);
+                showToast("❌ خطأ بالاتصال بالسيرفر! يرجى إعادة المحاولة.");
                 return { result: "error" };
             }
         }
@@ -489,7 +475,7 @@
 
             let fileInput = form.querySelector('input[type="file"]');
             if (fileInput && fileInput.files[0]) {
-                showToast("⏳ جاري رفع الصورة... (قد يستغرق قليلاً)");
+                showToast("⏳ جاري ضغط الصورة ورفعها للسيرفر...");
                 payload.imageBase64 = await getBase64(fileInput.files[0]);
                 payload.imageName = fileInput.files[0].name;
             }
@@ -500,8 +486,6 @@
                 logAuditAction(`إضافة قيد جديد: ${payload.name}`);
                 form.reset();
                 loadArchive();
-            } else {
-                showToast("❌ حدث خطأ أثناء الحفظ");
             }
         }
 
@@ -550,21 +534,32 @@
             d.setFullYear(d.getFullYear() + 1);
             let expiryDate = d.toISOString().split('T')[0];
             
-            lastBadgeData = { name: name, car: carInfo, plate: plateInfo, issue: issueDate.split('T')[0], expiry: expiryDate };
+            lastBadgeData = { id: id, name: name, car: carInfo, plate: plateInfo, issue: issueDate.split('T')[0], expiry: expiryDate };
             const verifyUrl = WEBHOOK_URL + "?verify_badge=" + id;
             document.getElementById('qr-container').innerHTML = "";
             new QRCode(document.getElementById("qr-container"), { text: verifyUrl, width: 180, height: 180, colorDark : "#1e293b" });
             document.getElementById('qr-modal').style.display = 'flex';
         }
 
-        function previewVerificationUI() {
+        // دالة الطباعة الخاصة بالباج (A5 للجهة الخلفية)
+        function printQR() {
             if(!lastBadgeData) return;
-            document.getElementById('v-name').innerText = lastBadgeData.name;
-            document.getElementById('v-car').innerText = lastBadgeData.car;
-            document.getElementById('v-plate').innerText = lastBadgeData.plate;
-            document.getElementById('v-issue').innerText = lastBadgeData.issue;
-            document.getElementById('v-expiry').innerText = lastBadgeData.expiry;
-            document.getElementById('verify-ui').style.display = 'flex';
+            const verifyUrl = WEBHOOK_URL + "?verify_badge=" + lastBadgeData.id;
+            let printArea = document.getElementById('print-qr-area');
+            
+            printArea.innerHTML = `
+                <div class="qr-print-frame">
+                    <h3>مجلس النواب العراقي</h3>
+                    <p style="font-size:12px; color:#555; margin-bottom:15px; font-weight:bold;">نظام المطابقة الأمنية المركزي</p>
+                    <div class="qr-actual-box" id="p-qr-box"></div>
+                    <p style="margin-top:15px; margin-bottom:5px; font-weight:bold;">امسح الرمز للتحقق من الصلاحية</p>
+                    <small>صالح لغاية: ${lastBadgeData.expiry}</small>
+                </div>
+            `;
+            
+            new QRCode(document.getElementById("p-qr-box"), { text: verifyUrl, width: 160, height: 160, colorDark : "#000000" });
+            
+            setTimeout(() => { window.print(); }, 500);
         }
 
         async function loadArchive() {
@@ -577,9 +572,7 @@
                     updateTopStats();
                     renderCurrentArchive();
                 }
-            } catch(e) {
-                console.error(e);
-            }
+            } catch(e) { console.error(e); }
         }
 
         async function markAsDelivered(rowId, name) {
@@ -601,17 +594,15 @@
         
         document.getElementById('global-file-upload').addEventListener('change', async function(e) {
             if(e.target.files[0]) {
-                showToast("⏳ جاري رفع الصورة... (يرجى الانتظار ثواني)");
+                showToast("⏳ جاري ضغط ورفع الصورة... (الرجاء الانتظار)");
                 let base64 = await getBase64(e.target.files[0]);
                 
                 let res = await safeFetch({ action: "upload_archive_image", id: currentUploadRowId, imageBase64: base64, imageName: e.target.files[0].name });
                 if(res && res.result === "success") {
-                    showToast("✅ تم رفع الصورة بنجاح");
+                    showToast("✅ تم رفع الصورة وتحديث الأرشيف بنجاح");
                     logAuditAction("إرفاق صورة جديدة في الأرشيف");
                     loadArchive(); 
-                } else { 
-                    showToast("❌ فشل الرفع"); 
-                }
+                } else { showToast("❌ فشل الرفع. حاول مرة أخرى."); }
                 e.target.value = "";
             }
         });
