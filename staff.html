@@ -561,14 +561,13 @@
             let previewWin = window.open(WEBHOOK_URL + "?verify_badge=" + lastBadgeData.id, '_blank');
         }
 
-        // دالة الطباعة الاحترافية A5 للباركود (معدلة ومحسنة)
+        // دالة الطباعة الاحترافية A5 للباركود (الحل الجذري للتاريخ)
         function printQR() {
             if(!lastBadgeData) return;
             const verifyUrl = WEBHOOK_URL + "?verify_badge=" + lastBadgeData.id;
             
-            // تعديل التاريخ ليظهر (سنة / شهر / يوم) بصورة صحيحة
-            let dateParts = lastBadgeData.expiry.split('-'); // يفصل اليوم والشهر والسنة
-            let correctDate = dateParts[2] + " / " + dateParts[1] + " / " + dateParts[0];
+            // فصل السنة والشهر واليوم لترتيبها إجبارياً
+            let dateParts = lastBadgeData.expiry.split('-'); // 0: سنة, 1: شهر, 2: يوم
             
             let printWin = window.open('', '_blank', 'width=600,height=600');
             let html = `
@@ -578,7 +577,6 @@
                 body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: sans-serif; background: white; }
                 .frame { border: 4px solid #121e2d; padding: 40px; text-align: center; border-radius: 20px; width: 90mm; outline: 2px solid #d4af37; outline-offset: 5px; }
                 
-                /* تنسيق العنوان الجديد */
                 h3 { font-size: 22px; color: #121e2d; margin-bottom: 5px; font-weight: 900; line-height: 1.4; }
                 h3 span { font-size: 15px; font-weight: bold; color: #555; }
                 
@@ -586,8 +584,9 @@
                 p.scan-txt { font-size: 14px; color: #333; margin-bottom: 20px; font-weight: bold; }
                 .qr-box { display: inline-block; padding: 15px; border: 2px dashed #999; border-radius: 10px; margin-bottom: 20px; }
                 
-                /* تنسيق التاريخ */
-                small { font-size: 16px; font-weight: 900; color: #121e2d; display: block; border-top: 1px solid #ccc; padding-top: 15px; }
+                /* الحل الجذري للتاريخ لمنع الانعكاس */
+                .date-container { font-size: 16px; font-weight: 900; color: #121e2d; border-top: 1px solid #ccc; padding-top: 15px; display: flex; justify-content: center; align-items: center; gap: 8px; direction: rtl; }
+                .date-boxes { display: flex; direction: ltr; gap: 4px; font-family: monospace; font-size: 18px; }
             </style>
             </head><body>
             <div class="frame">
@@ -596,7 +595,17 @@
                 <br>
                 <div class="qr-box" id="qr-place"></div>
                 <p class="scan-txt">امسح الرمز للتحقق من الصلاحية</p>
-                <small>صالح لغاية : <span dir="ltr" style="display:inline-block; font-family:monospace; font-size:18px;">${correctDate}</span></small>
+                
+                <div class="date-container">
+                    <span>صالح لغاية:</span>
+                    <div class="date-boxes">
+                        <span>${dateParts[0]}</span>
+                        <span>/</span>
+                        <span>${dateParts[1]}</span>
+                        <span>/</span>
+                        <span>${dateParts[2]}</span>
+                    </div>
+                </div>
             </div>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>
             <script>
