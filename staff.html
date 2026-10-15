@@ -566,8 +566,8 @@
             if(!lastBadgeData) return;
             const verifyUrl = WEBHOOK_URL + "?verify_badge=" + lastBadgeData.id;
             
-            // تعديل التاريخ ليظهر (يوم / شهر / سنة) بصورة صحيحة
-            let dateParts = lastBadgeData.expiry.split('-'); // يفصل السنة والشهر واليوم
+            // تعديل التاريخ ليظهر (سنة / شهر / يوم) بصورة صحيحة
+            let dateParts = lastBadgeData.expiry.split('-'); // يفصل اليوم والشهر والسنة
             let correctDate = dateParts[2] + " / " + dateParts[1] + " / " + dateParts[0];
             
             let printWin = window.open('', '_blank', 'width=600,height=600');
@@ -596,7 +596,7 @@
                 <br>
                 <div class="qr-box" id="qr-place"></div>
                 <p class="scan-txt">امسح الرمز للتحقق من الصلاحية</p>
-                <small>صالح لغاية: <span dir="ltr" style="display:inline-block; font-family:monospace; font-size:18px;">${correctDate}</span></small>
+                <small>صالح لغاية : <span dir="ltr" style="display:inline-block; font-family:monospace; font-size:18px;">${correctDate}</span></small>
             </div>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>
             <script>
