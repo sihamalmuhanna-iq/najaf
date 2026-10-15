@@ -317,7 +317,7 @@
     <div id="toast">تم الحفظ</div>
 
     <script>
-        // ⚠️ ضع رابط الـ Webhook الفعلي هنا لكي تعمل الباركودات بشكل حقيقي لاحقاً
+        // ⚠️ لا تنسى تخلي رابط النشر الفعلي مالتك هنا مكان هذا الرابط
         const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbxIpu80rI5mIsiS5Pho-VoA7U8FwYPvmAd4AEj7mDoK9gZ9gaxwsG2h-s2YkSf1MBvncQ/exec";
 
         const PINS = {
@@ -419,6 +419,12 @@
         function logAuditAction(actionDesc) {
             const now = new Date();
             archiveData.audit.unshift({ time: now.toLocaleString('ar-IQ'), user: document.getElementById('user-role-label').innerText, action: actionDesc });
+            
+            // إرسال سجل الرقابة للإكسل
+            fetch(WEBHOOK_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: "audit_log", actionDesc: actionDesc, user: document.getElementById('user-role-label').innerText })
+            });
         }
 
         function updateTopStats() {
@@ -445,54 +451,103 @@
             document.getElementById('media-rate').innerText = rate + "%";
         }
 
+        // --- الإرسال والحفظ الحقيقي (استمارات) ---
         function submitForm(type) {
-            showToast("⏳ جاري حفظ البيانات والأرشفة...");
-            setTimeout(() => {
-                showToast("✅ تم الحفظ بنجاح وإرفاق الصور إن وجدت");
-                if(type==='outgoing') {
-                    logAuditAction(`إضافة كتاب صادر باسم: ${document.getElementById('out-name').value}`);
-                    document.getElementById('outgoing-form').reset();
-                } else if(type==='incoming') {
-                    logAuditAction(`إضافة كتاب وارد باسم: ${document.getElementById('in-name').value}`);
-                    document.getElementById('incoming-form').reset();
-                } else if(type==='local_letter') {
-                    logAuditAction(`إضافة كتاب محلي للجهة: ${document.getElementById('l-entity').value}`);
-                    document.getElementById('local-form').reset();
-                }
-                loadArchive();
-            }, 1000); 
+            showToast("⏳ جاري حفظ البيانات في المنظومة...");
+            
+            let payload = { action: "staff_entry", entryType: type };
+            let formId = "";
+
+            if (type === 'outgoing') {
+                formId = 'outgoing-form';
+                payload.name = document.getElementById('out-name').value;
+                payload.phone = document.getElementById('out-phone').value;
+                payload.ministry = document.getElementById('out-ministry').value;
+                payload.bookNum = document.getElementById('out-num').value;
+                payload.bookDate = document.getElementById('out-date').value;
+                payload.identifier = document.getElementById('out-identifier').value;
+                payload.subject = document.getElementById('out-subject').value;
+            } else if (type === 'incoming') {
+                formId = 'incoming-form';
+                payload.name = document.getElementById('in-name').value;
+                payload.ministry = document.getElementById('in-ministry').value;
+                payload.bookNum = document.getElementById('in-num').value;
+                payload.bookDate = document.getElementById('in-date').value;
+                payload.margin = document.getElementById('in-margin').value;
+                payload.subject = document.getElementById('in-subject').value;
+            } else if (type === 'local_letter') {
+                formId = 'local-form';
+                payload.name = document.getElementById('l-name').value;
+                payload.phone = document.getElementById('l-phone').value;
+                payload.entity = document.getElementById('l-entity').value;
+                payload.subject = document.getElementById('l-subject').value;
+            }
+
+            fetch(WEBHOOK_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            }).then(res => res.json()).then(res => {
+                if (res.result === "success") {
+                    showToast("✅ تم الحفظ بنجاح وتوثيق القيد");
+                    logAuditAction(`تمت إضافة قيد جديد باسم: ${payload.name}`);
+                    document.getElementById(formId).reset();
+                    loadArchive();
+                } else { showToast("❌ حدث خطأ، يرجى المحاولة"); }
+            }).catch(err => showToast("❌ خطأ بالاتصال بالإنترنت"));
         }
 
-        // --- نظام الباج الذكي ---
+        // --- نظام الباج الذكي والباركود الحقيقي ---
         function submitBadge() {
-            const name = document.getElementById('b-name').value;
-            const type = document.getElementById('b-type').value;
-            const num = document.getElementById('b-num').value;
-            const letter = document.getElementById('b-letter').value;
-            const gov = document.getElementById('b-gov').value;
-            const color = document.getElementById('b-color').value;
-            const date = document.getElementById('b-date').value;
+            showToast("⏳ جاري إنشاء الباج وتوثيقه أمنياً...");
             
-            // دمج معلومات العجلة للمعاينة
-            const fullCarInfo = `${type} - ${color}`;
-            const fullPlateInfo = `${num} / ${letter} / ${gov}`;
-            
-            // حساب تاريخ الانتهاء
-            let dateObj = new Date(date);
-            dateObj.setFullYear(dateObj.getFullYear() + 1);
-            let expiryDate = dateObj.toISOString().split('T')[0];
+            let name = document.getElementById('b-name').value;
+            let carType = document.getElementById('b-type').value;
+            let num = document.getElementById('b-num').value;
+            let letter = document.getElementById('b-letter').value;
+            let gov = document.getElementById('b-gov').value;
+            let color = document.getElementById('b-color').value;
+            let count = document.getElementById('b-count').value;
+            let identifier = document.getElementById('b-identifier').value;
+            let bDate = document.getElementById('b-date').value;
 
-            // رقم معرف وهمي للتجربة (سيعوض برقم القيد الحقيقي لاحقاً)
-            const fakeId = "B-" + Math.floor(Math.random() * 10000);
+            // دمج الحرف مع الرقم للإكسل
+            let combinedPlate = num + " / " + letter;
 
-            logAuditAction(`توليد باج ذكي للمواطن: ${name}`);
-            document.getElementById('badge-form').reset();
-            
-            // استدعاء دالة عرض الباركود
-            showArchiveBarcode(fakeId, name, fullCarInfo, fullPlateInfo, date, expiryDate);
+            let payload = {
+                action: "staff_entry",
+                entryType: "badge",
+                name: name,
+                carType: carType,
+                plateNum: combinedPlate,
+                gov: gov,
+                color: color,
+                badgeCount: count,
+                identifier: identifier,
+                badgeDate: bDate
+            };
+
+            fetch(WEBHOOK_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            }).then(res => res.json()).then(res => {
+                if (res.result === "success") {
+                    showToast("✅ تم حفظ الباج بنجاح");
+                    logAuditAction(`توليد باج سيارة للمواطن: ${name}`);
+                    
+                    let dateObj = new Date(bDate);
+                    dateObj.setFullYear(dateObj.getFullYear() + 1);
+                    let expiryDate = dateObj.toISOString().split('T')[0];
+
+                    let carInfo = carType + " - " + color;
+                    let plateInfo = combinedPlate + " / " + gov;
+                    
+                    document.getElementById('badge-form').reset();
+                    showArchiveBarcode(res.reqId, name, carInfo, plateInfo, bDate, expiryDate);
+                    loadArchive();
+                }
+            }).catch(err => showToast("❌ خطأ بالاتصال"));
         }
 
-        // دالة لعرض الباركود من الأرشيف أيضاً
         function showArchiveBarcode(id, name, carInfo, plateInfo, issueDate, expiryDate) {
             if(!expiryDate) {
                 let d = new Date(issueDate);
@@ -502,7 +557,6 @@
             
             lastBadgeData = { name: name, car: carInfo, plate: plateInfo, issue: issueDate, expiry: expiryDate };
 
-            // توليد رابط التحقق الفعلي
             const verifyUrl = WEBHOOK_URL + "?verify_badge=" + id;
             
             document.getElementById('qr-container').innerHTML = "";
@@ -524,20 +578,33 @@
             document.getElementById('verify-ui').style.display = 'flex';
         }
 
-        // --- الأرشيف ---
+        // --- الأرشيف الحقيقي ---
         function loadArchive() {
             fetch(WEBHOOK_URL + "?action=archive").then(r => r.json()).then(res => {
                 if (res.result === "success") {
-                    archiveData = { ...res, audit: archiveData.audit };
-                    // إضافة مصفوفة وهمية للمسلمات للتجربة إذا لم تكن موجودة
+                    archiveData = res;
                     if(!archiveData.delivered) archiveData.delivered = [];
                     updateTopStats();
                     renderCurrentArchive();
                 }
-            }).catch(e => {
-                updateTopStats();
-                renderCurrentArchive();
             });
+        }
+
+        // --- نظام تم التسليم الحقيقي ---
+        function markAsDelivered(rowId, name) {
+            if(confirm(`تأكيد تسليم الإجابة للمواطن: ${name}؟`)) {
+                showToast("⏳ جاري التأشير في سجل التسليم...");
+                fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: "mark_delivered", id: rowId })
+                }).then(r => r.json()).then(res => {
+                    if(res.result === "success") {
+                        showToast("✅ تم التوثيق في سجل التسليم");
+                        logAuditAction(`تسليم إجابة وارد للمواطن: ${name}`);
+                        loadArchive();
+                    }
+                });
+            }
         }
 
         function triggerImageUpload() { document.getElementById('global-file-upload').click(); }
@@ -548,15 +615,6 @@
             }
         });
         function viewImage(url) { window.open(url || '#', '_blank'); }
-
-        function markAsDelivered(rowId, name) {
-            if(confirm(`تأكيد تسليم الإجابة للمواطن: ${name}؟`)) {
-                showToast("✅ تم التأشير في سجل التسليم");
-                logAuditAction(`تسليم إجابة وارد للمواطن: ${name}`);
-                // في التطبيق الفعلي، سيتم إرسال الطلب وحذف القيد من الوارد ونقله للتسليم
-                loadArchive();
-            }
-        }
 
         function renderCurrentArchive() {
             const q = document.getElementById('arch-search').value.toLowerCase();
@@ -587,10 +645,8 @@
             } else if (currentArchiveView === "badges" && currentUserRole === "admin") {
                 thead.innerHTML = `<tr><th>صاحب الباج</th><th>تفاصيل العجلة</th><th>تاريخ الإصدار</th><th>الباركود</th></tr>`;
                 archiveData.badges.filter(i => (i.name+" "+i.carType).toLowerCase().includes(q)).forEach(item => {
-                    // تجميع بيانات العجلة للواجهة
                     let carInfo = `${item.carType} - ${item.color || 'غير محدد'}`;
                     let plateInfo = `${item.plateNum || item.plate} / ${item.gov || ''}`;
-                    
                     let qrBtn = `<button class="action-btn btn-qr" onclick="showArchiveBarcode('${item.id}', '${item.name}', '${carInfo}', '${plateInfo}', '${item.badgeDate}')"><i class="fas fa-qrcode"></i> عرض الباركود</button>`;
                     html += `<tr><td><strong>${item.name}</strong></td><td>${carInfo}<br><small dir="ltr">${plateInfo}</small></td><td>${item.badgeDate}</td><td>${qrBtn}</td></tr>`;
                 });
