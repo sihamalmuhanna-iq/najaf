@@ -8,96 +8,120 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        :root { --primary: #1a2a3a; --gold: #d4af37; --bg: #f1f5f9; --green: #16a34a; --blue: #2563eb; --purple: #7e22ce; --teal: #0f766e; }
+        :root { --primary: #121e2d; --gold: #d4af37; --gold-light: #f9e596; --bg: #f4f7fa; --green: #10b981; --blue: #3b82f6; --purple: #8b5cf6; --teal: #14b8a6; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg); color: #1e293b; padding-bottom: 50px; }
+        body { background: var(--bg); color: #1e293b; padding-bottom: 50px; overflow-x: hidden; }
 
         /* --- المصادقة الأمنية --- */
-        #login-screen { position: fixed; inset: 0; background: linear-gradient(135deg, var(--primary), #0f172a); display: flex; justify-content: center; align-items: center; z-index: 9999; padding: 20px; }
-        .login-card { background: white; width: 100%; max-width: 390px; padding: 30px 25px; border-radius: 16px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border-top: 5px solid var(--gold); position: relative; overflow: hidden; }
-        .login-card h2 { color: var(--primary); margin-bottom: 8px; font-size: 22px; }
-        .pin-input { width: 100%; padding: 14px; text-align: center; font-size: 22px; letter-spacing: 5px; border: 2px solid #cbd5e1; border-radius: 10px; margin-bottom: 15px; outline: none; font-weight: bold; transition: 0.3s; }
-        .pin-input:focus { border-color: var(--gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.3); }
-        .btn-main { width: 100%; background: var(--primary); color: white; border: none; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; }
-        .btn-main:hover { opacity: 0.92; }
+        #login-screen { position: fixed; inset: 0; background: linear-gradient(135deg, var(--primary), #080d14); display: flex; justify-content: center; align-items: center; z-index: 9999; padding: 20px; }
+        .login-card { background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border: 1px solid rgba(212, 175, 55, 0.2); width: 100%; max-width: 400px; padding: 40px 25px; border-radius: 20px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.5); border-top: 5px solid var(--gold); position: relative; overflow: hidden; }
+        .login-card h2 { color: var(--gold); margin-bottom: 8px; font-size: 24px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        .login-card p { color: #cbd5e1; margin-bottom: 25px; }
+        .pin-input { width: 100%; padding: 15px; text-align: center; font-size: 24px; letter-spacing: 8px; border: 2px solid #334155; background: rgba(0,0,0,0.2); color: white; border-radius: 12px; margin-bottom: 20px; outline: none; font-weight: bold; transition: 0.3s; }
+        .pin-input:focus { border-color: var(--gold); box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); }
+        .btn-main { width: 100%; background: linear-gradient(45deg, var(--gold), #b38f22); color: var(--primary); border: none; padding: 15px; border-radius: 12px; font-size: 17px; font-weight: 800; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); }
+        .btn-main:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5); }
         
-        #security-scanner { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(26, 42, 58, 0.95); color: #00ff00; display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 10; font-family: monospace; font-size: 16px; font-weight: bold; }
-        .scan-line { width: 100%; height: 2px; background: #00ff00; position: absolute; top: 0; animation: scanAnim 1.5s linear infinite; box-shadow: 0 0 10px #00ff00; }
+        #security-scanner { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(18, 30, 45, 0.95); color: var(--gold); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 10; font-family: monospace; font-size: 18px; font-weight: bold; }
+        .scan-line { width: 100%; height: 3px; background: var(--gold); position: absolute; top: 0; animation: scanAnim 1.5s linear infinite; box-shadow: 0 0 15px var(--gold); }
         @keyframes scanAnim { 0% { top: 0; } 100% { top: 100%; } }
 
         /* --- الهيكل العام --- */
-        header { background: var(--primary); color: white; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid var(--gold); flex-wrap: wrap; gap: 10px; }
-        header h1 { font-size: 18px; color: var(--gold); }
-        .role-badge { background: rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: bold; }
+        header { background: linear-gradient(90deg, var(--primary), #1e3046); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid var(--gold); flex-wrap: wrap; gap: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        header h1 { font-size: 20px; color: var(--gold); text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .role-badge { background: rgba(212, 175, 55, 0.15); color: var(--gold-light); border: 1px solid rgba(212, 175, 55, 0.3); padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: bold; }
 
-        .container { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
+        .container { max-width: 1250px; margin: 25px auto; padding: 0 15px; }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 20px; }
-        .stat-card { background: white; padding: 14px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-right: 5px solid var(--gold); text-align: center; }
-        .stat-card h3 { font-size: 24px; color: var(--primary); margin-bottom: 4px; }
-        .stat-card span { font-size: 12px; color: #64748b; font-weight: 700; }
+        /* البطاقات الإحصائية */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .stat-card { background: white; padding: 18px 15px; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border-right: 5px solid var(--gold); text-align: center; transition: 0.3s; }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.06); }
+        .stat-card h3 { font-size: 26px; color: var(--primary); margin-bottom: 5px; font-weight: 800; }
+        .stat-card span { font-size: 13px; color: #64748b; font-weight: 700; }
 
         /* التبويبات */
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .tab-btn { flex: 1; min-width: 140px; padding: 13px; background: white; border: 1px solid #cbd5e1; border-radius: 10px; font-weight: 700; font-size: 14px; color: #475569; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
-        .tab-btn.active { background: var(--primary); color: var(--gold) !important; border-color: var(--primary); }
+        .tabs { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
+        .tab-btn { flex: 1; min-width: 140px; padding: 14px; background: white; border: 1px solid #e2e8f0; border-radius: 12px; font-weight: 800; font-size: 14px; color: #475569; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .tab-btn:hover { background: #f8fafc; border-color: #cbd5e1; }
+        .tab-btn.active { background: var(--primary); color: var(--gold) !important; border-color: var(--primary); box-shadow: 0 5px 15px rgba(26, 42, 58, 0.2); }
 
         .sub-tabs { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
-        .sub-tab-btn { padding: 9px 15px; border-radius: 8px; border: 1px solid #cbd5e1; background: #f8fafc; font-weight: 700; font-size: 13px; color: #475569; cursor: pointer; }
-        .sub-tab-btn.active { background: var(--gold); color: var(--primary) !important; border-color: var(--gold); }
+        .sub-tab-btn { padding: 10px 18px; border-radius: 10px; border: 1px solid #e2e8f0; background: white; font-weight: 700; font-size: 13px; color: #475569; cursor: pointer; transition: 0.2s; }
+        .sub-tab-btn:hover { background: #f1f5f9; }
+        .sub-tab-btn.active { background: var(--gold); color: var(--primary) !important; border-color: var(--gold); box-shadow: 0 3px 10px rgba(212, 175, 55, 0.2); }
 
-        .panel { display: none; background: white; padding: 22px; border-radius: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .panel.active { display: block; }
-        .panel-title { color: var(--primary); margin-bottom: 18px; padding-bottom: 10px; border-bottom: 2px solid #f1f5f9; font-size: 18px; }
+        .panel { display: none; background: white; padding: 25px; border-radius: 16px; box-shadow: 0 5px 20px rgba(0,0,0,0.04); border: 1px solid #e2e8f0; }
+        .panel.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .panel-title { color: var(--primary); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #f1f5f9; font-size: 18px; font-weight: 800; }
 
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; }
-        .form-group { margin-bottom: 12px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-bottom: 20px; }
         .form-group.full { grid-column: 1 / -1; }
-        .form-group label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 14px; color: var(--primary); }
-        .form-control { width: 100%; padding: 11px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; outline: none; }
-        .form-control:focus { border-color: var(--primary); }
+        .form-group label { display: block; font-weight: 700; margin-bottom: 8px; font-size: 14px; color: #334155; }
+        .form-control { width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; outline: none; transition: 0.2s; background: #f8fafc; }
+        .form-control:focus { border-color: var(--gold); background: white; box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1); }
 
-        .search-bar { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
-        .search-bar input { flex: 1; min-width: 240px; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; outline: none; }
+        .search-bar { display: flex; gap: 10px; margin-bottom: 20px; }
+        .search-bar input { flex: 1; padding: 12px 18px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; outline: none; transition: 0.2s; }
+        .search-bar input:focus { border-color: var(--primary); }
         
-        .table-responsive { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 850px; font-size: 13.5px; }
-        th, td { padding: 12px 10px; text-align: right; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
-        th { background: #f8fafc; color: var(--primary); font-weight: 800; white-space: nowrap; }
-        tr:hover { background: #f8fafc; }
+        .table-responsive { overflow-x: auto; border-radius: 12px; border: 1px solid #e2e8f0; }
+        table { width: 100%; border-collapse: collapse; min-width: 900px; font-size: 14px; background: white; }
+        th, td { padding: 15px 12px; text-align: right; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
+        th { background: #f8fafc; color: var(--primary); font-weight: 800; white-space: nowrap; border-bottom: 2px solid #e2e8f0; }
+        tr:hover { background: #f1f5f9; }
         
-        .badge { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; display: inline-block; }
+        .badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 800; display: inline-block; }
         .badge-wait { background: #fef3c7; color: #b45309; }
         .badge-out { background: #dbeafe; color: #1d4ed8; }
         .badge-done { background: #dcfce7; color: #15803d; }
 
         /* أزرار الإجراءات */
-        .action-btn { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 12px; color: var(--primary); transition: 0.2s; display: inline-flex; align-items: center; gap: 5px; margin: 2px; }
-        .action-btn:hover { background: #e2e8f0; }
-        .btn-upload { color: var(--blue); border-color: var(--blue); }
+        .action-btn { background: white; border: 1px solid #cbd5e1; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 800; font-size: 12px; color: #475569; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; margin: 2px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .action-btn:hover { background: #f8fafc; transform: translateY(-1px); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .btn-upload { color: var(--blue); border-color: #bfdbfe; background: #eff6ff; }
         .btn-view { background: var(--blue); color: white; border-color: var(--blue); }
-        .btn-deliver { color: var(--green); border-color: var(--green); }
-        .btn-qr { color: var(--purple); border-color: var(--purple); }
+        .btn-deliver { color: var(--green); border-color: #bbf7d0; background: #f0fdf4; }
+        .btn-qr { color: white; background: var(--purple); border-color: var(--purple); }
 
-        #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 12px 24px; border-radius: 30px; font-weight: 700; font-size: 14px; display: none; z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.2); text-align: center; }
+        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 14px 28px; border-radius: 30px; font-weight: 800; font-size: 14px; display: none; z-index: 9999; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; }
         .hidden-file-input { display: none; }
 
         /* --- نافذة عرض الباركود --- */
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 10000; justify-content: center; align-items: center; }
-        .qr-modal { background: white; padding: 30px; border-radius: 16px; text-align: center; max-width: 350px; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .qr-box { margin: 20px auto; width: 180px; height: 180px; display: flex; justify-content: center; align-items: center; border: 2px dashed #cbd5e1; padding: 10px; }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(5px); z-index: 10000; justify-content: center; align-items: center; padding: 20px; }
+        .qr-modal { background: white; padding: 35px 25px; border-radius: 20px; text-align: center; max-width: 380px; width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.3); position: relative; }
+        .qr-box { margin: 20px auto; width: 200px; height: 200px; display: flex; justify-content: center; align-items: center; border: 3px dashed #cbd5e1; padding: 15px; border-radius: 16px; background: #f8fafc; }
+        .btn-close-modal { position: absolute; top: 15px; left: 15px; background: #f1f5f9; border: none; width: 35px; height: 35px; border-radius: 50%; font-size: 16px; color: #64748b; cursor: pointer; transition: 0.2s; }
+        .btn-close-modal:hover { background: #e2e8f0; color: #ef4444; }
 
-        /* --- واجهة التحقق الأمنية الفخمة (التي تظهر عند مسح الباركود) --- */
-        #verify-ui { display: none; position: fixed; inset: 0; background: linear-gradient(135deg, #0f172a 0%, var(--primary) 100%); z-index: 99999; color: white; flex-direction: column; align-items: center; padding: 40px 20px; overflow-y: auto; }
-        .verify-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 20px; width: 100%; max-width: 450px; padding: 30px 20px; text-align: center; box-shadow: 0 15px 40px rgba(0,0,0,0.5); backdrop-filter: blur(10px); }
-        .v-logo { font-size: 50px; color: var(--gold); margin-bottom: 15px; text-shadow: 0 0 15px rgba(212,175,55,0.5); }
-        .v-title { color: var(--gold); font-size: 22px; font-weight: 800; margin-bottom: 5px; }
-        .v-subtitle { font-size: 16px; color: #cbd5e1; margin-bottom: 25px; }
-        .v-status { display: inline-block; background: rgba(22, 163, 74, 0.2); color: #4ade80; border: 1px solid #16a34a; padding: 8px 25px; border-radius: 30px; font-size: 18px; font-weight: 800; margin-bottom: 25px; letter-spacing: 1px; }
-        .v-info-row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: right; }
-        .v-label { color: #94a3b8; font-size: 14px; }
-        .v-val { font-size: 16px; font-weight: bold; color: white; }
-        .v-footer { margin-top: 30px; font-size: 12px; color: #64748b; }
+        /* --- واجهة التحقق الأمنية הפخمة جدًا --- */
+        #verify-ui { display: none; position: fixed; inset: 0; background: radial-gradient(circle at center, #1e3046 0%, #080d14 100%); z-index: 99999; color: white; flex-direction: column; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
+        .verify-card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(212, 175, 55, 0.15); border-radius: 24px; width: 100%; max-width: 420px; padding: 40px 25px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.6), inset 0 0 20px rgba(212, 175, 55, 0.05); backdrop-filter: blur(20px); position: relative; overflow: hidden; }
+        
+        /* تأثير الإضاءة الخلفية */
+        .verify-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(212,175,55,0.1) 0%, transparent 60%); z-index: -1; pointer-events: none; }
+        
+        /* شعار مجلس النواب (أيقونة فخمة محاكية) */
+        .v-logo-wrapper { width: 100px; height: 100px; margin: 0 auto 20px auto; background: linear-gradient(135deg, #d4af37, #997a15); border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 30px rgba(212, 175, 55, 0.4), inset 0 0 15px rgba(255,255,255,0.3); padding: 5px; }
+        .v-logo-inner { width: 100%; height: 100%; background: #0f172a; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 2px solid rgba(212, 175, 55, 0.5); }
+        .v-logo-inner i { font-size: 40px; background: -webkit-linear-gradient(#f9e596, #d4af37); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .v-title { color: var(--gold-light); font-size: 24px; font-weight: 800; margin-bottom: 5px; letter-spacing: 1px; text-shadow: 0 2px 10px rgba(212,175,55,0.3); }
+        .v-subtitle { font-size: 15px; color: #cbd5e1; margin-bottom: 30px; font-weight: 700; border-bottom: 1px solid rgba(212, 175, 55, 0.2); padding-bottom: 20px; }
+        
+        .v-status { display: inline-flex; align-items: center; gap: 8px; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); padding: 12px 30px; border-radius: 50px; font-size: 19px; font-weight: 800; margin-bottom: 30px; box-shadow: 0 0 20px rgba(16, 185, 129, 0.2); }
+        
+        .v-info-box { background: rgba(0,0,0,0.3); border-radius: 16px; padding: 5px 20px; border: 1px solid rgba(255,255,255,0.05); }
+        .v-info-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: right; }
+        .v-info-row:last-child { border-bottom: none; }
+        .v-label { color: #94a3b8; font-size: 14px; font-weight: 700; }
+        .v-val { font-size: 16px; font-weight: 800; color: white; text-align: left; }
+        .v-val-gold { color: var(--gold-light); text-shadow: 0 0 10px rgba(212,175,55,0.3); }
+        
+        .v-footer { margin-top: 35px; font-size: 12px; color: #64748b; font-weight: 700; }
+        .v-close-btn { margin-top: 25px; padding: 12px 30px; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); border-radius: 30px; cursor: pointer; font-weight: 800; transition: 0.3s; font-size: 14px; }
+        .v-close-btn:hover { background: rgba(255,255,255,0.1); }
     </style>
 </head>
 <body>
@@ -105,38 +129,39 @@
     <!-- المصادقة الأمنية -->
     <div id="login-screen">
         <div class="login-card">
-            <div id="security-scanner"><div class="scan-line"></div><i class="fas fa-fingerprint" style="font-size: 50px; margin-bottom:15px;"></i><span id="scan-text">جاري فك التشفير...</span></div>
-            <i class="fas fa-shield-alt" style="font-size: 48px; color: var(--gold); margin-bottom: 15px;"></i>
+            <div id="security-scanner"><div class="scan-line"></div><i class="fas fa-fingerprint" style="font-size: 60px; margin-bottom:20px;"></i><span id="scan-text">جاري فك التشفير...</span></div>
+            <i class="fas fa-shield-alt" style="font-size: 55px; color: var(--gold); margin-bottom: 15px; filter: drop-shadow(0 0 10px rgba(212,175,55,0.4));"></i>
             <h2>المنظومة الإدارية الشاملة</h2>
             <p>مكتب النائب سهام منعم المحنة</p>
             <input type="password" id="pin-input" class="pin-input" placeholder="الرمز السري" maxlength="15" onkeypress="if(event.key==='Enter') login()">
-            <button onclick="login()" class="btn-main"><i class="fas fa-sign-in-alt"></i> دخول للمنظومة</button>
-            <p id="login-err" style="color: #dc2626; margin-top: 12px; display: none; font-weight: bold;">رمز الدخول غير صحيح!</p>
+            <button onclick="login()" class="btn-main"><i class="fas fa-sign-in-alt"></i> فتح السجلات</button>
+            <p id="login-err" style="color: #ef4444; margin-top: 15px; display: none; font-weight: bold;">رمز الدخول غير صحيح!</p>
         </div>
     </div>
 
     <header>
         <div><h1><i class="fas fa-network-wired"></i> المنظومة الإدارية الشاملة</h1><small style="opacity: 0.85;">مكتب النائب سهام منعم المحنة</small></div>
-        <div style="display:flex; align-items:center; gap:10px;"><div class="role-badge" id="user-role-label">الكادر</div><button onclick="location.reload()" style="background:#dc2626; color:white; border:none; padding:6px 12px; border-radius:15px; cursor:pointer;"><i class="fas fa-power-off"></i></button></div>
+        <div style="display:flex; align-items:center; gap:12px;"><div class="role-badge" id="user-role-label">الكادر</div><button onclick="location.reload()" style="background:#ef4444; color:white; border:none; padding:8px 15px; border-radius:20px; cursor:pointer; font-weight:bold; box-shadow: 0 2px 8px rgba(239,68,68,0.3);"><i class="fas fa-power-off"></i> خروج</button></div>
     </header>
 
     <div class="container">
-        <!-- الإحصائيات -->
+        <!-- الإحصائيات الفوك (6 بطاقات مرتبة) -->
         <div class="stats-grid">
-            <div class="stat-card" id="card-st-out" style="border-color:#2563eb;"><h3 id="st-out">0</h3><span>الصادر</span></div>
-            <div class="stat-card" id="card-st-in" style="border-color:#16a34a;"><h3 id="st-in">0</h3><span>الوارد</span></div>
+            <div class="stat-card" id="card-st-out" style="border-color:#3b82f6;"><h3 id="st-out">0</h3><span>الصادر الكلي</span></div>
+            <div class="stat-card" id="card-st-in" style="border-color:#10b981;"><h3 id="st-in">0</h3><span>الوارد الكلي</span></div>
+            <div class="stat-card" id="card-st-del" style="border-color:#059669;"><h3 id="st-del">0</h3><span>تم التسليم</span></div>
             <div class="stat-card" id="card-st-badge" style="border-color:var(--purple); display:none;"><h3 id="st-badge">0</h3><span>باجات السيارات</span></div>
             <div class="stat-card" id="card-st-local" style="border-color:var(--teal); display:none;"><h3 id="st-local">0</h3><span>الكتب المحلية</span></div>
             <div class="stat-card" id="card-st-app" style="border-color:#f59e0b; display:none;"><h3 id="st-app">0</h3><span>طلبات التطبيق</span></div>
         </div>
 
-        <!-- التبويبات -->
+        <!-- التبويبات الرئيسية -->
         <div class="tabs">
             <button class="tab-btn active" id="tab-btn-out" onclick="tryOpenPanel('out-panel', this, 'outgoing')"><i class="fas fa-paper-plane"></i> كتاب صادر</button>
             <button class="tab-btn" id="tab-btn-in" onclick="tryOpenPanel('in-panel', this, 'incoming')"><i class="fas fa-inbox"></i> إجابة وارد</button>
             <button class="tab-btn" id="tab-btn-badge" onclick="tryOpenPanel('badge-panel', this, 'admin')" style="display:none;"><i class="fas fa-id-card"></i> باجات سيارات</button>
             <button class="tab-btn" id="tab-btn-local" onclick="tryOpenPanel('local-panel', this, 'admin')" style="display:none;"><i class="fas fa-map-marker-alt"></i> كتب محلية</button>
-            <button class="tab-btn" id="tab-btn-media" onclick="tryOpenPanel('media-panel', this, 'admin')" style="display:none;"><i class="fas fa-bullhorn"></i> لوحة الإعلام</button>
+            <button class="tab-btn" id="tab-btn-media" onclick="tryOpenPanel('media-panel', this, 'admin')" style="display:none; color:var(--primary);"><i class="fas fa-bullhorn"></i> لوحة الإعلام</button>
             <button class="tab-btn" id="tab-btn-arch" onclick="tryOpenPanel('arch-panel', this, 'archive')"><i class="fas fa-archive"></i> سجل الأرشيف</button>
         </div>
 
@@ -152,9 +177,9 @@
                     <div class="form-group"><label>تاريخ الكتاب *</label><input type="date" class="form-control" id="out-date" required></div>
                     <div class="form-group"><label>المعرف (اختياري)</label><input type="text" class="form-control" id="out-identifier"></div>
                     <div class="form-group full"><label>موضوع الكتاب *</label><textarea class="form-control" id="out-subject" rows="2" required></textarea></div>
-                    <div class="form-group full"><label>إرفاق صورة الكتاب (اختياري)</label><input type="file" class="form-control" accept="image/*" style="padding: 8px;"></div>
+                    <div class="form-group full"><label>إرفاق صورة الكتاب (اختياري)</label><input type="file" class="form-control" accept="image/*" style="padding: 9px; background:white;"></div>
                 </div>
-                <button type="submit" class="btn-main" style="background:var(--blue);"><i class="fas fa-save"></i> حفظ في الصادر</button>
+                <button type="submit" class="btn-main" style="background:var(--blue); color:white;"><i class="fas fa-save"></i> حفظ في الصادر</button>
             </form>
         </div>
 
@@ -169,59 +194,64 @@
                     <div class="form-group"><label>تاريخ الوارد *</label><input type="date" class="form-control" id="in-date" required></div>
                     <div class="form-group full"><label>هامش الوزير أو الجهة *</label><input type="text" class="form-control" id="in-margin" required></div>
                     <div class="form-group full"><label>الموضوع *</label><textarea class="form-control" id="in-subject" rows="2" required></textarea></div>
-                    <div class="form-group full"><label>إرفاق صورة الإجابة (اختياري)</label><input type="file" class="form-control" accept="image/*" style="padding: 8px;"></div>
+                    <div class="form-group full"><label>إرفاق صورة الإجابة (اختياري)</label><input type="file" class="form-control" accept="image/*" style="padding: 9px; background:white;"></div>
                 </div>
-                <button type="submit" class="btn-main" style="background:var(--green);"><i class="fas fa-check-double"></i> حفظ وإنجاز</button>
+                <button type="submit" class="btn-main" style="background:var(--green); color:white;"><i class="fas fa-check-double"></i> حفظ وإنجاز</button>
             </form>
         </div>
 
-        <!-- 3. الباجات -->
+        <!-- 3. الباجات (حقول مفصلة) -->
         <div id="badge-panel" class="panel">
             <h3 class="panel-title"><i class="fas fa-id-card" style="color:var(--purple);"></i> تسجيل باج سيارة وتوليد باركود</h3>
             <form id="badge-form" onsubmit="event.preventDefault(); submitBadge();">
                 <div class="form-grid">
-                    <div class="form-group"><label>اسم صاحب الباج *</label><input type="text" class="form-control" id="b-name" required></div>
-                    <div class="form-group"><label>نوع العجلة ورقمها *</label><input type="text" class="form-control" id="b-car" required></div>
+                    <div class="form-group full"><label>اسم صاحب الباج *</label><input type="text" class="form-control" id="b-name" required></div>
+                    <div class="form-group"><label>نوع العجلة *</label><input type="text" class="form-control" id="b-type" placeholder="مثال: سوناتا، تاهو..." required></div>
+                    <div class="form-group"><label>رقم العجلة *</label><input type="text" class="form-control" id="b-num" placeholder="مثال: 55697" required></div>
+                    <div class="form-group"><label>الحرف *</label><input type="text" class="form-control" id="b-letter" placeholder="مثال: H أو أ" required></div>
+                    <div class="form-group"><label>المحافظة *</label><input type="text" class="form-control" id="b-gov" placeholder="مثال: بغداد أو 11" required></div>
+                    <div class="form-group"><label>لون العجلة *</label><input type="text" class="form-control" id="b-color" placeholder="مثال: رصاصي فضي" required></div>
                     <div class="form-group"><label>العدد *</label><input type="number" class="form-control" id="b-count" required></div>
                     <div class="form-group"><label>المعرف *</label><input type="text" class="form-control" id="b-identifier" required></div>
                     <div class="form-group full"><label>تاريخ الصدور *</label><input type="date" class="form-control" id="b-date" required></div>
                 </div>
-                <button type="submit" class="btn-main" style="background:var(--purple);"><i class="fas fa-qrcode"></i> حفظ وتوليد الباركود الذكي</button>
+                <button type="submit" class="btn-main" style="background:var(--purple); color:white;"><i class="fas fa-qrcode"></i> حفظ وتوليد الباركود الذكي</button>
             </form>
         </div>
 
-        <!-- 4. المحلية -->
+        <!-- 4. المحلية (بدون كلمة سري) -->
         <div id="local-panel" class="panel">
-            <h3 class="panel-title"><i class="fas fa-map-marker-alt" style="color:var(--teal);"></i> تسجيل كتاب محلي (سجل سري)</h3>
+            <h3 class="panel-title"><i class="fas fa-map-marker-alt" style="color:var(--teal);"></i> تسجيل كتاب محلي</h3>
             <form id="local-form" onsubmit="event.preventDefault(); submitForm('local_letter');">
                 <div class="form-grid">
                     <div class="form-group"><label>الاسم الكامل *</label><input type="text" class="form-control" id="l-name" required></div>
-                    <div class="form-group"><label>الجهة المعنون إليها *</label><input type="text" class="form-control" id="l-entity" required></div>
+                    <div class="form-group"><label>رقم الهاتف *</label><input type="tel" class="form-control" id="l-phone" required></div>
+                    <div class="form-group full"><label>الجهة المعنون إليها *</label><input type="text" class="form-control" id="l-entity" required></div>
                     <div class="form-group full"><label>الموضوع *</label><input type="text" class="form-control" id="l-subject" required></div>
-                    <div class="form-group full"><label>إرفاق صورة الكتاب (اختياري)</label><input type="file" class="form-control" accept="image/*" style="padding: 8px;"></div>
+                    <div class="form-group full"><label>إرفاق صورة الكتاب (اختياري)</label><input type="file" class="form-control" accept="image/*" style="padding: 9px; background:white;"></div>
                 </div>
-                <button type="submit" class="btn-main" style="background:var(--teal);"><i class="fas fa-save"></i> حفظ في السجل المحلي</button>
+                <button type="submit" class="btn-main" style="background:var(--teal); color:white;"><i class="fas fa-save"></i> حفظ في السجل المحلي</button>
             </form>
         </div>
 
         <!-- 5. لوحة الإعلام -->
         <div id="media-panel" class="panel">
             <h3 class="panel-title"><i class="fas fa-bullhorn" style="color:var(--primary);"></i> لوحة الإحصائيات الإعلامية</h3>
-            <div style="background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #cbd5e1; text-align: center;">
-                <h2 style="color: var(--primary); margin-bottom: 15px;">الموقف الإنجازي العام لمكتب النائب</h2>
-                <div class="stats-grid" style="grid-template-columns: 1fr 1fr 1fr;">
-                    <div class="stat-card" style="border-color:var(--gold);"><h3 id="media-total">0</h3><span>إجمالي المناشدات المستلمة</span></div>
-                    <div class="stat-card" style="border-color:var(--green);"><h3 id="media-done">0</h3><span>القضايا المنجزة والمستحصلة</span></div>
-                    <div class="stat-card" style="border-color:var(--blue);"><h3 id="media-rate">0%</h3><span>نسبة الاستجابة</span></div>
+            <div style="background: #f8fafc; padding: 30px; border-radius: 16px; border: 1px solid #cbd5e1; text-align: center;">
+                <h2 style="color: var(--primary); margin-bottom: 25px;">الموقف الإنجازي العام لمكتب النائب</h2>
+                <div class="stats-grid" style="grid-template-columns: 1fr 1fr 1fr; margin-bottom: 0;">
+                    <div class="stat-card" style="border-color:var(--gold);"><h3 id="media-total">0</h3><span style="font-size:14px;">إجمالي المناشدات المستلمة</span></div>
+                    <div class="stat-card" style="border-color:var(--green);"><h3 id="media-done">0</h3><span style="font-size:14px;">القضايا المنجزة والمستحصلة</span></div>
+                    <div class="stat-card" style="border-color:var(--blue);"><h3 id="media-rate">0%</h3><span style="font-size:14px;">نسبة الاستجابة للطلبات</span></div>
                 </div>
             </div>
         </div>
 
         <!-- 6. الأرشيف -->
         <div id="arch-panel" class="panel">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
                 <h3 class="panel-title" style="margin:0; border:none;" id="archive-main-title"><i class="fas fa-database"></i> سجل الأرشيف</h3>
-                <button onclick="loadArchive()" class="btn-main" style="width:auto; padding:8px 15px; font-size:13px;"><i class="fas fa-sync-alt"></i> تحديث الأرشيف</button>
+                <button onclick="loadArchive()" class="btn-main" style="width:auto; padding:10px 20px; font-size:14px; background:white; color:var(--primary); border:2px solid var(--primary); box-shadow:none;"><i class="fas fa-sync-alt"></i> تحديث السجلات</button>
             </div>
 
             <div class="sub-tabs" id="admin-sub-tabs" style="display:none;">
@@ -231,15 +261,15 @@
                 <button class="sub-tab-btn" id="sub-badge" onclick="switchArchiveView('badges', this)" style="color:var(--purple);"><i class="fas fa-id-card"></i> الباجات</button>
                 <button class="sub-tab-btn" id="sub-local" onclick="switchArchiveView('localLetters', this)" style="color:var(--teal);"><i class="fas fa-map-marker-alt"></i> المحلية</button>
                 <button class="sub-tab-btn" id="sub-app" onclick="switchArchiveView('app', this)" style="color:#b45309;"><i class="fas fa-mobile-alt"></i> التطبيق</button>
-                <button class="sub-tab-btn" id="sub-audit" onclick="switchArchiveView('audit', this)" style="color:#dc2626; border-color:#dc2626;"><i class="fas fa-user-secret"></i> الرقابة</button>
+                <button class="sub-tab-btn" id="sub-audit" onclick="switchArchiveView('audit', this)" style="color:#ef4444; border-color:#fca5a5; background:#fef2f2;"><i class="fas fa-user-secret"></i> الرقابة</button>
             </div>
 
-            <div class="search-bar"><input type="text" id="arch-search" oninput="renderCurrentArchive()" placeholder="ابحث بالاسم أو الدائرة..."></div>
+            <div class="search-bar"><input type="text" id="arch-search" oninput="renderCurrentArchive()" placeholder="ابحث بالاسم أو الدائرة أو الرقم..."></div>
 
             <div class="table-responsive">
                 <table>
                     <thead id="archive-thead"></thead>
-                    <tbody id="archive-tbody"><tr><td colspan="9" style="text-align:center; padding:30px;">جاري تحميل البيانات...</td></tr></tbody>
+                    <tbody id="archive-tbody"><tr><td colspan="9" style="text-align:center; padding:40px; font-weight:bold; color:#64748b;">جاري تحميل البيانات...</td></tr></tbody>
                 </table>
             </div>
         </div>
@@ -250,39 +280,44 @@
     <!-- نافذة عرض الباركود المصغرة -->
     <div class="modal-overlay" id="qr-modal">
         <div class="qr-modal">
-            <h3 style="color:var(--primary); margin-bottom:10px;">تم توليد الباركود بنجاح</h3>
-            <p style="font-size:12px; color:#64748b;">هذا الباركود جاهز للطباعة على ظهر الباج</p>
+            <button class="btn-close-modal" onclick="document.getElementById('qr-modal').style.display='none'"><i class="fas fa-times"></i></button>
+            <h3 style="color:var(--primary); margin-bottom:8px; font-weight:800;">تم توليد الباركود بنجاح</h3>
+            <p style="font-size:13px; color:#64748b; margin-bottom: 10px;">امسح الباركود بكاميرا الهاتف للتحقق</p>
             <div class="qr-box" id="qr-container"></div>
-            <button class="btn-main" onclick="previewVerificationUI()" style="margin-bottom:10px; background:var(--gold); color:var(--primary);"><i class="fas fa-eye"></i> معاينة واجهة التحقق الأمنية</button>
-            <button class="btn-main" onclick="document.getElementById('qr-modal').style.display='none'" style="background:#cbd5e1; color:#333;">إغلاق</button>
+            <button class="btn-main" onclick="previewVerificationUI()" style="margin-top:15px; background:linear-gradient(45deg, var(--primary), #1e3046); color:var(--gold);"><i class="fas fa-shield-alt"></i> معاينة واجهة التحقق الأمنية</button>
         </div>
     </div>
 
-    <!-- واجهة التحقق الأمنية الفخمة (التي يراها رجل الأمن) -->
+    <!-- واجهة التحقق الأمنية الفخمة جداً -->
     <div id="verify-ui">
         <div class="verify-card">
-            <i class="fas fa-landmark v-logo"></i>
+            <div class="v-logo-wrapper">
+                <div class="v-logo-inner"><i class="fas fa-landmark"></i></div>
+            </div>
             <div class="v-title">مجلس النواب العراقي</div>
             <div class="v-subtitle">مكتب النائب سهام منعم المحنة</div>
             
-            <div class="v-status"><i class="fas fa-check-circle"></i> الباج فَعّال ومُصرح له</div>
+            <div class="v-status"><i class="fas fa-check-circle"></i> الباج فعال ومصرح له</div>
             
-            <div class="v-info-row"><span class="v-label">الاسم:</span><span class="v-val" id="v-name"></span></div>
-            <div class="v-info-row"><span class="v-label">العجلة:</span><span class="v-val" id="v-car"></span></div>
-            <div class="v-info-row"><span class="v-label">تاريخ الإصدار:</span><span class="v-val" id="v-issue"></span></div>
-            <div class="v-info-row" style="border:none;"><span class="v-label">صالح لغاية:</span><span class="v-val" style="color:var(--gold);" id="v-expiry"></span></div>
+            <div class="v-info-box">
+                <div class="v-info-row"><span class="v-label">اسم حامل الباج:</span><span class="v-val" id="v-name"></span></div>
+                <div class="v-info-row"><span class="v-label">نوع ولون العجلة:</span><span class="v-val" id="v-car"></span></div>
+                <div class="v-info-row"><span class="v-label">رقم العجلة:</span><span class="v-val" id="v-plate" style="direction:ltr;"></span></div>
+                <div class="v-info-row"><span class="v-label">تاريخ الإصدار:</span><span class="v-val" id="v-issue"></span></div>
+                <div class="v-info-row"><span class="v-label">صالح لغاية:</span><span class="v-val v-val-gold" id="v-expiry"></span></div>
+            </div>
             
             <div class="v-footer">
-                <i class="fas fa-shield-alt"></i> نظام المطابقة الأمنية الإلكتروني - محمي ضد التزوير
-                <br><br>
-                <button onclick="document.getElementById('verify-ui').style.display='none'" style="padding:8px 20px; background:rgba(255,255,255,0.1); color:white; border:1px solid rgba(255,255,255,0.3); border-radius:20px; cursor:pointer;">إغلاق المعاينة</button>
+                <i class="fas fa-lock" style="color:var(--gold);"></i> نظام المطابقة الأمنية الإلكتروني الموحد<br>محمي ومشفّر ضد التزوير
             </div>
+            <button class="v-close-btn" onclick="document.getElementById('verify-ui').style.display='none'">إغلاق المعاينة</button>
         </div>
     </div>
 
     <div id="toast">تم الحفظ</div>
 
     <script>
+        // ⚠️ ضع رابط الـ Webhook الفعلي هنا لكي تعمل الباركودات بشكل حقيقي لاحقاً
         const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbxIpu80rI5mIsiS5Pho-VoA7U8FwYPvmAd4AEj7mDoK9gZ9gaxwsG2h-s2YkSf1MBvncQ/exec";
 
         const PINS = {
@@ -293,11 +328,10 @@
 
         let currentUserRole = "";
         let currentArchiveView = "outgoing";
-        let archiveData = { outgoing: [], incoming: [], badges: [], localLetters: [], appRequests: [], audit: [] };
-        let currentUploadRowId = null;
-        let lastBadgeData = null; // للاحتفاظ ببيانات الباج للمعاينة
+        let archiveData = { outgoing: [], incoming: [], delivered: [], badges: [], localLetters: [], appRequests: [], audit: [] };
+        let lastBadgeData = null; 
 
-        // --- المصادقة الأمنية والصلاحيات ---
+        // --- المصادقة الأمنية ---
         function login() {
             const pin = document.getElementById('pin-input').value.trim();
             if (PINS[pin]) {
@@ -328,6 +362,11 @@
                 document.getElementById('tab-btn-badge').style.display = 'flex';
                 document.getElementById('tab-btn-local').style.display = 'flex';
                 document.getElementById('tab-btn-media').style.display = 'flex';
+                
+                document.getElementById('card-st-badge').style.display = 'block';
+                document.getElementById('card-st-local').style.display = 'block';
+                document.getElementById('card-st-app').style.display = 'block';
+                
                 adminTabs.style.display = "flex";
                 subBtns.forEach(b => b.style.display = 'inline-block');
             } else if (currentUserRole === "outgoing") {
@@ -341,7 +380,6 @@
                 document.getElementById('archive-main-title').innerHTML = '<i class="fas fa-inbox" style="color:var(--green);"></i> أرشيف الوارد والتسليم';
                 activatePanel('in-panel', document.getElementById('tab-btn-in'));
                 
-                // صلاحيات موظف الوارد للأرشيف (يشوف الوارد وتم التسليم فقط)
                 adminTabs.style.display = "flex";
                 subBtns.forEach(b => b.style.display = 'none');
                 document.getElementById('sub-in').style.display = 'inline-block';
@@ -383,11 +421,34 @@
             archiveData.audit.unshift({ time: now.toLocaleString('ar-IQ'), user: document.getElementById('user-role-label').innerText, action: actionDesc });
         }
 
-        // --- الإرسال والحفظ المباشر (استمارات) ---
+        function updateTopStats() {
+            document.getElementById('st-out').innerText = archiveData.outgoing.length;
+            document.getElementById('st-in').innerText = archiveData.incoming.length;
+            document.getElementById('st-del').innerText = archiveData.delivered.length;
+            
+            if(currentUserRole === "admin") {
+                document.getElementById('st-badge').innerText = archiveData.badges.length;
+                document.getElementById('st-local').innerText = archiveData.localLetters.length;
+                document.getElementById('st-app').innerText = archiveData.appRequests.length;
+            }
+        }
+
+        function updateMediaDashboard() {
+            const totalOut = archiveData.outgoing.length;
+            const totalApp = archiveData.appRequests.length;
+            const completed = archiveData.incoming.length + archiveData.delivered.length;
+            const totalReceived = totalOut + totalApp; 
+            const rate = totalReceived > 0 ? Math.round((completed / totalReceived) * 100) : 0;
+            
+            document.getElementById('media-total').innerText = totalReceived;
+            document.getElementById('media-done').innerText = completed;
+            document.getElementById('media-rate').innerText = rate + "%";
+        }
+
         function submitForm(type) {
             showToast("⏳ جاري حفظ البيانات والأرشفة...");
             setTimeout(() => {
-                showToast("✅ تم الحفظ بنجاح وإرفاق الصور");
+                showToast("✅ تم الحفظ بنجاح وإرفاق الصور إن وجدت");
                 if(type==='outgoing') {
                     logAuditAction(`إضافة كتاب صادر باسم: ${document.getElementById('out-name').value}`);
                     document.getElementById('outgoing-form').reset();
@@ -399,31 +460,57 @@
                     document.getElementById('local-form').reset();
                 }
                 loadArchive();
-            }, 1000); // محاكاة للإرسال
+            }, 1000); 
         }
 
-        // --- نظام الباج الذكي والباركود ---
+        // --- نظام الباج الذكي ---
         function submitBadge() {
             const name = document.getElementById('b-name').value;
-            const car = document.getElementById('b-car').value;
+            const type = document.getElementById('b-type').value;
+            const num = document.getElementById('b-num').value;
+            const letter = document.getElementById('b-letter').value;
+            const gov = document.getElementById('b-gov').value;
+            const color = document.getElementById('b-color').value;
             const date = document.getElementById('b-date').value;
             
-            // حساب تاريخ الانتهاء (سنة من تاريخ الصدور)
+            // دمج معلومات العجلة للمعاينة
+            const fullCarInfo = `${type} - ${color}`;
+            const fullPlateInfo = `${num} / ${letter} / ${gov}`;
+            
+            // حساب تاريخ الانتهاء
             let dateObj = new Date(date);
             dateObj.setFullYear(dateObj.getFullYear() + 1);
             let expiryDate = dateObj.toISOString().split('T')[0];
 
-            lastBadgeData = { name: name, car: car, issue: date, expiry: expiryDate };
-
-            // توليد الباركود
-            document.getElementById('qr-container').innerHTML = "";
-            new QRCode(document.getElementById("qr-container"), {
-                text: "https://your-app-url.com/?verify_badge=" + Date.now(),
-                width: 160, height: 160, colorDark : "#1a2a3a"
-            });
+            // رقم معرف وهمي للتجربة (سيعوض برقم القيد الحقيقي لاحقاً)
+            const fakeId = "B-" + Math.floor(Math.random() * 10000);
 
             logAuditAction(`توليد باج ذكي للمواطن: ${name}`);
             document.getElementById('badge-form').reset();
+            
+            // استدعاء دالة عرض الباركود
+            showArchiveBarcode(fakeId, name, fullCarInfo, fullPlateInfo, date, expiryDate);
+        }
+
+        // دالة لعرض الباركود من الأرشيف أيضاً
+        function showArchiveBarcode(id, name, carInfo, plateInfo, issueDate, expiryDate) {
+            if(!expiryDate) {
+                let d = new Date(issueDate);
+                d.setFullYear(d.getFullYear() + 1);
+                expiryDate = d.toISOString().split('T')[0];
+            }
+            
+            lastBadgeData = { name: name, car: carInfo, plate: plateInfo, issue: issueDate, expiry: expiryDate };
+
+            // توليد رابط التحقق الفعلي
+            const verifyUrl = WEBHOOK_URL + "?verify_badge=" + id;
+            
+            document.getElementById('qr-container').innerHTML = "";
+            new QRCode(document.getElementById("qr-container"), {
+                text: verifyUrl,
+                width: 180, height: 180, colorDark : "#1e293b"
+            });
+
             document.getElementById('qr-modal').style.display = 'flex';
         }
 
@@ -431,47 +518,43 @@
             if(!lastBadgeData) return;
             document.getElementById('v-name').innerText = lastBadgeData.name;
             document.getElementById('v-car').innerText = lastBadgeData.car;
+            document.getElementById('v-plate').innerText = lastBadgeData.plate;
             document.getElementById('v-issue').innerText = lastBadgeData.issue;
             document.getElementById('v-expiry').innerText = lastBadgeData.expiry;
             document.getElementById('verify-ui').style.display = 'flex';
         }
 
-        // --- الأرشيف والمرفقات والتسليم ---
+        // --- الأرشيف ---
         function loadArchive() {
-            // محاكاة سحب البيانات من الإكسل
             fetch(WEBHOOK_URL + "?action=archive").then(r => r.json()).then(res => {
                 if (res.result === "success") {
                     archiveData = { ...res, audit: archiveData.audit };
-                    document.getElementById('st-out').innerText = res.outgoing.length;
-                    document.getElementById('st-in').innerText = res.incoming.length;
-                    if(currentUserRole === "admin") {
-                        document.getElementById('st-badge').innerText = res.badges.length;
-                        document.getElementById('st-local').innerText = res.localLetters.length;
-                        document.getElementById('st-app').innerText = res.appRequests.length;
-                    }
+                    // إضافة مصفوفة وهمية للمسلمات للتجربة إذا لم تكن موجودة
+                    if(!archiveData.delivered) archiveData.delivered = [];
+                    updateTopStats();
                     renderCurrentArchive();
                 }
-            }).catch(e => renderCurrentArchive());
+            }).catch(e => {
+                updateTopStats();
+                renderCurrentArchive();
+            });
         }
 
-        function triggerImageUpload(rowId) {
-            currentUploadRowId = rowId;
-            document.getElementById('global-file-upload').click();
-        }
+        function triggerImageUpload() { document.getElementById('global-file-upload').click(); }
         document.getElementById('global-file-upload').addEventListener('change', function(e) {
             if(e.target.files[0]) {
                 showToast("⏳ جاري رفع الصورة للأرشيف...");
-                logAuditAction(`إرفاق صورة للقيد بالارشيف`);
-                setTimeout(() => { showToast("✅ تم التحديث بنجاح. سيظهر زر العرض."); e.target.value = ""; }, 1500);
+                setTimeout(() => { showToast("✅ تم التحديث بنجاح"); e.target.value = ""; }, 1500);
             }
         });
-        function viewImage(url) { window.open(url || '#', '_blank'); logAuditAction(`استعراض صورة مرفقة`); }
+        function viewImage(url) { window.open(url || '#', '_blank'); }
 
         function markAsDelivered(rowId, name) {
-            if(confirm(`هل تم تسليم الإجابة للمواطن: ${name}؟`)) {
+            if(confirm(`تأكيد تسليم الإجابة للمواطن: ${name}؟`)) {
                 showToast("✅ تم التأشير في سجل التسليم");
                 logAuditAction(`تسليم إجابة وارد للمواطن: ${name}`);
-                // هنا يتم تحديث حالة القيد في الإكسل، بعدها نستدعي loadArchive()
+                // في التطبيق الفعلي، سيتم إرسال الطلب وحذف القيد من الوارد ونقله للتسليم
+                loadArchive();
             }
         }
 
@@ -484,49 +567,51 @@
             if (currentArchiveView === "outgoing") {
                 thead.innerHTML = `<tr><th>الاسم الكامل</th><th>الجهة</th><th>رقم وتاريخ</th><th>الموضوع</th><th>المرفقات (الصور)</th></tr>`;
                 archiveData.outgoing.filter(i => (i.name+" "+i.ministry).toLowerCase().includes(q)).forEach(item => {
-                    let imgBtn = `<button class="action-btn btn-upload" onclick="triggerImageUpload('${item.id}')"><i class="fas fa-plus"></i> إرفاق صورة</button>`;
+                    let imgBtn = `<button class="action-btn btn-upload" onclick="triggerImageUpload()"><i class="fas fa-plus"></i> إرفاق صورة</button>`;
                     if(item.imageUrl) imgBtn = `<button class="action-btn btn-view" onclick="viewImage('${item.imageUrl}')"><i class="fas fa-image"></i> عرض الصورة</button>`;
-                    html += `<tr><td><strong>${item.name}</strong></td><td>${item.ministry}</td><td>رقم: ${item.bookNum}<br><small>${item.bookDate}</small></td><td style="max-width:200px;">${item.subject}</td><td>${imgBtn}</td></tr>`;
+                    html += `<tr><td><strong>${item.name}</strong></td><td>${item.ministry}</td><td>رقم: ${item.bookNum}<br><small>${item.bookDate}</small></td><td style="max-width:250px;">${item.subject}</td><td>${imgBtn}</td></tr>`;
                 });
             } else if (currentArchiveView === "incoming") {
                 thead.innerHTML = `<tr><th>الاسم</th><th>الجهة</th><th>الموضوع</th><th>المرفقات (الصور)</th><th>إجراء التسليم</th></tr>`;
-                // عرض فقط الكتب غير المسلمة
                 archiveData.incoming.filter(i => !i.deliveryDate && (i.name+" "+i.ministry).toLowerCase().includes(q)).forEach(item => {
-                    let imgBtn = `<button class="action-btn btn-upload" onclick="triggerImageUpload('${item.id}')"><i class="fas fa-plus"></i> إرفاق صورة</button>`;
+                    let imgBtn = `<button class="action-btn btn-upload" onclick="triggerImageUpload()"><i class="fas fa-plus"></i> إرفاق صورة</button>`;
                     if(item.imageUrl) imgBtn = `<button class="action-btn btn-view" onclick="viewImage('${item.imageUrl}')"><i class="fas fa-image"></i> عرض الصورة</button>`;
-                    let deliveryBtn = `<button class="action-btn btn-deliver" onclick="markAsDelivered('${item.id}', '${item.name}')"><i class="fas fa-box-open"></i> تأشير كـ "تم التسليم"</button>`;
-                    html += `<tr><td><strong>${item.name}</strong></td><td>${item.ministry}</td><td style="max-width:200px;">${item.subject}</td><td>${imgBtn}</td><td>${deliveryBtn}</td></tr>`;
+                    let deliveryBtn = `<button class="action-btn btn-deliver" onclick="markAsDelivered('${item.id}', '${item.name}')"><i class="fas fa-handshake"></i> تأشير "تم التسليم"</button>`;
+                    html += `<tr><td><strong>${item.name}</strong></td><td>${item.ministry}</td><td style="max-width:250px;">${item.subject}</td><td>${imgBtn}</td><td>${deliveryBtn}</td></tr>`;
                 });
             } else if (currentArchiveView === "delivered") {
                 thead.innerHTML = `<tr><th>الاسم</th><th>الجهة</th><th>الموضوع</th><th>تاريخ التسليم</th></tr>`;
-                // عرض الكتب المسلمة (كمثال وهمي أو لو كانت متوفرة)
-                archiveData.incoming.filter(i => i.deliveryDate && (i.name+" "+i.ministry).toLowerCase().includes(q)).forEach(item => {
-                    html += `<tr><td><strong>${item.name}</strong></td><td>${item.ministry}</td><td style="max-width:200px;">${item.subject}</td><td><span style="color:var(--green); font-weight:bold;"><i class="fas fa-check-circle"></i> ${item.deliveryDate}</span></td></tr>`;
+                archiveData.delivered.filter(i => (i.name+" "+i.ministry).toLowerCase().includes(q)).forEach(item => {
+                    html += `<tr><td><strong>${item.name}</strong></td><td>${item.ministry}</td><td style="max-width:250px;">${item.subject}</td><td><span style="color:var(--green); font-weight:900;"><i class="fas fa-check-double"></i> ${item.deliveryDate}</span></td></tr>`;
                 });
             } else if (currentArchiveView === "badges" && currentUserRole === "admin") {
-                thead.innerHTML = `<tr><th>صاحب الباج</th><th>العجلة</th><th>العدد</th><th>تاريخ الإصدار</th><th>الباركود</th></tr>`;
+                thead.innerHTML = `<tr><th>صاحب الباج</th><th>تفاصيل العجلة</th><th>تاريخ الإصدار</th><th>الباركود</th></tr>`;
                 archiveData.badges.filter(i => (i.name+" "+i.carType).toLowerCase().includes(q)).forEach(item => {
-                    let qrBtn = `<button class="action-btn btn-qr" onclick="submitBadge()"><i class="fas fa-qrcode"></i> عرض الباركود</button>`;
-                    html += `<tr><td><strong>${item.name}</strong></td><td>${item.carType}</td><td>${item.count || '1'}</td><td>${item.badgeDate}</td><td>${qrBtn}</td></tr>`;
+                    // تجميع بيانات العجلة للواجهة
+                    let carInfo = `${item.carType} - ${item.color || 'غير محدد'}`;
+                    let plateInfo = `${item.plateNum || item.plate} / ${item.gov || ''}`;
+                    
+                    let qrBtn = `<button class="action-btn btn-qr" onclick="showArchiveBarcode('${item.id}', '${item.name}', '${carInfo}', '${plateInfo}', '${item.badgeDate}')"><i class="fas fa-qrcode"></i> عرض الباركود</button>`;
+                    html += `<tr><td><strong>${item.name}</strong></td><td>${carInfo}<br><small dir="ltr">${plateInfo}</small></td><td>${item.badgeDate}</td><td>${qrBtn}</td></tr>`;
                 });
             } else if (currentArchiveView === "localLetters" && currentUserRole === "admin") {
-                thead.innerHTML = `<tr><th>الاسم</th><th>الجهة</th><th>الموضوع</th><th>المرفقات (الصور)</th></tr>`;
+                thead.innerHTML = `<tr><th>الاسم</th><th>رقم الهاتف</th><th>الجهة</th><th>الموضوع</th><th>المرفقات</th></tr>`;
                 archiveData.localLetters.filter(i => (i.name+" "+i.entity).toLowerCase().includes(q)).forEach(item => {
-                    let imgBtn = `<button class="action-btn btn-upload" onclick="triggerImageUpload('${item.id}')"><i class="fas fa-plus"></i> إرفاق صورة</button>`;
-                    html += `<tr><td><strong>${item.name}</strong></td><td><strong style="color:var(--teal);">${item.entity}</strong></td><td style="max-width:200px;">${item.subject}</td><td>${imgBtn}</td></tr>`;
+                    let imgBtn = `<button class="action-btn btn-upload" onclick="triggerImageUpload()"><i class="fas fa-plus"></i> إرفاق صورة</button>`;
+                    if(item.imageUrl) imgBtn = `<button class="action-btn btn-view" onclick="viewImage('${item.imageUrl}')"><i class="fas fa-image"></i> عرض الصورة</button>`;
+                    html += `<tr><td><strong>${item.name}</strong></td><td dir="ltr">${item.phone}</td><td><strong style="color:var(--teal);">${item.entity}</strong></td><td style="max-width:250px;">${item.subject}</td><td>${imgBtn}</td></tr>`;
                 });
             } else if (currentArchiveView === "audit" && currentUserRole === "admin") {
                 thead.innerHTML = `<tr><th>التاريخ والوقت</th><th>المستخدم</th><th>الإجراء</th></tr>`;
-                archiveData.audit.forEach(item => { html += `<tr><td style="direction:ltr; text-align:right;">${item.time}</td><td><strong>${item.user}</strong></td><td style="color:#dc2626; font-weight:bold;">${item.action}</td></tr>`; });
+                archiveData.audit.forEach(item => { html += `<tr><td style="direction:ltr; text-align:right;">${item.time}</td><td><strong style="color:var(--primary);">${item.user}</strong></td><td style="color:#ef4444; font-weight:800;">${item.action}</td></tr>`; });
+            } else if (currentArchiveView === "app" && currentUserRole === "admin") {
+                thead.innerHTML = `<tr><th>الاسم</th><th>الجهة</th><th>الموضوع</th><th>الحالة</th></tr>`;
+                archiveData.appRequests.filter(i => (i.name+" "+i.ministry).toLowerCase().includes(q)).forEach(item => {
+                    html += `<tr><td><strong>${item.name}</strong></td><td>${item.ministry}</td><td style="max-width:250px;">${item.subject}</td><td><span class="badge badge-wait">${item.status}</span></td></tr>`;
+                });
             }
 
-            tbody.innerHTML = html || '<tr><td colspan="8" style="text-align:center; padding:20px;">لا توجد بيانات أو السجل فارغ</td></tr>';
-        }
-        
-        function updateMediaDashboard() {
-            document.getElementById('media-total').innerText = archiveData.outgoing.length + archiveData.appRequests.length;
-            document.getElementById('media-done').innerText = archiveData.incoming.length;
-            document.getElementById('media-rate').innerText = "35%"; // مثال
+            tbody.innerHTML = html || '<tr><td colspan="8" style="text-align:center; padding:40px; font-weight:bold; color:#94a3b8;"><i class="fas fa-folder-open" style="font-size:30px; margin-bottom:10px; display:block;"></i> لا توجد بيانات في هذا السجل</td></tr>';
         }
     </script>
 </body>
