@@ -317,7 +317,7 @@
     <div id="toast">تم الحفظ</div>
 
     <script>
-        // ⚠️ لا تنسى تخلي رابط النشر الفعلي مالتك هنا مكان هذا الرابط
+        // ⚠️ خلي رابط النشر الفعلي مالتك هنا
         const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbxIpu80rI5mIsiS5Pho-VoA7U8FwYPvmAd4AEj7mDoK9gZ9gaxwsG2h-s2YkSf1MBvncQ/exec";
 
         const PINS = {
@@ -331,7 +331,6 @@
         let archiveData = { outgoing: [], incoming: [], delivered: [], badges: [], localLetters: [], appRequests: [], audit: [] };
         let lastBadgeData = null; 
 
-        // --- المصادقة الأمنية ---
         function login() {
             const pin = document.getElementById('pin-input').value.trim();
             if (PINS[pin]) {
@@ -362,11 +361,8 @@
                 document.getElementById('tab-btn-badge').style.display = 'flex';
                 document.getElementById('tab-btn-local').style.display = 'flex';
                 document.getElementById('tab-btn-media').style.display = 'flex';
-                
                 document.getElementById('card-st-badge').style.display = 'block';
                 document.getElementById('card-st-local').style.display = 'block';
-                document.getElementById('card-st-app').style.display = 'block';
-                
                 adminTabs.style.display = "flex";
                 subBtns.forEach(b => b.style.display = 'inline-block');
             } else if (currentUserRole === "outgoing") {
@@ -379,7 +375,6 @@
                 document.getElementById('tab-btn-out').style.display = 'none';
                 document.getElementById('archive-main-title').innerHTML = '<i class="fas fa-inbox" style="color:var(--green);"></i> أرشيف الوارد والتسليم';
                 activatePanel('in-panel', document.getElementById('tab-btn-in'));
-                
                 adminTabs.style.display = "flex";
                 subBtns.forEach(b => b.style.display = 'none');
                 document.getElementById('sub-in').style.display = 'inline-block';
@@ -394,7 +389,6 @@
             if (currentUserRole === "incoming" && requiredAccess === "outgoing") return;
             activatePanel(panelId, btn);
             if (requiredAccess === "archive") loadArchive();
-            if (panelId === "media-panel") updateMediaDashboard();
         }
 
         function activatePanel(panelId, btn) {
@@ -417,10 +411,6 @@
         }
 
         function logAuditAction(actionDesc) {
-            const now = new Date();
-            archiveData.audit.unshift({ time: now.toLocaleString('ar-IQ'), user: document.getElementById('user-role-label').innerText, action: actionDesc });
-            
-            // إرسال سجل الرقابة للإكسل
             fetch(WEBHOOK_URL, {
                 method: 'POST',
                 body: JSON.stringify({ action: "audit_log", actionDesc: actionDesc, user: document.getElementById('user-role-label').innerText })
@@ -429,32 +419,16 @@
 
         function updateTopStats() {
             document.getElementById('st-out').innerText = archiveData.outgoing.length;
-            document.getElementById('st-in').innerText = archiveData.incoming.length;
+            document.getElementById('st-in').innerText = archiveData.incoming.length; // الكلي
             document.getElementById('st-del').innerText = archiveData.delivered.length;
-            
             if(currentUserRole === "admin") {
                 document.getElementById('st-badge').innerText = archiveData.badges.length;
                 document.getElementById('st-local').innerText = archiveData.localLetters.length;
-                document.getElementById('st-app').innerText = archiveData.appRequests.length;
             }
         }
 
-        function updateMediaDashboard() {
-            const totalOut = archiveData.outgoing.length;
-            const totalApp = archiveData.appRequests.length;
-            const completed = archiveData.incoming.length + archiveData.delivered.length;
-            const totalReceived = totalOut + totalApp; 
-            const rate = totalReceived > 0 ? Math.round((completed / totalReceived) * 100) : 0;
-            
-            document.getElementById('media-total').innerText = totalReceived;
-            document.getElementById('media-done').innerText = completed;
-            document.getElementById('media-rate').innerText = rate + "%";
-        }
-
-        // --- الإرسال والحفظ الحقيقي (استمارات) ---
         function submitForm(type) {
             showToast("⏳ جاري حفظ البيانات في المنظومة...");
-            
             let payload = { action: "staff_entry", entryType: type };
             let formId = "";
 
@@ -483,23 +457,19 @@
                 payload.subject = document.getElementById('l-subject').value;
             }
 
-            fetch(WEBHOOK_URL, {
-                method: 'POST',
-                body: JSON.stringify(payload)
-            }).then(res => res.json()).then(res => {
+            fetch(WEBHOOK_URL, { method: 'POST', body: JSON.stringify(payload) })
+            .then(res => res.json()).then(res => {
                 if (res.result === "success") {
                     showToast("✅ تم الحفظ بنجاح وتوثيق القيد");
                     logAuditAction(`تمت إضافة قيد جديد باسم: ${payload.name}`);
                     document.getElementById(formId).reset();
                     loadArchive();
-                } else { showToast("❌ حدث خطأ، يرجى المحاولة"); }
-            }).catch(err => showToast("❌ خطأ بالاتصال بالإنترنت"));
+                }
+            });
         }
 
-        // --- نظام الباج الذكي والباركود الحقيقي ---
         function submitBadge() {
             showToast("⏳ جاري إنشاء الباج وتوثيقه أمنياً...");
-            
             let name = document.getElementById('b-name').value;
             let carType = document.getElementById('b-type').value;
             let num = document.getElementById('b-num').value;
@@ -510,75 +480,41 @@
             let identifier = document.getElementById('b-identifier').value;
             let bDate = document.getElementById('b-date').value;
 
-            // دمج الحرف مع الرقم للإكسل
             let combinedPlate = num + " / " + letter;
+            let payload = { action: "staff_entry", entryType: "badge", name: name, carType: carType, plateNum: combinedPlate, gov: gov, color: color, badgeCount: count, identifier: identifier, badgeDate: bDate };
 
-            let payload = {
-                action: "staff_entry",
-                entryType: "badge",
-                name: name,
-                carType: carType,
-                plateNum: combinedPlate,
-                gov: gov,
-                color: color,
-                badgeCount: count,
-                identifier: identifier,
-                badgeDate: bDate
-            };
-
-            fetch(WEBHOOK_URL, {
-                method: 'POST',
-                body: JSON.stringify(payload)
-            }).then(res => res.json()).then(res => {
+            fetch(WEBHOOK_URL, { method: 'POST', body: JSON.stringify(payload) })
+            .then(res => res.json()).then(res => {
                 if (res.result === "success") {
                     showToast("✅ تم حفظ الباج بنجاح");
                     logAuditAction(`توليد باج سيارة للمواطن: ${name}`);
-                    
-                    let dateObj = new Date(bDate);
-                    dateObj.setFullYear(dateObj.getFullYear() + 1);
-                    let expiryDate = dateObj.toISOString().split('T')[0];
-
-                    let carInfo = carType + " - " + color;
-                    let plateInfo = combinedPlate + " / " + gov;
-                    
                     document.getElementById('badge-form').reset();
-                    showArchiveBarcode(res.reqId, name, carInfo, plateInfo, bDate, expiryDate);
                     loadArchive();
                 }
-            }).catch(err => showToast("❌ خطأ بالاتصال"));
+            });
         }
 
-        function showArchiveBarcode(id, name, carInfo, plateInfo, issueDate, expiryDate) {
-            if(!expiryDate) {
-                let d = new Date(issueDate);
-                d.setFullYear(d.getFullYear() + 1);
-                expiryDate = d.toISOString().split('T')[0];
+        function revokeBadge(id, name) {
+            if(confirm(`هل أنت متأكد من إلغاء الباج الأمني للمواطن: ${name}؟\n(هذا الإجراء سيظهر الباج باللون الأحمر للسيطرات)`)) {
+                showToast("⏳ جاري الإلغاء...");
+                fetch(WEBHOOK_URL, { method: 'POST', body: JSON.stringify({ action: "revoke_badge", id: id }) })
+                .then(r => r.json()).then(res => {
+                    if(res.result === "success") {
+                        showToast("❌ تم إلغاء الباج بنجاح");
+                        logAuditAction(`إلغاء باج السيارة العائد لـ: ${name}`);
+                        loadArchive();
+                    }
+                });
             }
-            
-            lastBadgeData = { name: name, car: carInfo, plate: plateInfo, issue: issueDate, expiry: expiryDate };
+        }
 
+        function showArchiveBarcode(id) {
             const verifyUrl = WEBHOOK_URL + "?verify_badge=" + id;
-            
             document.getElementById('qr-container').innerHTML = "";
-            new QRCode(document.getElementById("qr-container"), {
-                text: verifyUrl,
-                width: 180, height: 180, colorDark : "#1e293b"
-            });
-
+            new QRCode(document.getElementById("qr-container"), { text: verifyUrl, width: 180, height: 180, colorDark : "#1e293b" });
             document.getElementById('qr-modal').style.display = 'flex';
         }
 
-        function previewVerificationUI() {
-            if(!lastBadgeData) return;
-            document.getElementById('v-name').innerText = lastBadgeData.name;
-            document.getElementById('v-car').innerText = lastBadgeData.car;
-            document.getElementById('v-plate').innerText = lastBadgeData.plate;
-            document.getElementById('v-issue').innerText = lastBadgeData.issue;
-            document.getElementById('v-expiry').innerText = lastBadgeData.expiry;
-            document.getElementById('verify-ui').style.display = 'flex';
-        }
-
-        // --- الأرشيف الحقيقي ---
         function loadArchive() {
             fetch(WEBHOOK_URL + "?action=archive").then(r => r.json()).then(res => {
                 if (res.result === "success") {
@@ -590,14 +526,11 @@
             });
         }
 
-        // --- نظام تم التسليم الحقيقي ---
         function markAsDelivered(rowId, name) {
             if(confirm(`تأكيد تسليم الإجابة للمواطن: ${name}؟`)) {
                 showToast("⏳ جاري التأشير في سجل التسليم...");
-                fetch(WEBHOOK_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: "mark_delivered", id: rowId })
-                }).then(r => r.json()).then(res => {
+                fetch(WEBHOOK_URL, { method: 'POST', body: JSON.stringify({ action: "mark_delivered", id: rowId }) })
+                .then(r => r.json()).then(res => {
                     if(res.result === "success") {
                         showToast("✅ تم التوثيق في سجل التسليم");
                         logAuditAction(`تسليم إجابة وارد للمواطن: ${name}`);
@@ -607,15 +540,6 @@
             }
         }
 
-        function triggerImageUpload() { document.getElementById('global-file-upload').click(); }
-        document.getElementById('global-file-upload').addEventListener('change', function(e) {
-            if(e.target.files[0]) {
-                showToast("⏳ جاري رفع الصورة للأرشيف...");
-                setTimeout(() => { showToast("✅ تم التحديث بنجاح"); e.target.value = ""; }, 1500);
-            }
-        });
-        function viewImage(url) { window.open(url || '#', '_blank'); }
-
         function renderCurrentArchive() {
             const q = document.getElementById('arch-search').value.toLowerCase();
             const thead = document.getElementById('archive-thead');
@@ -623,19 +547,23 @@
             let html = '';
 
             if (currentArchiveView === "outgoing") {
-                thead.innerHTML = `<tr><th>الاسم الكامل</th><th>الجهة</th><th>رقم وتاريخ</th><th>الموضوع</th><th>المرفقات (الصور)</th></tr>`;
+                thead.innerHTML = `<tr><th>الاسم الكامل</th><th>الجهة</th><th>رقم وتاريخ</th><th>الموضوع</th></tr>`;
                 archiveData.outgoing.filter(i => (i.name+" "+i.ministry).toLowerCase().includes(q)).forEach(item => {
-                    let imgBtn = `<button class="action-btn btn-upload" onclick="triggerImageUpload()"><i class="fas fa-plus"></i> إرفاق صورة</button>`;
-                    if(item.imageUrl) imgBtn = `<button class="action-btn btn-view" onclick="viewImage('${item.imageUrl}')"><i class="fas fa-image"></i> عرض الصورة</button>`;
-                    html += `<tr><td><strong>${item.name}</strong></td><td>${item.ministry}</td><td>رقم: ${item.bookNum}<br><small>${item.bookDate}</small></td><td style="max-width:250px;">${item.subject}</td><td>${imgBtn}</td></tr>`;
+                    let dateStr = item.bookDate ? new Date(item.bookDate).toISOString().split('T')[0] : "";
+                    html += `<tr><td><strong>${item.name}</strong></td><td>${item.ministry}</td><td>رقم: ${item.bookNum}<br><small>${dateStr}</small></td><td style="max-width:250px;">${item.subject}</td></tr>`;
                 });
             } else if (currentArchiveView === "incoming") {
-                thead.innerHTML = `<tr><th>الاسم</th><th>الجهة</th><th>الموضوع</th><th>المرفقات (الصور)</th><th>إجراء التسليم</th></tr>`;
-                archiveData.incoming.filter(i => !i.deliveryDate && (i.name+" "+i.ministry).toLowerCase().includes(q)).forEach(item => {
-                    let imgBtn = `<button class="action-btn btn-upload" onclick="triggerImageUpload()"><i class="fas fa-plus"></i> إرفاق صورة</button>`;
-                    if(item.imageUrl) imgBtn = `<button class="action-btn btn-view" onclick="viewImage('${item.imageUrl}')"><i class="fas fa-image"></i> عرض الصورة</button>`;
+                // تعديل هنا: عرض كل الوارد، والمستلم يطلع كدامه علامة صح خضراء بدل الزر
+                thead.innerHTML = `<tr><th>الاسم</th><th>الجهة</th><th>الموضوع</th><th>إجراء التسليم</th></tr>`;
+                archiveData.incoming.filter(i => (i.name+" "+i.ministry).toLowerCase().includes(q)).forEach(item => {
                     let deliveryBtn = `<button class="action-btn btn-deliver" onclick="markAsDelivered('${item.id}', '${item.name}')"><i class="fas fa-handshake"></i> تأشير "تم التسليم"</button>`;
-                    html += `<tr><td><strong>${item.name}</strong></td><td>${item.ministry}</td><td style="max-width:250px;">${item.subject}</td><td>${imgBtn}</td><td>${deliveryBtn}</td></tr>`;
+                    
+                    // إذا كان مسلم، نعرض التأشيرة الخضراء
+                    if(item.deliveryDate) {
+                        deliveryBtn = `<span style="color:var(--green); font-weight:bold; font-size:12px;"><i class="fas fa-check-circle"></i> تم التسليم<br>${item.deliveryDate}</span>`;
+                    }
+                    
+                    html += `<tr><td><strong>${item.name}</strong></td><td>${item.ministry}</td><td style="max-width:250px;">${item.subject}</td><td>${deliveryBtn}</td></tr>`;
                 });
             } else if (currentArchiveView === "delivered") {
                 thead.innerHTML = `<tr><th>الاسم</th><th>الجهة</th><th>الموضوع</th><th>تاريخ التسليم</th></tr>`;
@@ -643,31 +571,29 @@
                     html += `<tr><td><strong>${item.name}</strong></td><td>${item.ministry}</td><td style="max-width:250px;">${item.subject}</td><td><span style="color:var(--green); font-weight:900;"><i class="fas fa-check-double"></i> ${item.deliveryDate}</span></td></tr>`;
                 });
             } else if (currentArchiveView === "badges" && currentUserRole === "admin") {
-                thead.innerHTML = `<tr><th>صاحب الباج</th><th>تفاصيل العجلة</th><th>تاريخ الإصدار</th><th>الباركود</th></tr>`;
+                thead.innerHTML = `<tr><th>صاحب الباج</th><th>تفاصيل العجلة</th><th>تاريخ الإصدار</th><th>الحالة</th><th>الإجراءات</th></tr>`;
                 archiveData.badges.filter(i => (i.name+" "+i.carType).toLowerCase().includes(q)).forEach(item => {
-                    let carInfo = `${item.carType} - ${item.color || 'غير محدد'}`;
+                    let carInfo = `${item.carType} - ${item.color || ''}`;
                     let plateInfo = `${item.plateNum || item.plate} / ${item.gov || ''}`;
-                    let qrBtn = `<button class="action-btn btn-qr" onclick="showArchiveBarcode('${item.id}', '${item.name}', '${carInfo}', '${plateInfo}', '${item.badgeDate}')"><i class="fas fa-qrcode"></i> عرض الباركود</button>`;
-                    html += `<tr><td><strong>${item.name}</strong></td><td>${carInfo}<br><small dir="ltr">${plateInfo}</small></td><td>${item.badgeDate}</td><td>${qrBtn}</td></tr>`;
+                    let dateStr = item.badgeDate ? new Date(item.badgeDate).toISOString().split('T')[0] : "";
+                    
+                    let statusLabel = item.status === "ملغى" ? `<span class="badge" style="background:#fecaca; color:#dc2626;">ملغى</span>` : `<span class="badge badge-done">فعال</span>`;
+                    let qrBtn = `<button class="action-btn btn-qr" onclick="showArchiveBarcode('${item.id}')"><i class="fas fa-qrcode"></i> عرض الباركود</button>`;
+                    let revokeBtn = item.status !== "ملغى" ? `<button class="action-btn" style="color:#ef4444; border-color:#ef4444; background:#fef2f2;" onclick="revokeBadge('${item.id}', '${item.name}')"><i class="fas fa-ban"></i> إلغاء الباج</button>` : '';
+
+                    html += `<tr><td><strong>${item.name}</strong></td><td>${carInfo}<br><small dir="ltr">${plateInfo}</small></td><td>${dateStr}</td><td>${statusLabel}</td><td>${qrBtn} ${revokeBtn}</td></tr>`;
                 });
             } else if (currentArchiveView === "localLetters" && currentUserRole === "admin") {
-                thead.innerHTML = `<tr><th>الاسم</th><th>رقم الهاتف</th><th>الجهة</th><th>الموضوع</th><th>المرفقات</th></tr>`;
+                thead.innerHTML = `<tr><th>الاسم</th><th>الجهة</th><th>الموضوع</th></tr>`;
                 archiveData.localLetters.filter(i => (i.name+" "+i.entity).toLowerCase().includes(q)).forEach(item => {
-                    let imgBtn = `<button class="action-btn btn-upload" onclick="triggerImageUpload()"><i class="fas fa-plus"></i> إرفاق صورة</button>`;
-                    if(item.imageUrl) imgBtn = `<button class="action-btn btn-view" onclick="viewImage('${item.imageUrl}')"><i class="fas fa-image"></i> عرض الصورة</button>`;
-                    html += `<tr><td><strong>${item.name}</strong></td><td dir="ltr">${item.phone}</td><td><strong style="color:var(--teal);">${item.entity}</strong></td><td style="max-width:250px;">${item.subject}</td><td>${imgBtn}</td></tr>`;
+                    html += `<tr><td><strong>${item.name}</strong></td><td><strong style="color:var(--teal);">${item.entity}</strong></td><td style="max-width:250px;">${item.subject}</td></tr>`;
                 });
             } else if (currentArchiveView === "audit" && currentUserRole === "admin") {
                 thead.innerHTML = `<tr><th>التاريخ والوقت</th><th>المستخدم</th><th>الإجراء</th></tr>`;
                 archiveData.audit.forEach(item => { html += `<tr><td style="direction:ltr; text-align:right;">${item.time}</td><td><strong style="color:var(--primary);">${item.user}</strong></td><td style="color:#ef4444; font-weight:800;">${item.action}</td></tr>`; });
-            } else if (currentArchiveView === "app" && currentUserRole === "admin") {
-                thead.innerHTML = `<tr><th>الاسم</th><th>الجهة</th><th>الموضوع</th><th>الحالة</th></tr>`;
-                archiveData.appRequests.filter(i => (i.name+" "+i.ministry).toLowerCase().includes(q)).forEach(item => {
-                    html += `<tr><td><strong>${item.name}</strong></td><td>${item.ministry}</td><td style="max-width:250px;">${item.subject}</td><td><span class="badge badge-wait">${item.status}</span></td></tr>`;
-                });
             }
 
-            tbody.innerHTML = html || '<tr><td colspan="8" style="text-align:center; padding:40px; font-weight:bold; color:#94a3b8;"><i class="fas fa-folder-open" style="font-size:30px; margin-bottom:10px; display:block;"></i> لا توجد بيانات في هذا السجل</td></tr>';
+            tbody.innerHTML = html || '<tr><td colspan="8" style="text-align:center; padding:40px; font-weight:bold; color:#94a3b8;">لا توجد بيانات في هذا السجل</td></tr>';
         }
     </script>
 </body>
