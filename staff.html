@@ -143,7 +143,7 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
 .system-footer{max-width:1480px;margin:24px auto 0;padding:15px clamp(14px,2.5vw,32px) 0;color:#718096;font-size:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid #e0e7ef}.system-footer strong{color:#30445b}.system-footer .footer-mark{display:flex;align-items:center;gap:7px}
 #demo-preview-banner{position:sticky;top:0;z-index:10000;box-shadow:0 4px 18px rgba(0,0,0,.15)}
 @media(max-width:700px){header{gap:13px}header h1{font-size:17px}.header-tools{width:100%;justify-content:space-between;gap:8px}.system-clock{flex:1;min-width:0;padding:7px 9px}.system-clock strong{font-size:13px}.role-badge{padding:7px 10px}.container{min-height:unset}.system-footer{margin-top:18px;flex-direction:column;gap:6px}.stat-card{min-height:90px}}
-@media print{header,.tabs,.stats-grid,.system-footer,.archive-tools,.sub-tabs,.search-bar,#toast{display:none!important}.container{max-width:none;margin:0;padding:0}.panel{box-shadow:none;border:0;padding:0}.table-responsive{overflow:visible;border:0}table{min-width:0!important;width:100%;font-size:10px}th,td{padding:5px!important}}
+@media print{header,.tabs,.stats-grid,.system-footer,.archive-tools,.sub-tabs,.search-bar,#toast{display:none!important}.container{max-width:none;margin:0;padding:0}.panel{box-shadow:none;border:0;padding:0}.table-responsive{overflow:visible;border:0}table{min-width:0!important;width:100%;font-size:10px}th,td{padding:5px!important}body.staff-no-print .container,body.staff-no-print header,body.staff-no-print footer,body.staff-no-print #qr-modal,body.staff-no-print #print-qr-area{display:none!important}body.staff-no-print:before{content:"الطباعة متاحة للمدير فقط";display:block;padding:40px;text-align:center;font-size:24px;font-weight:bold;color:#111}}
 </style>
 
 </head>
@@ -179,7 +179,7 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
         <div class="tabs">
             <button class="tab-btn active" id="tab-btn-out" onclick="tryOpenPanel('out-panel', this, 'outgoing')"><i class="fas fa-paper-plane"></i> كتاب صادر</button>
             <button class="tab-btn" id="tab-btn-in" onclick="tryOpenPanel('in-panel', this, 'incoming')"><i class="fas fa-inbox"></i> إجابة وارد</button>
-            <button class="tab-btn" id="tab-btn-badge" onclick="tryOpenPanel('badge-panel', this, 'admin')" style="display:none;"><i class="fas fa-id-card"></i> باجات سيارات</button>
+            <button class="tab-btn" id="tab-btn-badge" onclick="tryOpenPanel('badge-panel', this, 'badges')" style="display:none;"><i class="fas fa-id-card"></i> باجات سيارات</button>
             <button class="tab-btn" id="tab-btn-local" onclick="tryOpenPanel('local-panel', this, 'admin')" style="display:none;"><i class="fas fa-map-marker-alt"></i> كتب محلية</button>
             <button class="tab-btn" id="tab-btn-media" onclick="tryOpenPanel('media-panel', this, 'admin')" style="display:none; color:var(--primary);"><i class="fas fa-bullhorn"></i> لوحة الإعلام</button>
             <button class="tab-btn" id="tab-btn-arch" onclick="tryOpenPanel('arch-panel', this, 'archive')"><i class="fas fa-archive"></i> سجل الأرشيف</button>
@@ -271,7 +271,7 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
         <div id="arch-panel" class="panel">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
                 <h3 class="panel-title" style="margin:0; border:none;" id="archive-main-title"><i class="fas fa-database"></i> سجل الأرشيف</h3>
-                <div class="archive-tools"><button onclick="exportCurrentArchiveCsv()" class="action-btn report-btn"><i class="fas fa-file-csv"></i> تصدير CSV</button><button onclick="printCurrentArchive()" class="action-btn report-btn"><i class="fas fa-print"></i> طباعة السجل</button><button onclick="loadArchive()" class="action-btn"><i class="fas fa-sync-alt"></i> تحديث السجلات</button></div>
+                <div class="archive-tools"><button id="btn-export-csv" onclick="exportCurrentArchiveCsv()" class="action-btn report-btn"><i class="fas fa-file-csv"></i> تصدير CSV</button><button id="btn-print-archive" onclick="printCurrentArchive()" class="action-btn report-btn"><i class="fas fa-print"></i> طباعة السجل</button><button onclick="loadArchive()" class="action-btn"><i class="fas fa-sync-alt"></i> تحديث السجلات</button></div>
             </div>
 
             <div class="sub-tabs" id="admin-sub-tabs" style="display:none;">
@@ -308,7 +308,7 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
             <div class="qr-box" id="qr-container"></div>
             
             <div style="display:flex; flex-direction:column; gap:10px; margin-top:15px;">
-                <button class="btn-main" onclick="printQR()" style="background:var(--gold); color:var(--primary);"><i class="fas fa-print"></i> طباعة للجهة الخلفية (A5)</button>
+                <button id="btn-print-qr" class="btn-main" onclick="printQR()" style="background:var(--gold); color:var(--primary);"><i class="fas fa-print"></i> طباعة للجهة الخلفية (A5)</button>
             </div>
         </div>
     </div>
@@ -433,8 +433,8 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
                 sessionStorage.setItem('staffAuthToken', authToken);
                 if (currentUserRole === 'admin') {
                     document.getElementById('security-scanner').style.display = 'flex';
-                    setTimeout(() => { document.getElementById('scan-text').innerText = 'تم التحقق من الصلاحيات؛ جارٍ فتح السجلات'; }, 500);
-                    setTimeout(() => { finalizeLogin(); document.getElementById('security-scanner').style.display = 'none'; }, 1000);
+                    setTimeout(() => { document.getElementById('scan-text').innerText = 'تم التحقق من الصلاحيات؛ جارٍ فتح السجلات'; }, 100);
+                    setTimeout(() => { finalizeLogin(); document.getElementById('security-scanner').style.display = 'none'; }, 250);
                 } else finalizeLogin();
             } catch (e) {
                 err.style.display = 'block';
@@ -454,44 +454,61 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
         function applyRoleRestrictions() {
             const adminTabs = document.getElementById('admin-sub-tabs');
             const subBtns = document.querySelectorAll('.sub-tab-btn');
-            
-            if (currentUserRole === "admin") {
-                document.getElementById('tab-btn-badge').style.display = 'flex';
-                document.getElementById('tab-btn-local').style.display = 'flex';
-                document.getElementById('tab-btn-media').style.display = 'flex';
-                document.getElementById('card-st-badge').style.display = 'block';
-                document.getElementById('card-st-local').style.display = 'block';
-                adminTabs.style.display = "flex";
-                subBtns.forEach(b => b.style.display = 'inline-block');
-                
-            } else if (currentUserRole === "outgoing") {
-                document.getElementById('tab-btn-in').style.display = 'none';
-                document.getElementById('archive-main-title').innerHTML = '<i class="fas fa-paper-plane" style="color:var(--blue);"></i> أرشيف سجل الصادر';
+            const mainTabs = ['tab-btn-out','tab-btn-in','tab-btn-badge','tab-btn-local','tab-btn-media','tab-btn-arch'];
+            const statCards = ['card-st-out','card-st-in','card-st-del','card-st-badge','card-st-local','card-st-app'];
+
+            // ابدأ دائماً من حالة نظيفة حتى لا تنتقل صلاحيات/إخفاءات مستخدم سابق إلى المستخدم التالي.
+            mainTabs.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
+            statCards.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
+            if (adminTabs) adminTabs.style.display = 'none';
+            subBtns.forEach(b => { b.style.display = 'none'; });
+
+            // التصدير والطباعة متاحان للمدير فقط، بما فيها طباعة الباركود.
+            const isAdmin = currentUserRole === 'admin';
+            document.body.classList.toggle('staff-no-print', !isAdmin);
+            ['btn-export-csv','btn-print-archive','btn-print-qr'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = isAdmin ? '' : 'none';
+            });
+
+            if (isAdmin) {
+                mainTabs.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'flex'; });
+                statCards.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'block'; });
+                if (adminTabs) adminTabs.style.display = 'flex';
+                subBtns.forEach(b => { b.style.display = 'inline-block'; });
+                currentArchiveView = 'outgoing';
                 activatePanel('out-panel', document.getElementById('tab-btn-out'));
-                adminTabs.style.display = "none";
-                currentArchiveView = "outgoing";
-                
-            } else if (currentUserRole === "incoming") {
-                document.getElementById('tab-btn-out').style.display = 'none';
+                return;
+            }
+
+            // كل موظف يرى نموذج اختصاصه وأرشيف اختصاصه فقط.
+            const archiveTab = document.getElementById('tab-btn-arch');
+            if (archiveTab) archiveTab.style.display = 'flex';
+
+            if (currentUserRole === 'outgoing') {
+                document.getElementById('tab-btn-out').style.display = 'flex';
+                document.getElementById('card-st-out').style.display = 'block';
+                document.getElementById('archive-main-title').innerHTML = '<i class="fas fa-paper-plane" style="color:var(--blue);"></i> أرشيف سجل الصادر';
+                currentArchiveView = 'outgoing';
+                activatePanel('out-panel', document.getElementById('tab-btn-out'));
+            } else if (currentUserRole === 'incoming') {
+                document.getElementById('tab-btn-in').style.display = 'flex';
+                document.getElementById('card-st-in').style.display = 'block';
+                document.getElementById('card-st-del').style.display = 'block';
                 document.getElementById('archive-main-title').innerHTML = '<i class="fas fa-inbox" style="color:var(--green);"></i> أرشيف الوارد والتسليم';
-                activatePanel('in-panel', document.getElementById('tab-btn-in'));
-                adminTabs.style.display = "flex";
-                subBtns.forEach(b => b.style.display = 'none');
+                if (adminTabs) adminTabs.style.display = 'flex';
                 document.getElementById('sub-in').style.display = 'inline-block';
                 document.getElementById('sub-del').style.display = 'inline-block';
-                switchArchiveView('incoming', document.getElementById('sub-in'));
-                
-            } else if (currentUserRole === "badges") {
-                // صلاحيات موظف الباجات
-                document.getElementById('tab-btn-out').style.display = 'none';
-                document.getElementById('tab-btn-in').style.display = 'none';
+                currentArchiveView = 'incoming';
+                activatePanel('in-panel', document.getElementById('tab-btn-in'));
+            } else if (currentUserRole === 'badges') {
                 document.getElementById('tab-btn-badge').style.display = 'flex';
+                document.getElementById('card-st-badge').style.display = 'block';
                 document.getElementById('archive-main-title').innerHTML = '<i class="fas fa-id-card" style="color:var(--purple);"></i> أرشيف الباجات الأمنية';
-                activatePanel('badge-panel', document.getElementById('tab-btn-badge'));
-                adminTabs.style.display = "flex";
-                subBtns.forEach(b => b.style.display = 'none');
+                if (adminTabs) adminTabs.style.display = 'flex';
                 document.getElementById('sub-badge').style.display = 'inline-block';
-                switchArchiveView('badges', document.getElementById('sub-badge'));
+                currentArchiveView = 'badges';
+                activatePanel('badge-panel', document.getElementById('tab-btn-badge'));
             }
         }
 
@@ -501,6 +518,7 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
             const allowed = demoMode || role === 'admin' ||
                 (requiredAccess === 'outgoing' && role === 'outgoing') ||
                 (requiredAccess === 'incoming' && role === 'incoming') ||
+                (requiredAccess === 'badges' && role === 'badges') ||
                 (requiredAccess === 'archive' && ['outgoing','incoming','badges'].includes(role));
             if (!allowed) { showToast('هذا القسم غير متاح للدور الحالي.'); return; }
             activatePanel(panelId, btn);
@@ -516,6 +534,13 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
         }
 
         function switchArchiveView(viewName, btn) {
+            // لا تسمح حتى على مستوى الواجهة بتبديل الموظف إلى سجل خارج اختصاصه.
+            const role = currentUserRole;
+            const allowedView = role === 'admin' ||
+                (role === 'outgoing' && viewName === 'outgoing') ||
+                (role === 'incoming' && ['incoming','delivered'].includes(viewName)) ||
+                (role === 'badges' && viewName === 'badges');
+            if (!allowedView) { showToast('هذا السجل غير متاح للدور الحالي.'); return; }
             currentArchiveView = viewName;
             document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
@@ -681,6 +706,7 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
 
         // دالة الطباعة الاحترافية A5 للباركود (الحل الجذري للتاريخ)
         function printQR() {
+            if (currentUserRole !== 'admin') { showToast('الطباعة متاحة للمدير فقط.'); return; }
             if(!lastBadgeData) return;
             const verifyUrl = WEBHOOK_URL + "?verify_badge=" + lastBadgeData.id;
             
@@ -872,6 +898,7 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
         }
 
         function exportCurrentArchiveCsv() {
+            if (currentUserRole !== 'admin') { showToast('تصدير السجلات متاح للمدير فقط.'); return; }
             const table = document.querySelector('#arch-panel table');
             if (!table) { showToast('لا يوجد سجل للتصدير'); return; }
             const csvCell = (raw) => {
@@ -889,6 +916,7 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
             showToast('تم تجهيز ملف CSV للسجل الظاهر');
         }
         function printCurrentArchive() {
+            if (currentUserRole !== 'admin') { showToast('الطباعة متاحة للمدير فقط.'); return; }
             const source = document.querySelector('#arch-panel .table-responsive');
             if (!source) { showToast('لا يوجد سجل للطباعة'); return; }
             const win = window.open('', '_blank', 'width=1000,height=750');
