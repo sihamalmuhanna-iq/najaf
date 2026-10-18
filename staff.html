@@ -446,9 +446,9 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
         function finalizeLogin() {
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('user-role-label').innerText = currentUserTitle;
-            logAuditAction('تسجيل دخول ناجح');
             applyRoleRestrictions();
-            loadArchive();
+            // نحمّل السجل أولاً ثم نسجل حدث الدخول؛ يقلل تزاحم طلبين على Apps Script لحظة الدخول.
+            loadArchive().then(() => logAuditAction('تسجيل دخول ناجح'));
         }
 
         function applyRoleRestrictions() {
@@ -463,13 +463,16 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
             if (adminTabs) adminTabs.style.display = 'none';
             subBtns.forEach(b => { b.style.display = 'none'; });
 
-            // التصدير والطباعة متاحان للمدير فقط، بما فيها طباعة الباركود.
+            // التصدير وطباعة السجل للمدير فقط؛ طباعة باركود الباج متاحة للمدير وموظف الباجات.
             const isAdmin = currentUserRole === 'admin';
+            const canPrintBadge = isAdmin || currentUserRole === 'badges';
             document.body.classList.toggle('staff-no-print', !isAdmin);
-            ['btn-export-csv','btn-print-archive','btn-print-qr'].forEach(id => {
+            ['btn-export-csv','btn-print-archive'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.style.display = isAdmin ? '' : 'none';
             });
+            const qrPrintButton = document.getElementById('btn-print-qr');
+            if (qrPrintButton) qrPrintButton.style.display = canPrintBadge ? '' : 'none';
 
             if (isAdmin) {
                 mainTabs.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'flex'; });
@@ -578,6 +581,7 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
             if(currentUserRole === "admin") {
                 document.getElementById('st-badge').innerText = archiveData.badges ? archiveData.badges.length : 0;
                 document.getElementById('st-local').innerText = archiveData.localLetters ? archiveData.localLetters.length : 0;
+                document.getElementById('st-app').innerText = archiveData.appRequests ? archiveData.appRequests.length : 0;
             }
         }
 
@@ -706,7 +710,7 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
 
         // دالة الطباعة الاحترافية A5 للباركود (الحل الجذري للتاريخ)
         function printQR() {
-            if (currentUserRole !== 'admin') { showToast('الطباعة متاحة للمدير فقط.'); return; }
+            if (currentUserRole !== 'admin' && currentUserRole !== 'badges') { showToast('طباعة الباركود متاحة للمدير وموظف الباجات فقط.'); return; }
             if(!lastBadgeData) return;
             const verifyUrl = WEBHOOK_URL + "?verify_badge=" + lastBadgeData.id;
             
@@ -805,6 +809,20 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
             }
         }
 
+        async function markRequestPrinted(rowIndex, name) {
+            if (currentUserRole !== 'admin') { showToast('تأكيد الطباعة والإرسال متاح للمدير فقط.'); return; }
+            if (!confirm(`تأكيد طباعة وإرسال كتاب الطلب الخاص بالمواطن: ${name}؟`)) return;
+            showToast('⏳ جاري تحديث حالة الطلب...');
+            const res = await safeFetch({ action: 'mark_request_printed', rowIndex: rowIndex });
+            if (res && res.result === 'success') {
+                showToast('✅ تم توثيق الطباعة والإرسال');
+                await loadArchive();
+                renderCurrentArchive();
+            } else {
+                showToast((res && res.message) || 'تعذر تحديث حالة الطلب؛ يرجى المحاولة مرة أخرى.');
+            }
+        }
+
         // تمرير رقم السطر (rowIndex) بدل الـ ID
         function triggerImageUpload(rowIndex, viewType) {
             currentUploadRowIndex = rowIndex;
@@ -851,7 +869,7 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
                     html += `<tr><td><strong>${escapeHtml(item.name)}</strong></td><td dir="ltr">${escapeHtml(item.phone || '-')}</td><td>${escapeHtml(item.ministry)}</td><td>رقم: ${escapeHtml(item.bookNum)}<br><small>${dateStr}</small></td><td style="max-width:200px;">${escapeHtml(item.subject)}</td><td><span class="badge ${cl}">${escapeHtml(item.linkStatus)}</span></td><td>${imgBtn}</td></tr>`;
                 });
             } else if (currentArchiveView === "incoming") {
-                thead.innerHTML = `<tr><th>الاسم</th><th>الجهة</th><th>الموضوع</th><th>حالة الكتاب</th><th>المرفقات</th><th>إجراء التسليم</th></tr>`;
+                thead.innerHTML = `<tr><th>الاسم</th><th>الجهة</th><th>الموضوع</th><th>هامش الوزير أو الجهة</th><th>حالة الكتاب</th><th>المرفقات</th><th>إجراء التسليم</th></tr>`;
                 archiveData.incoming.filter(i => (i.name+" "+i.ministry).toLowerCase().includes(q)).forEach(item => {
                     let cl = item.linkStatus && item.linkStatus.includes("مرتبط") ? 'badge-done' : 'badge-out';
                     
@@ -861,7 +879,7 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
                     let deliveryBtn = `<button class="action-btn btn-deliver" onclick="markAsDelivered('${item.rowIndex}', decodeURIComponent('${encodeURIComponent(item.name || '')}'))"><i class="fas fa-handshake"></i> تأشير التسليم</button>`;
                     if(item.deliveryDate) deliveryBtn = `<span style="color:var(--green); font-weight:bold; font-size:12px;"><i class="fas fa-check-circle"></i> تم التسليم<br>${escapeHtml(item.deliveryDate)}</span>`;
                     
-                    html += `<tr><td><strong>${escapeHtml(item.name)}</strong></td><td>${escapeHtml(item.ministry)}</td><td style="max-width:200px;">${escapeHtml(item.subject)}</td><td><span class="badge ${cl}">${escapeHtml(item.linkStatus)}</span></td><td>${imgBtn}</td><td>${deliveryBtn}</td></tr>`;
+                    html += `<tr><td><strong>${escapeHtml(item.name)}</strong></td><td>${escapeHtml(item.ministry)}</td><td style="max-width:200px;">${escapeHtml(item.subject)}</td><td style="min-width:180px;max-width:260px;white-space:normal;">${escapeHtml(item.margin || '—')}</td><td><span class="badge ${cl}">${escapeHtml(item.linkStatus)}</span></td><td>${imgBtn}</td><td>${deliveryBtn}</td></tr>`;
                 });
             } else if (currentArchiveView === "delivered") {
                 thead.innerHTML = `<tr><th>الاسم</th><th>الجهة</th><th>الموضوع</th><th>تاريخ التسليم</th></tr>`;
@@ -888,6 +906,18 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
                     if(item.imageUrl && item.imageUrl !== "") imgBtn = `<button class="action-btn btn-view" onclick="viewImage(decodeURIComponent('${encodeURIComponent(item.imageUrl || '')}'))"><i class="fas fa-image"></i> عرض</button>`;
                     
                     html += `<tr><td><strong>${escapeHtml(item.name)}</strong></td><td dir="ltr">${escapeHtml(item.phone || '-')}</td><td><strong style="color:var(--teal);">${escapeHtml(item.entity)}</strong></td><td style="max-width:200px;">${escapeHtml(item.subject)}</td><td>${imgBtn}</td></tr>`;
+                });
+            } else if (currentArchiveView === "app" && currentUserRole === "admin") {
+                thead.innerHTML = `<tr><th>رقم الطلب</th><th>اسم المواطن</th><th>الهاتف</th><th>المحافظة / القضاء</th><th>الجهة</th><th>تفاصيل الطلب</th><th>تاريخ التقديم</th><th>الحالة</th><th>الإجراء</th></tr>`;
+                archiveData.appRequests.filter(i => (String(i.name || "") + " " + String(i.id || "") + " " + String(i.ministry || "") + " " + String(i.subject || "")).toLowerCase().includes(q)).forEach(item => {
+                    const isPrinted = /تمت الطباعة|تم الارسال|ارسال الكتاب/i.test(String(item.status || ""));
+                    const statusHtml = isPrinted
+                      ? `<span class="badge badge-done">${escapeHtml(item.status)}</span>`
+                      : `<span class="badge badge-wait">${escapeHtml(item.status || "تم استلام الطلب")}</span>`;
+                    const actionHtml = isPrinted
+                      ? `<span style="color:var(--green);font-weight:800;"><i class="fas fa-check-circle"></i> تم التأكيد</span>`
+                      : `<button class="action-btn btn-deliver" onclick="markRequestPrinted('${item.rowIndex}', decodeURIComponent('${encodeURIComponent(item.name || '')}'))"><i class="fas fa-print"></i> تأكيد الطباعة والإرسال</button>`;
+                    html += `<tr><td><strong>${escapeHtml(item.id)}</strong></td><td><strong>${escapeHtml(item.name)}</strong></td><td dir="ltr">${escapeHtml(item.phone || '—')}</td><td>${escapeHtml([item.gov, item.district].filter(Boolean).join(' / ') || '—')}</td><td>${escapeHtml(item.ministry || '—')}</td><td style="min-width:220px;max-width:360px;white-space:normal;">${escapeHtml(item.subject || '—')}</td><td>${escapeHtml(formatDateSafe(item.date) || '—')}</td><td>${statusHtml}</td><td>${actionHtml}</td></tr>`;
                 });
             } else if (currentArchiveView === "audit" && currentUserRole === "admin") {
                 thead.innerHTML = `<tr><th>التاريخ والوقت</th><th>المستخدم</th><th>الإجراء</th></tr>`;
