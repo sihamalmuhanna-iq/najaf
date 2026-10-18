@@ -194,19 +194,40 @@ body.modal-open{overflow:hidden}
 }
 
 <style>
+.splash-mark {
+  width: 110px !important;
+  height: 110px !important;
+  margin: 0 auto 24px !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  transform: none !important;
+  overflow: visible !important;
+}
+
+.splash-mark::before,
+.splash-mark::after {
+  display: none !important;
+}
+
 .splash-mark img {
-  width: 76px;
-  height: 76px;
-  object-fit: contain;
-  object-position: center;
-  display: block;
-  margin: auto;
+  width: 105px !important;
+  height: 105px !important;
+  max-width: 100% !important;
+  object-fit: contain !important;
+  transform: none !important;
+  display: block !important;
 }
 </style>
 </head>
 <body>
 <div class="splash-screen" id="splash-screen"><div class="splash-mark">
-  <img src="./najaf/shura-logo.png" alt="شعار مجلس النواب العراقي">
+  <img src="/najaf/shura-logo.png" alt="شعار مجلس النواب العراقي">
 </div><strong>سهام منعم المحنة</strong><small>المنصة الرسمية للمكتب الإعلامي</small><div class="splash-line"></div></div>
 <div class="microbar"><div class="shell microbar-inner"><div class="micro-left"><span><span class="micro-dot"></span> جمهورية العراق · مجلس النواب العراقي</span><span>المنصة الرسمية للمكتب الإعلامي</span></div><div class="micro-right"><span>النجف الأشرف · العراق</span><div class="top-social"><i class="fab fa-facebook-f"></i><i class="fab fa-telegram-plane"></i><i class="fab fa-instagram"></i></div></div></div></div>
 <header class="masthead"><div class="shell masthead-inner"><div class="identity"><div class="seal"><i class="fa-solid fa-landmark"></i></div><div class="identity-text"><small>مجلس النواب العراقي</small><strong>مكتب النائب سهام منعم المحنة</strong><span>الأخبار · الخدمات الإلكترونية · التواصل مع المواطنين</span></div></div><div class="head-meta"><div class="meta-item"><i class="fa-regular fa-clock"></i><span>خدمة إلكترونية<br>على مدار الساعة</span></div><div class="meta-item"><i class="fa-solid fa-shield-halved"></i><span>منصة المكتب<br>الرسمية</span></div><button class="head-cta" type="button" onclick="switchTab('form-section', document.querySelectorAll('.nav-btn')[1])">قدّم طلبك <i class="fa-solid fa-arrow-left"></i></button></div></div></header>
