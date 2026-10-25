@@ -146,6 +146,15 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
 @media print{header,.tabs,.stats-grid,.system-footer,.archive-tools,.sub-tabs,.search-bar,#toast{display:none!important}.container{max-width:none;margin:0;padding:0}.panel{box-shadow:none;border:0;padding:0}.table-responsive{overflow:visible;border:0}table{min-width:0!important;width:100%;font-size:10px}th,td{padding:5px!important}body.staff-no-print .container,body.staff-no-print header,body.staff-no-print footer,body.staff-no-print #qr-modal,body.staff-no-print #print-qr-area{display:none!important}body.staff-no-print:before{content:"الطباعة متاحة للمدير فقط";display:block;padding:40px;text-align:center;font-size:24px;font-weight:bold;color:#111}}
 </style>
 
+<style id="badge-integration-css">
+.badge-alert{margin:5px 0 18px;padding:15px 18px;border-radius:13px;border:1px solid #efcd86;background:#fff9e7;color:#584016;font-weight:700;display:none;line-height:1.9}
+.badge-alert strong{display:block;color:#955a12;margin-bottom:6px}.badge-alert ul{padding-right:20px;margin:5px 0 0}
+.badge-actions-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}.badge-actions-row .btn-main{max-width:470px}
+.legacy-panel{margin-top:22px;background:#f7f9fc;border:1px solid #e0e7ef;border-radius:15px;padding:18px}
+.legacy-panel summary{font-size:15px;font-weight:900;cursor:pointer;color:#203851}
+.legacy-note{font-size:13px;color:#5d7089;line-height:1.8;margin:12px 0}
+@media(max-width:650px){.badge-actions-row{flex-direction:column}.badge-actions-row .btn-main{max-width:none}}
+</style>
 </head>
 <body>
 
@@ -235,8 +244,27 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
                     <div class="form-group"><label>المعرف *</label><input type="text" class="form-control" id="b-identifier" required></div>
                     <div class="form-group full"><label>تاريخ الصدور *</label><input type="date" class="form-control" id="b-date" required></div>
                 </div>
-                <button type="submit" class="btn-main" style="background:var(--purple); color:white;"><i class="fas fa-qrcode"></i> حفظ وتوليد الباركود الذكي</button>
+                <div id="badge-duplicate-alert" class="badge-alert" role="alert" aria-live="polite"></div>
+                <button type="submit" id="badge-save-print" class="btn-main" style="background:var(--purple); color:white;"><i class="fas fa-print"></i> حفظ الباج وإرسال الكتاب للطباعة A5</button>
+                <p style="font-size:12px;color:#64748b;margin-top:10px">الطباعة تتم عبر برنامج Word على كمبيوتر المكتب إذا كان برنامج ربط الطابعة شغّالاً. يبقى زر QR كما هو.</p>
             </form>
+            <details class="legacy-panel" id="badge-legacy-box">
+              <summary><i class="fas fa-folder-plus"></i> إضافة باج ورقي صادر سابقاً (بدون طباعة جديدة)</summary>
+              <p class="legacy-note">هذا الخيار للـ259 باج القديم عند توفر معلوماتهن. يخزّن سجل أرشفة فقط، ولا يعتبر الباج موثقاً إلكترونياً قبل تدقيقه.</p>
+              <form id="badge-legacy-form" onsubmit="event.preventDefault();saveLegacyBadge();">
+                <div class="form-grid">
+                  <div class="form-group full"><label>اسم صاحب الباج القديم *</label><input class="form-control" id="old-name" required></div>
+                  <div class="form-group"><label>نوع العجلة</label><input class="form-control" id="old-type"></div>
+                  <div class="form-group"><label>رقم العجلة</label><input class="form-control" id="old-num" inputmode="numeric"></div>
+                  <div class="form-group"><label>الحرف</label><input class="form-control" id="old-letter"></div>
+                  <div class="form-group"><label>المحافظة</label><input class="form-control" id="old-gov"></div>
+                  <div class="form-group"><label>لون العجلة</label><input class="form-control" id="old-color"></div>
+                  <div class="form-group"><label>تاريخ الإصدار (إذا معروف)</label><input class="form-control" id="old-date" type="date"></div>
+                </div>
+                <div id="old-duplicate-alert" class="badge-alert" role="alert" aria-live="polite"></div>
+                <button type="submit" class="btn-main" style="background:#344e68;color:white"><i class="fas fa-box-archive"></i> حفظ في الأرشيف فقط — بدون طباعة</button>
+              </form>
+            </details>
         </div>
 
         <!-- 4. المحلية -->
@@ -320,7 +348,7 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
 
     <script>
         // ⚠️ لا تنسى: خلي رابط النشر الجديد مالتك هنــــا
-        const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwCY7EfFvztvHT9F_v2PThX4-k-tp8-9Gd_2Qjyd3Bb6TMuXo1x9BDxNE3fLRwPOJ6o/exec"; // لا تستخدم الرابط القديم قبل دمج التوافق واختباره
+        const WEBHOOK_URL = "PASTE_OFFICIAL_APPS_SCRIPT_WEB_APP_URL_HERE"; // ضع رابط Apps Script الرسمي بعد نشر الإصدار الجديد
         let authToken = "";
         let currentUserTitle = "";
         let demoMode = false; // وضع المعاينة مفعّل في ملف المعاينة المنفصل فقط.
@@ -386,7 +414,7 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
                 return {result:'success', reqId:'DEMO-ONLY', url:''};
             }
             try {
-                if (!WEBHOOK_URL || WEBHOOK_URL.includes('PASTE_NEW_APPS_SCRIPT_WEB_APP_URL_HERE')) {
+                if (!WEBHOOK_URL || WEBHOOK_URL.includes('PASTE_')) {
                     showToast('الواجهة جاهزة؛ ربط الخادم سيُستكمل بعد اعتماد تصميم الأرشيف.');
                     return { result: 'error', message: 'backend_not_configured' };
                 }
@@ -648,32 +676,102 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
             } else { showToast("❌ حدث خطأ أثناء الحفظ"); }
         }
 
+        function badgeEnglishDigits(str) {
+            return String(str||'').replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-0x660)).replace(/[۰-۹]/g,c=>String(c.charCodeAt(0)-0x6f0));
+        }
+        function badgeNormalizedName(str) {
+            return String(str||'').replace(/[\u064B-\u065F\u0640]/g,'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه')
+                .replace(/ي/g,'ى').replace(/ؤ/g,'و').replace(/ئ/g,'ى').replace(/\s+/g,' ').trim();
+        }
+        function badgeFormatMatches(matches) {
+            return (matches||[]).map(m=>`• ${m.name} | ${m.plate||'رقم غير مدخل'} | ${m.status||'غير محدد'} | ${m.reason}`).join('\n');
+        }
+        function badgeDisplayAlert(targetId,matches) {
+            const box=document.getElementById(targetId); if(!box)return;
+            if(!matches||matches.length===0){box.style.display='none';box.textContent='';return;}
+            box.textContent='';
+            const title=document.createElement('strong');title.textContent='⚠ توجد سجلات سابقة أو أسماء مشابهة؛ راجع قبل الحفظ';box.appendChild(title);
+            const ul=document.createElement('ul');
+            matches.slice(0,8).forEach(m=>{const li=document.createElement('li');li.textContent=`${m.name} — ${m.plate||'بدون رقم'} — ${m.reason}`;ul.appendChild(li)});
+            box.appendChild(ul);box.style.display='block';
+        }
+        let badgeDuplicateTimer=null;
+        async function badgeLiveCheck() {
+            const name=document.getElementById('b-name').value.trim();
+            const digits=badgeEnglishDigits(document.getElementById('b-num').value.trim());
+            const letter=document.getElementById('b-letter').value.trim();
+            if(name.length<4 && digits.length<2){badgeDisplayAlert('badge-duplicate-alert',[]);return;}
+            const answer=await safeFetch({action:'badge_duplicate_check',name:name,plateDigits:digits,plateLetter:letter});
+            if(answer && answer.result==='success') badgeDisplayAlert('badge-duplicate-alert',answer.matches);
+        }
+        ['b-name','b-num','b-letter'].forEach(id=>{
+            document.getElementById(id).addEventListener('input',()=>{
+                clearTimeout(badgeDuplicateTimer);badgeDuplicateTimer=setTimeout(badgeLiveCheck,600);
+            });
+        });
         async function submitBadge() {
-            showToast("⏳ جاري إنشاء الباج أمنياً...");
-            let name = document.getElementById('b-name').value;
-            let carType = document.getElementById('b-type').value;
-            let num = document.getElementById('b-num').value;
-            let letter = document.getElementById('b-letter').value;
-            let gov = document.getElementById('b-gov').value;
-            let color = document.getElementById('b-color').value;
-            let count = document.getElementById('b-count').value;
-            let identifier = document.getElementById('b-identifier').value;
-            let bDate = document.getElementById('b-date').value;
-
-            let combinedPlate = num + " / " + letter;
-            let payload = { action: "staff_entry", entryType: "badge", name: name, carType: carType, plateNum: combinedPlate, gov: gov, color: color, badgeCount: count, identifier: identifier, badgeDate: bDate };
-
-            let res = await safeFetch(payload);
-            if (res && res.result === "success") {
-                showToast("✅ تم حفظ الباج بنجاح");
-                logAuditAction(`توليد باج للمواطن: ${name}`);
-                document.getElementById('badge-form').reset();
-                loadArchive();
-                
-                let carInfo = carType + " - " + color;
-                let plateInfo = combinedPlate + " / " + gov;
-                showArchiveBarcode(res.reqId, name, carInfo, plateInfo, bDate);
-            }
+            const name=document.getElementById('b-name').value.trim();
+            const carType=document.getElementById('b-type').value.trim();
+            const num=badgeEnglishDigits(document.getElementById('b-num').value.trim());
+            const letter=document.getElementById('b-letter').value.trim();
+            const gov=document.getElementById('b-gov').value.trim();
+            const color=document.getElementById('b-color').value.trim();
+            const count=document.getElementById('b-count').value;
+            const identifier=document.getElementById('b-identifier').value.trim();
+            const bDate=document.getElementById('b-date').value;
+            if(!/^[0-9]{1,12}$/.test(num)){showToast('رقم العجلة لازم يكون 1 إلى 12 رقماً');return;}
+            if(!/^[\p{L}]{1,3}$/u.test(letter)){showToast('حرف العجلة غير صحيح');return;}
+            const btn=document.getElementById('badge-save-print');btn.disabled=true;
+            try {
+                showToast('جاري فحص السجلات السابقة...');
+                const dup=await safeFetch({action:'badge_duplicate_check',name,plateDigits:num,plateLetter:letter});
+                if(!dup||dup.result!=='success'){showToast('تعذر فحص التكرار؛ لم يتم الحفظ');return;}
+                badgeDisplayAlert('badge-duplicate-alert',dup.matches||[]);
+                let allowDuplicate=false;
+                if(dup.matches && dup.matches.length){
+                    if(!confirm('تنبيه: سجلات مشابهة موجودة:\n'+badgeFormatMatches(dup.matches)+'\n\nهل تأكدت أنها ليست إعادة إصدار بالخطأ، وتريد المتابعة؟')) return;
+                    allowDuplicate=true;
+                }
+                showToast('جاري الحفظ وإرسال أمر الطباعة...');
+                const payload={action:'staff_entry',entryType:'badge',name,carType,plateNum:num+' / '+letter,
+                    plateDigits:num,plateLetter:letter,gov,color,badgeCount:count,identifier,badgeDate:bDate,
+                    printAfterSave:true,allowDuplicate};
+                const res=await safeFetch(payload);
+                if(res && res.result==='duplicate_warning') {
+                    badgeDisplayAlert('badge-duplicate-alert',res.matches);
+                    showToast('ظهر سجل مكرر جديد؛ راجع البيانات ثم أعد المحاولة');return;
+                }
+                if(!res || res.result!=='success') {showToast('تعذر الحفظ: '+(res?.message||'خطأ غير معروف'));return;}
+                document.getElementById('badge-form').reset();badgeDisplayAlert('badge-duplicate-alert',[]);
+                await loadArchive();
+                const printMessage=res.printJobId?'تم حفظ الباج وإدراج أمر الطباعة في الانتظار.':'تم حفظ الباج؛ لكن أمر الطباعة لم يُنشأ: '+(res.printError||'تحقق من الربط');
+                showToast('✅ '+printMessage);
+                showArchiveBarcode(res.reqId,name,carType+' - '+color,num+' / '+letter+' / '+gov,bDate);
+            } finally {btn.disabled=false;}
+        }
+        async function saveLegacyBadge() {
+            const name=document.getElementById('old-name').value.trim();
+            const payload={action:'badge_legacy_entry',name,carType:document.getElementById('old-type').value.trim(),
+                plateDigits:badgeEnglishDigits(document.getElementById('old-num').value.trim()),
+                plateLetter:document.getElementById('old-letter').value.trim(),
+                gov:document.getElementById('old-gov').value.trim(),color:document.getElementById('old-color').value.trim(),
+                badgeDate:document.getElementById('old-date').value};
+            const r=await safeFetch(payload);
+            if(r?.result==='duplicate_warning') {
+                badgeDisplayAlert('old-duplicate-alert',r.matches);
+                if(!confirm('يوجد سجل سابق أو مشابه:\n'+badgeFormatMatches(r.matches)+'\n\nهل تريد تسجيل السجل الورقي رغم التنبيه؟'))return;
+                payload.allowDuplicate=true;
+                const next=await safeFetch(payload);
+                if(next?.result!=='success'){showToast('لم تُحفظ البيانات: '+(next?.message||''));return;}
+            } else if(r?.result!=='success'){showToast('لم تُحفظ البيانات: '+(r?.message||''));return;}
+            document.getElementById('badge-legacy-form').reset();badgeDisplayAlert('old-duplicate-alert',[]);
+            showToast('✅ أُضيف الباج الورقي إلى الأرشيف بدون طباعة جديدة');await loadArchive();
+        }
+        async function badgeReprint(badgeId) {
+            if(!confirm('هل تريد إرسال الكتاب لهذا الباج للطباعة مجدداً؟'))return;
+            const r=await safeFetch({action:'badge_reprint',badgeId});
+            if(r?.result==='success')showToast('✅ أُرسل طلب إعادة الطباعة إلى كمبيوتر المكتب');
+            else showToast('تعذر طلب إعادة الطباعة: '+(r?.message||''));
         }
 
         // تم ربط الإلغاء بـ rowIndex 
@@ -893,11 +991,16 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
                     let plateInfo = `${escapeHtml(item.plateNum || item.plate)} / ${escapeHtml(item.gov || '')}`;
                     let dateStr = formatDateSafe(item.badgeDate);
                     
-                    let statusLabel = item.status === "ملغى" ? `<span class="badge" style="background:#fecaca; color:#dc2626;">ملغى</span>` : `<span class="badge badge-done">فعال</span>`;
-                    let qrBtn = `<button class="action-btn btn-qr" onclick="showArchiveBarcode('${encodeURIComponent(item.id || '')}', '${encodeURIComponent(item.name || '')}', '${encodeURIComponent(carInfo)}', '${encodeURIComponent(plateInfo)}', '${encodeURIComponent(item.badgeDate || '')}')"><i class="fas fa-qrcode"></i> عرض الباركود</button>`;
+                    let statusLabel = item.status === "ملغى" ? `<span class="badge" style="background:#fecaca; color:#dc2626;">ملغى</span>`
+                        : item.source === "أرشفة ورقية سابقة" ? `<span class="badge badge-wait">أرشفة ورقية — غير معتمد إلكترونياً</span>`
+                        : `<span class="badge badge-done">فعال</span>`;
+                    let qrBtn = item.source === "أرشفة ورقية سابقة" ? `<span style="color:#64748b;font-size:11px">لا يوجد QR معتمد</span>` : `<button class="action-btn btn-qr" onclick="showArchiveBarcode('${encodeURIComponent(item.id || '')}', '${encodeURIComponent(item.name || '')}', '${encodeURIComponent(carInfo)}', '${encodeURIComponent(plateInfo)}', '${encodeURIComponent(item.badgeDate || '')}')"><i class="fas fa-qrcode"></i> عرض الباركود</button>`;
+                    let reprintBtn = item.status !== "ملغى" && item.source !== "أرشفة ورقية سابقة"
+                      ? `<button class="action-btn" style="color:#205c7d;border-color:#c7def0;background:#eef7fc" onclick="badgeReprint(decodeURIComponent('${encodeURIComponent(item.id||'')}'))"><i class="fas fa-print"></i> إعادة طباعة</button>` : '';
+                    let printLabel = item.printStatus ? `<small style="display:block;color:#64748b;margin-top:4px">${escapeHtml(item.printStatus)}</small>` : '';
                     let revokeBtn = item.status !== "ملغى" ? `<button class="action-btn" style="color:#ef4444; border-color:#ef4444; background:#fef2f2;" onclick="revokeBadge('${item.rowIndex}', decodeURIComponent('${encodeURIComponent(item.name || '')}'))"><i class="fas fa-ban"></i> إلغاء الباج</button>` : '';
 
-                    html += `<tr><td><strong>${escapeHtml(item.name)}</strong></td><td>${carInfo}<br><small dir="ltr">${plateInfo}</small></td><td>${dateStr}</td><td>${statusLabel}</td><td>${qrBtn} ${revokeBtn}</td></tr>`;
+                    html += `<tr><td><strong>${escapeHtml(item.name)}</strong></td><td>${carInfo}<br><small dir="ltr">${plateInfo}</small></td><td>${dateStr}</td><td>${statusLabel}${printLabel}</td><td>${qrBtn} ${reprintBtn} ${revokeBtn}</td></tr>`;
                 });
             } else if (currentArchiveView === "localLetters" && currentUserRole === "admin") {
                 thead.innerHTML = `<tr><th>الاسم</th><th>الهاتف</th><th>الجهة</th><th>الموضوع</th><th>المرفقات</th></tr>`;
