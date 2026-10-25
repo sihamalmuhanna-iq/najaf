@@ -260,7 +260,7 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
                     <div class="form-group"><label>الوزارة / الجهة *</label><input type="text" class="form-control" id="in-ministry" required></div>
                     <div class="form-group"><label>رقم الوارد *</label><input type="text" class="form-control" id="in-num" required></div>
                     <div class="form-group"><label>تاريخ الوارد *</label><input type="date" class="form-control" id="in-date" required></div>
-                    <div class="form-group full"><div class="reference-heading"><i class="fas fa-user-check"></i><span>الربط التلقائي حسب الاسم الكامل</span><small>يبحث في الصادر والوارد تلقائياً؛ لا تحتاج رقم كتاب أو كود ربط. الأسماء المتكررة تُعرض للمراجعة.</small></div></div>
+                    <div class="form-group full"><div class="reference-heading"><i class="fas fa-user-check"></i><span>الربط التلقائي حسب الاسم الثنائي أو الثلاثي أو الكامل</span><small>يبحث في الصادر والوارد تلقائياً؛ لا تحتاج رقم كتاب أو كود ربط. الأسماء المتكررة تُعرض للمراجعة.</small></div></div>
                     <div class="form-group full"><label>هامش الوزير أو الجهة *</label><input type="text" class="form-control" id="in-margin" required></div>
                     <div class="form-group full"><label>الموضوع *</label><textarea class="form-control" id="in-subject" rows="2" required></textarea></div>
                     <div class="form-group full"><label>إرفاق صورة الإجابة (اختياري)</label><input type="file" class="form-control" accept="image/*" style="padding: 9px; background:white;"></div>
@@ -338,7 +338,7 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
                  <div class="correspondence-header">
                      <div><div class="correspondence-kicker"><i class="fas fa-chart-line"></i> تقرير المتابعة الإدارية</div>
                          <h2 id="correspondence-heading">الموقف الإنجازي للكتب الصادرة والإجابات الواردة</h2>
-                         <p>مطابقة تلقائية حسب الاسم الكامل وحده بعد توحيد الكتابة العربية؛ إذا تكرر الاسم في عدة كتب صادر يُعرض تنبيه للمراجعة. كل صادر يُحتسب مرة واحدة.</p></div>
+                         <p>مطابقة تلقائية بالاسم بدءاً من كلمتين، مع مراعاة الثلاثي والرباعي وتوحيد الكتابة العربية؛ الأسماء المختصرة المشتركة أو المتكررة تحتاج مراجعة قبل الربط. كل صادر يُحتسب مرة واحدة.</p></div>
                      <div class="correspondence-header-actions">
                          <button type="button" class="action-btn" id="correspondence-reconcile-btn" onclick="refreshCorrespondenceLinks()"><i class="fas fa-arrows-rotate"></i> تحديث الربط للسجلات السابقة</button>
                          <button type="button" class="action-btn" onclick="diagnoseCorrespondenceLinks()"><i class="fas fa-stethoscope"></i> فحص الربط (قراءة فقط)</button>
@@ -347,7 +347,7 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
                  </div>
                  <div class="correspondence-metrics">
                      <div class="correspondence-metric"><span><i class="fas fa-file-export"></i> إجمالي الكتب الصادرة</span><strong id="corr-total">0</strong><small>العدد الكلي المسجل بالصادر</small></div>
-                     <div class="correspondence-metric is-success"><span><i class="fas fa-link"></i> صادر مرتبط بإجابة وارد</span><strong id="corr-linked">0</strong><small>سجلات مرتبطة بتطابق الاسم الكامل</small></div>
+                     <div class="correspondence-metric is-success"><span><i class="fas fa-link"></i> صادر مرتبط بإجابة وارد</span><strong id="corr-linked">0</strong><small>سجلات مرتبطة بالاسم الثنائي أو الثلاثي أو الكامل</small></div>
                      <div class="correspondence-metric is-pending"><span><i class="fas fa-hourglass-half"></i> صادر بانتظار ربط وارد</span><strong id="corr-waiting">0</strong><small>يشمل الكتب بلا جواب مطابق أو بأسماء متكررة</small></div>
                      <div class="correspondence-metric is-rate"><span><i class="fas fa-percent"></i> نسبة ارتباط الصادر بالوارد</span><strong id="corr-rate">0%</strong><small>المرتبط ÷ إجمالي الصادر × 100</small></div>
                  </div>
@@ -776,8 +776,10 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
               +'إصدار الخادم: '+(d.version||'غير معروف')+'\n'
               +'عدد الصادر: '+(d.totalOutgoing||0)+'\n'
               +'عدد الوارد: '+(d.totalIncoming||0)+'\n'
-              +'وارد يطابق اسماً وحيداً بالصادر: '+(d.matchingIncoming||0)+'\n'
-              +'وارد بأسماء مكررة تحتاج مراجعة: '+(d.ambiguousIncoming||0)+'\n'
+              +'وارد قابل للربط تلقائياً: '+(d.matchingIncoming||0)+'\n'
+              +'وارد متطابق بالاسم الكامل: '+(d.exactIncoming||0)+'\n'
+              +'وارد متطابق بالاسم المختصر: '+(d.partialIncoming||0)+'\n'
+              +'وارد يحتاج مراجعة بسبب تشابه الأسماء: '+(d.ambiguousIncoming||0)+'\n'
               +'ملاحظة: الفحص لا يعدّل السجلات.');
         }
         async function refreshCorrespondenceLinks() {
@@ -785,7 +787,7 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
             const button=document.getElementById('correspondence-reconcile-btn');
             if(button)button.disabled=true;
             try {
-                showToast('جاري مطابقة الأسماء الكاملة بين جميع سجلات الصادر والوارد...');
+                showToast('جاري مطابقة الأسماء الثنائية والثلاثية والرباعية بين الصادر والوارد...');
                 const r=await safeFetch({action:'correspondence_reconcile'});
                 if(!r||r.result!=='success'){showToast('تعذر تحديث الربط: '+(r?.message||'خطأ اتصال'));return;}
                 await loadArchive();
@@ -801,7 +803,7 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
             const rows=[
               ['إجمالي الكتب الصادرة',total],['الصادر المرتبط بإجابات واردة',linked],
               ['الصادر بانتظار الارتباط',waiting],['نسبة ارتباط الصادر بالوارد',rate+'%'],
-              ['أسماء مكررة بالصادر تحتاج مراجعة',Number(data.ambiguous)||0],
+              ['حالات تشابه أو تكرار تحتاج مراجعة',Number(data.ambiguous)||0],
               ['أسماء وارد بلا صادر مطابق',Number(data.unmatched)||0]
             ];
             const win=window.open('','_blank','width=920,height=780');
@@ -809,7 +811,7 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
             const today=escapeHtml(new Date().toLocaleString('ar-IQ'));
             win.document.write('<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>الموقف الإنجازي للصادر والوارد</title><style>@page{size:A4;margin:20mm}body{font-family:Arial,Tahoma,sans-serif;color:#192c3c;padding:12mm}header{border-bottom:3px solid #c7a750;padding-bottom:12px;margin-bottom:20px}header small{display:block;color:#64748b;margin-top:6px}h1{font-size:23px}table{border-collapse:collapse;width:100%;margin-top:20px}td{padding:14px;border-bottom:1px solid #cfd8e2;font-size:16px}td:last-child{text-align:left;font-weight:900}p{color:#64748b;font-size:12px;line-height:1.8}.highlight{background:#f5f8fb}</style></head><body><header><h1>الموقف الإنجازي للكتب الصادرة والإجابات الواردة</h1><small>مكتب النائب سهام منعم المحنة — الإدارة</small></header><table>'+
               rows.map((r,i)=>'<tr'+(i===3?' class="highlight"':'')+'><td>'+escapeHtml(r[0])+'</td><td>'+escapeHtml(r[1])+'</td></tr>').join('')+
-              '</table><p>المؤشر يعتمد تطابق الاسم الكامل بعد توحيد الكتابة العربية، ويحسِب كل صادر مرة واحدة. تشابه الاسم وحده لا يثبت أن جواب الوارد يتعلق بنفس الكتاب، ولا تمثل النسبة إنجاز موضوع المعاملة.</p><p>تاريخ استخراج التقرير: '+today+'</p></body></html>');
+              '</table><p>المؤشر يعتمد تطابق الاسم الكامل أو الاسم المختصر من كلمتين أو ثلاث كلمات بعد توحيد الكتابة العربية، ويحسِب كل صادر مرة واحدة. تشابه الاسم وحده لا يثبت أن جواب الوارد يتعلق بنفس الكتاب، ولا تمثل النسبة إنجاز موضوع المعاملة.</p><p>تاريخ استخراج التقرير: '+today+'</p></body></html>');
             win.document.close();win.focus();setTimeout(()=>win.print(),350);
         }
 
