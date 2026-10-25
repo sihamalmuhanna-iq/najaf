@@ -341,6 +341,7 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
                          <p>مطابقة تلقائية حسب الاسم الكامل وحده بعد توحيد الكتابة العربية؛ إذا تكرر الاسم في عدة كتب صادر يُعرض تنبيه للمراجعة. كل صادر يُحتسب مرة واحدة.</p></div>
                      <div class="correspondence-header-actions">
                          <button type="button" class="action-btn" id="correspondence-reconcile-btn" onclick="refreshCorrespondenceLinks()"><i class="fas fa-arrows-rotate"></i> تحديث الربط للسجلات السابقة</button>
+                         <button type="button" class="action-btn" onclick="diagnoseCorrespondenceLinks()"><i class="fas fa-stethoscope"></i> فحص الربط (قراءة فقط)</button>
                          <button type="button" class="action-btn report-btn" onclick="printCorrespondenceReport()"><i class="fas fa-file-lines"></i> طباعة تقرير الإنجاز</button>
                      </div>
                  </div>
@@ -755,7 +756,7 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
 
             let res = await safeFetch(payload);
             if (res && res.result === "success") {
-                showToast(res.linkNotice ? "✅ "+res.linkNotice : "✅ تم الحفظ بنجاح وتوثيق القيد");
+                showToast(res.linkNotice ? "⚠️ "+res.linkNotice : "✅ تم الحفظ بنجاح وتوثيق القيد");
                 logAuditAction(`إضافة قيد جديد: ${payload.name}`);
                 form.reset();
                 loadArchive();
@@ -763,6 +764,22 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
         }
 
 
+        async function diagnoseCorrespondenceLinks() {
+            if(currentUserRole!=='admin'){showToast('هذا الفحص للمدير فقط');return;}
+            const r=await safeFetch({action:'correspondence_diagnose'});
+            if(!r||r.result!=='success'){
+                alert('فحص الربط غير متاح: '+(r?.message||'الخادم ما زال على إصدار قديم أو رابط الاتصال غير صحيح. حدّث نشر Apps Script الحالي.'));
+                return;
+            }
+            const d=r.diagnostic||{};
+            alert('تشخيص ربط الصادر والوارد (قراءة فقط)\n'
+              +'إصدار الخادم: '+(d.version||'غير معروف')+'\n'
+              +'عدد الصادر: '+(d.totalOutgoing||0)+'\n'
+              +'عدد الوارد: '+(d.totalIncoming||0)+'\n'
+              +'وارد يطابق اسماً وحيداً بالصادر: '+(d.matchingIncoming||0)+'\n'
+              +'وارد بأسماء مكررة تحتاج مراجعة: '+(d.ambiguousIncoming||0)+'\n'
+              +'ملاحظة: الفحص لا يعدّل السجلات.');
+        }
         async function refreshCorrespondenceLinks() {
             if(currentUserRole!=='admin'){showToast('هذا الإجراء للمدير فقط');return;}
             const button=document.getElementById('correspondence-reconcile-btn');
@@ -772,7 +789,8 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
                 const r=await safeFetch({action:'correspondence_reconcile'});
                 if(!r||r.result!=='success'){showToast('تعذر تحديث الربط: '+(r?.message||'خطأ اتصال'));return;}
                 await loadArchive();
-                showToast('✅ تم تحديث الربط تلقائياً اعتماداً على الاسم الكامل فقط');
+                const v=r.correspondence||{};
+                showToast('✅ الربط بالاسم: '+(v.linked||0)+' صادر مرتبط من أصل '+(v.totalOut||0)+' — '+(v.ambiguous||0)+' وارد بحاجة مراجعة');
             } finally {if(button)button.disabled=false;}
         }
         function printCorrespondenceReport(){
