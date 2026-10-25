@@ -155,6 +155,45 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
 .legacy-note{font-size:13px;color:#5d7089;line-height:1.8;margin:12px 0}
 @media(max-width:650px){.badge-actions-row{flex-direction:column}.badge-actions-row .btn-main{max-width:none}}
 </style>
+
+<style id="correspondence-premium-styles">
+/* لوحة الربط والموقف التنفيذي: إضافة مستقلة تحفظ تنسيق بقية المنصة */
+.reference-heading{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:linear-gradient(95deg,#f1f6fc,#fcf9f1);border:1px solid #dae5f1;border-right:4px solid #c9a64b;border-radius:12px;padding:13px 16px;color:#18334e;font-weight:900}
+.reference-heading small{color:#697c92;font-weight:600;margin-right:auto}
+.correspondence-dashboard{margin-top:22px;background:linear-gradient(155deg,#12273c,#1a3b56);border:1px solid #294760;border-radius:21px;overflow:hidden;box-shadow:0 18px 40px rgba(16,36,58,.19);color:#fff;position:relative}
+.correspondence-dashboard:before{content:"";position:absolute;top:-90px;left:-90px;width:280px;height:280px;background:radial-gradient(circle,rgba(201,166,75,.2),transparent 72%);pointer-events:none}
+.correspondence-header{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:27px 28px 16px;position:relative}
+.correspondence-kicker{font-weight:800;color:#e7c978;font-size:12px;letter-spacing:.4px;margin-bottom:9px}
+.correspondence-header h2{color:#fff;font-size:clamp(19px,2.1vw,25px);font-weight:900;line-height:1.6;margin:0 0 7px}
+.correspondence-header p{color:#c1d0df;font-size:13px;line-height:1.9;max-width:760px}
+.correspondence-header-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.correspondence-header-actions .action-btn{border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.09);color:#fff;min-height:40px;font-size:12px}
+.correspondence-header-actions .report-btn{background:#c9a64b;color:#17283b;border-color:#c9a64b}
+.correspondence-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding:8px 28px 22px}
+.correspondence-metric{background:rgba(255,255,255,.075);border:1px solid rgba(255,255,255,.12);border-radius:15px;padding:19px 17px 17px;display:flex;flex-direction:column;gap:8px;min-height:140px}
+.correspondence-metric span{color:#d3deea;font-size:12.5px;line-height:1.6;font-weight:800}
+.correspondence-metric span i{color:#e5be60;margin-left:4px}
+.correspondence-metric strong{font-size:clamp(25px,3vw,37px);color:#fff;line-height:1.2;font-weight:900;font-variant-numeric:tabular-nums}
+.correspondence-metric small{font-size:11px;color:#b5c9d9;line-height:1.6}
+.correspondence-metric.is-success strong{color:#75e9bd}
+.correspondence-metric.is-pending strong{color:#f4d088}
+.correspondence-metric.is-rate{background:rgba(201,166,75,.14);border-color:rgba(201,166,75,.35)}
+.correspondence-bottom{padding:21px 28px 24px;border-top:1px solid rgba(255,255,255,.11);background:rgba(0,0,0,.12)}
+.correspondence-progress-label{display:flex;justify-content:space-between;gap:12px;font-size:13px;margin-bottom:12px}
+.correspondence-progress-label span{color:#d7e2ec}
+.correspondence-progress{height:12px;background:#344e65;border:1px solid #456074;border-radius:20px;overflow:hidden}
+#corr-progress-fill{height:100%;width:0;background:linear-gradient(90deg,#45cba0,#d4b35f);border-radius:20px;transition:width .5s}
+.correspondence-notes{display:flex;flex-wrap:wrap;gap:12px 25px;margin-top:15px;color:#bcd0df;font-size:12px}
+.correspondence-notes i{margin-left:6px;color:#d9bb74}
+.correspondence-notes b{color:#fff}
+.correspondence-filter{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;color:#3c556e}
+.correspondence-filter select{min-height:39px;border-radius:9px;border:1px solid #dce5ef;background:#fff;padding:6px 10px;color:#263b50;font-weight:800;max-width:155px}
+#badge-legacy-box[open]{border-color:#c9a64b;background:#fffefb;box-shadow:0 9px 25px rgba(16,36,58,.07)}
+#badge-legacy-box[open] summary{padding-bottom:13px;border-bottom:1px solid #e8e2d4;margin-bottom:17px}
+@media(max-width:1100px){.correspondence-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.correspondence-header{padding:22px 17px 15px}.correspondence-metrics{padding:7px 16px 18px;gap:9px}.correspondence-metric{padding:15px 12px;min-height:125px}.correspondence-bottom{padding:18px 17px 20px}.correspondence-header-actions{width:100%}.correspondence-header-actions .action-btn{flex:1;justify-content:center}.reference-heading small{width:100%;margin-right:0}.correspondence-notes{gap:8px 15px}}
+@media print{.correspondence-dashboard{box-shadow:none}}
+</style>
 </head>
 <body>
 
@@ -221,6 +260,7 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
                     <div class="form-group"><label>الوزارة / الجهة *</label><input type="text" class="form-control" id="in-ministry" required></div>
                     <div class="form-group"><label>رقم الوارد *</label><input type="text" class="form-control" id="in-num" required></div>
                     <div class="form-group"><label>تاريخ الوارد *</label><input type="date" class="form-control" id="in-date" required></div>
+                    <div class="form-group full"><div class="reference-heading"><i class="fas fa-user-check"></i><span>الربط التلقائي حسب الاسم الكامل</span><small>يبحث في الصادر والوارد تلقائياً؛ لا تحتاج رقم كتاب أو كود ربط. الأسماء المتكررة تُعرض للمراجعة.</small></div></div>
                     <div class="form-group full"><label>هامش الوزير أو الجهة *</label><input type="text" class="form-control" id="in-margin" required></div>
                     <div class="form-group full"><label>الموضوع *</label><textarea class="form-control" id="in-subject" rows="2" required></textarea></div>
                     <div class="form-group full"><label>إرفاق صورة الإجابة (اختياري)</label><input type="file" class="form-control" accept="image/*" style="padding: 9px; background:white;"></div>
@@ -250,16 +290,17 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
             </form>
             <details class="legacy-panel" id="badge-legacy-box">
               <summary><i class="fas fa-folder-plus"></i> إضافة باج ورقي صادر سابقاً (بدون طباعة جديدة)</summary>
-              <p class="legacy-note">هذا الخيار للـ259 باج القديم عند توفر معلوماتهن. يخزّن سجل أرشفة فقط، ولا يعتبر الباج موثقاً إلكترونياً قبل تدقيقه.</p>
               <form id="badge-legacy-form" onsubmit="event.preventDefault();saveLegacyBadge();">
                 <div class="form-grid">
-                  <div class="form-group full"><label>اسم صاحب الباج القديم *</label><input class="form-control" id="old-name" required></div>
-                  <div class="form-group"><label>نوع العجلة</label><input class="form-control" id="old-type"></div>
-                  <div class="form-group"><label>رقم العجلة</label><input class="form-control" id="old-num" inputmode="numeric"></div>
-                  <div class="form-group"><label>الحرف</label><input class="form-control" id="old-letter"></div>
-                  <div class="form-group"><label>المحافظة</label><input class="form-control" id="old-gov"></div>
-                  <div class="form-group"><label>لون العجلة</label><input class="form-control" id="old-color"></div>
-                  <div class="form-group"><label>تاريخ الإصدار (إذا معروف)</label><input class="form-control" id="old-date" type="date"></div>
+                  <div class="form-group full"><label>اسم صاحب الباج *</label><input type="text" class="form-control" id="old-name" required></div>
+                  <div class="form-group"><label>نوع العجلة *</label><input type="text" class="form-control" id="old-type" placeholder="مثال: سوناتا، تاهو..." required></div>
+                  <div class="form-group"><label>رقم العجلة *</label><input type="text" class="form-control" id="old-num" inputmode="numeric" placeholder="مثال: 55697" required></div>
+                  <div class="form-group"><label>الحرف *</label><input type="text" class="form-control" id="old-letter" placeholder="مثال: H أو أ" required></div>
+                  <div class="form-group"><label>المحافظة *</label><input type="text" class="form-control" id="old-gov" placeholder="مثال: النجف أو 11" required></div>
+                  <div class="form-group"><label>لون العجلة *</label><input type="text" class="form-control" id="old-color" placeholder="مثال: رصاصي فضي" required></div>
+                  <div class="form-group"><label>العدد *</label><input type="number" class="form-control" id="old-count" min="1" required></div>
+                  <div class="form-group"><label>المعرف *</label><input type="text" class="form-control" id="old-identifier" required></div>
+                  <div class="form-group full"><label>تاريخ الصدور *</label><input type="date" class="form-control" id="old-date" required></div>
                 </div>
                 <div id="old-duplicate-alert" class="badge-alert" role="alert" aria-live="polite"></div>
                 <button type="submit" class="btn-main" style="background:#344e68;color:white"><i class="fas fa-box-archive"></i> حفظ في الأرشيف فقط — بدون طباعة</button>
@@ -293,13 +334,39 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
                     <div class="stat-card" style="border-color:var(--blue);"><h3 id="media-rate">0%</h3><span style="font-size:14px;">نسبة الاستجابة للطلبات</span></div>
                 </div>
             </div>
+             <section class="correspondence-dashboard" aria-labelledby="correspondence-heading">
+                 <div class="correspondence-header">
+                     <div><div class="correspondence-kicker"><i class="fas fa-chart-line"></i> تقرير المتابعة الإدارية</div>
+                         <h2 id="correspondence-heading">الموقف الإنجازي للكتب الصادرة والإجابات الواردة</h2>
+                         <p>مطابقة تلقائية حسب الاسم الكامل وحده بعد توحيد الكتابة العربية؛ إذا تكرر الاسم في عدة كتب صادر يُعرض تنبيه للمراجعة. كل صادر يُحتسب مرة واحدة.</p></div>
+                     <div class="correspondence-header-actions">
+                         <button type="button" class="action-btn" id="correspondence-reconcile-btn" onclick="refreshCorrespondenceLinks()"><i class="fas fa-arrows-rotate"></i> تحديث الربط للسجلات السابقة</button>
+                         <button type="button" class="action-btn report-btn" onclick="printCorrespondenceReport()"><i class="fas fa-file-lines"></i> طباعة تقرير الإنجاز</button>
+                     </div>
+                 </div>
+                 <div class="correspondence-metrics">
+                     <div class="correspondence-metric"><span><i class="fas fa-file-export"></i> إجمالي الكتب الصادرة</span><strong id="corr-total">0</strong><small>العدد الكلي المسجل بالصادر</small></div>
+                     <div class="correspondence-metric is-success"><span><i class="fas fa-link"></i> صادر مرتبط بإجابة وارد</span><strong id="corr-linked">0</strong><small>سجلات مرتبطة بتطابق الاسم الكامل</small></div>
+                     <div class="correspondence-metric is-pending"><span><i class="fas fa-hourglass-half"></i> صادر بانتظار ربط وارد</span><strong id="corr-waiting">0</strong><small>يشمل الكتب بلا جواب مطابق أو بأسماء متكررة</small></div>
+                     <div class="correspondence-metric is-rate"><span><i class="fas fa-percent"></i> نسبة ارتباط الصادر بالوارد</span><strong id="corr-rate">0%</strong><small>المرتبط ÷ إجمالي الصادر × 100</small></div>
+                 </div>
+                 <div class="correspondence-bottom">
+                   <div class="correspondence-progress-label"><strong>مؤشر إنجاز متابعة الصادر</strong><span id="corr-progress-label">0 من 0 كتاب</span></div>
+                   <div class="correspondence-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="corr-progress"><div id="corr-progress-fill"></div></div>
+                   <div class="correspondence-notes">
+                      <span><i class="fas fa-triangle-exclamation"></i> أسماء متكررة تحتاج مراجعة: <b id="corr-ambiguous">0</b></span>
+                      <span><i class="fas fa-circle-question"></i> أسماء وارد دون صادر مطابق: <b id="corr-unmatched">0</b></span>
+                      <span id="corr-updated">آخر تحديث: —</span>
+                   </div>
+                 </div>
+             </section>
         </div>
 
         <!-- 6. الأرشيف -->
         <div id="arch-panel" class="panel">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
                 <h3 class="panel-title" style="margin:0; border:none;" id="archive-main-title"><i class="fas fa-database"></i> سجل الأرشيف</h3>
-                <div class="archive-tools"><button id="btn-export-csv" onclick="exportCurrentArchiveCsv()" class="action-btn report-btn"><i class="fas fa-file-csv"></i> تصدير CSV</button><button id="btn-print-archive" onclick="printCurrentArchive()" class="action-btn report-btn"><i class="fas fa-print"></i> طباعة السجل</button><button onclick="loadArchive()" class="action-btn"><i class="fas fa-sync-alt"></i> تحديث السجلات</button></div>
+                <div class="archive-tools"><label class="correspondence-filter" id="correspondence-filter-box" style="display:none">حالة ارتباط الصادر <select id="correspondence-filter" onchange="renderCurrentArchive()"><option value="all">كل الكتب</option><option value="linked">مرتبط بوارد</option><option value="waiting">بانتظار الوارد</option></select></label><button id="btn-export-csv" onclick="exportCurrentArchiveCsv()" class="action-btn report-btn"><i class="fas fa-file-csv"></i> تصدير CSV</button><button id="btn-print-archive" onclick="printCurrentArchive()" class="action-btn report-btn"><i class="fas fa-print"></i> طباعة السجل</button><button onclick="loadArchive()" class="action-btn"><i class="fas fa-sync-alt"></i> تحديث السجلات</button></div>
             </div>
 
             <div class="sub-tabs" id="admin-sub-tabs" style="display:none;">
@@ -340,6 +407,7 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
             </div>
         </div>
     </div>
+
 
     <div id="toast">تم الحفظ</div>
 
@@ -625,6 +693,24 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
             document.getElementById('media-total').innerText = totalReceived;
             document.getElementById('media-done').innerText = completed;
             document.getElementById('media-rate').innerText = rate + "%";
+            const summary=archiveData.correspondence||{totalOut:totalOut,linked:0,waiting:totalOut,rate:0,ambiguous:0,unmatched:0};
+            const total=Number(summary.totalOut)||0;
+            const linked=Number(summary.linked)||0;
+            const ratio=total?Math.round(linked*1000/total)/10:0;
+            const textPercent=ratio.toLocaleString('ar-IQ',{maximumFractionDigits:1})+'%';
+            const put=(id,value)=>{const e=document.getElementById(id);if(e)e.textContent=value;};
+            put('corr-total',total.toLocaleString('ar-IQ'));
+            put('corr-linked',linked.toLocaleString('ar-IQ'));
+            put('corr-waiting',Math.max(0,total-linked).toLocaleString('ar-IQ'));
+            put('corr-rate',textPercent);
+            put('corr-progress-label',linked.toLocaleString('ar-IQ')+' من '+total.toLocaleString('ar-IQ')+' كتاب');
+            put('corr-ambiguous',(Number(summary.ambiguous)||0).toLocaleString('ar-IQ'));
+            put('corr-unmatched',(Number(summary.unmatched)||0).toLocaleString('ar-IQ'));
+            put('corr-updated','آخر تحديث: '+new Date().toLocaleString('ar-IQ',{dateStyle:'short',timeStyle:'short'}));
+            const progress=document.getElementById('corr-progress');
+            if(progress)progress.setAttribute('aria-valuenow',String(ratio));
+            const bar=document.getElementById('corr-progress-fill');
+            if(bar)bar.style.width=Math.max(0,Math.min(100,ratio))+'%';
         }
 
         async function submitForm(type) {
@@ -669,11 +755,44 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
 
             let res = await safeFetch(payload);
             if (res && res.result === "success") {
-                showToast("✅ تم الحفظ بنجاح وتوثيق القيد");
+                showToast(res.linkNotice ? "✅ "+res.linkNotice : "✅ تم الحفظ بنجاح وتوثيق القيد");
                 logAuditAction(`إضافة قيد جديد: ${payload.name}`);
                 form.reset();
                 loadArchive();
             } else { showToast("❌ حدث خطأ أثناء الحفظ"); }
+        }
+
+
+        async function refreshCorrespondenceLinks() {
+            if(currentUserRole!=='admin'){showToast('هذا الإجراء للمدير فقط');return;}
+            const button=document.getElementById('correspondence-reconcile-btn');
+            if(button)button.disabled=true;
+            try {
+                showToast('جاري مطابقة الأسماء الكاملة بين جميع سجلات الصادر والوارد...');
+                const r=await safeFetch({action:'correspondence_reconcile'});
+                if(!r||r.result!=='success'){showToast('تعذر تحديث الربط: '+(r?.message||'خطأ اتصال'));return;}
+                await loadArchive();
+                showToast('✅ تم تحديث الربط تلقائياً اعتماداً على الاسم الكامل فقط');
+            } finally {if(button)button.disabled=false;}
+        }
+        function printCorrespondenceReport(){
+            if(currentUserRole!=='admin'){showToast('التقرير للمدير فقط');return;}
+            const data=archiveData.correspondence||{};
+            const total=Number(data.totalOut)||0,linked=Number(data.linked)||0;
+            const waiting=Math.max(0,total-linked),rate=total?Math.round(linked*1000/total)/10:0;
+            const rows=[
+              ['إجمالي الكتب الصادرة',total],['الصادر المرتبط بإجابات واردة',linked],
+              ['الصادر بانتظار الارتباط',waiting],['نسبة ارتباط الصادر بالوارد',rate+'%'],
+              ['أسماء مكررة بالصادر تحتاج مراجعة',Number(data.ambiguous)||0],
+              ['أسماء وارد بلا صادر مطابق',Number(data.unmatched)||0]
+            ];
+            const win=window.open('','_blank','width=920,height=780');
+            if(!win){showToast('اسمح بالنوافذ المنبثقة لطباعة تقرير الإنجاز');return;}
+            const today=escapeHtml(new Date().toLocaleString('ar-IQ'));
+            win.document.write('<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>الموقف الإنجازي للصادر والوارد</title><style>@page{size:A4;margin:20mm}body{font-family:Arial,Tahoma,sans-serif;color:#192c3c;padding:12mm}header{border-bottom:3px solid #c7a750;padding-bottom:12px;margin-bottom:20px}header small{display:block;color:#64748b;margin-top:6px}h1{font-size:23px}table{border-collapse:collapse;width:100%;margin-top:20px}td{padding:14px;border-bottom:1px solid #cfd8e2;font-size:16px}td:last-child{text-align:left;font-weight:900}p{color:#64748b;font-size:12px;line-height:1.8}.highlight{background:#f5f8fb}</style></head><body><header><h1>الموقف الإنجازي للكتب الصادرة والإجابات الواردة</h1><small>مكتب النائب سهام منعم المحنة — الإدارة</small></header><table>'+
+              rows.map((r,i)=>'<tr'+(i===3?' class="highlight"':'')+'><td>'+escapeHtml(r[0])+'</td><td>'+escapeHtml(r[1])+'</td></tr>').join('')+
+              '</table><p>المؤشر يعتمد تطابق الاسم الكامل بعد توحيد الكتابة العربية، ويحسِب كل صادر مرة واحدة. تشابه الاسم وحده لا يثبت أن جواب الوارد يتعلق بنفس الكتاب، ولا تمثل النسبة إنجاز موضوع المعاملة.</p><p>تاريخ استخراج التقرير: '+today+'</p></body></html>');
+            win.document.close();win.focus();setTimeout(()=>win.print(),350);
         }
 
         function badgeEnglishDigits(str) {
@@ -755,6 +874,8 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
                 plateDigits:badgeEnglishDigits(document.getElementById('old-num').value.trim()),
                 plateLetter:document.getElementById('old-letter').value.trim(),
                 gov:document.getElementById('old-gov').value.trim(),color:document.getElementById('old-color').value.trim(),
+                badgeCount:document.getElementById('old-count').value,
+                identifier:document.getElementById('old-identifier').value.trim(),
                 badgeDate:document.getElementById('old-date').value};
             const r=await safeFetch(payload);
             if(r?.result==='duplicate_warning') {
@@ -885,6 +1006,7 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
                     if(!archiveData.localLetters) archiveData.localLetters = [];
                     if(!archiveData.audit) archiveData.audit = [];
                     if(!archiveData.appRequests) archiveData.appRequests = [];
+                    if(!archiveData.correspondence) archiveData.correspondence = null;
                     updateTopStats();
                     renderCurrentArchive();
                     if (currentUserRole === 'admin') updateMediaDashboard();
@@ -953,31 +1075,36 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
             const thead = document.getElementById('archive-thead');
             const tbody = document.getElementById('archive-tbody');
             let html = '';
+            const filterBox=document.getElementById('correspondence-filter-box');
+            if(filterBox)filterBox.style.display=(currentArchiveView==='outgoing' && currentUserRole==='admin')?'flex':'none';
+            const selectedLinkFilter=document.getElementById('correspondence-filter')?.value||'all';
 
             if (currentArchiveView === "outgoing") {
                 thead.innerHTML = `<tr><th>الاسم الكامل</th><th>الهاتف</th><th>الجهة</th><th>رقم وتاريخ</th><th>الموضوع</th><th>حالة الكتاب</th><th>المرفقات</th></tr>`;
-                archiveData.outgoing.filter(i => (i.name+" "+i.ministry).toLowerCase().includes(q)).forEach(item => {
+                archiveData.outgoing.filter(i => (i.name+" "+i.ministry+" "+(i.bookNum||'')+" "+(i.id||'')).toLowerCase().includes(q))
+                  .filter(i=>selectedLinkFilter==='all'||(selectedLinkFilter==='linked'?!!String(i.linkedIncomingIds||'').trim():!String(i.linkedIncomingIds||'').trim()))
+                  .forEach(item => {
                     let dateStr = formatDateSafe(item.bookDate);
-                    let cl = item.linkStatus && item.linkStatus.includes("وصلت") ? 'badge-done' : 'badge-wait';
+                    const verified=!!String(item.linkedIncomingIds||'').trim();
+                    let cl=verified?'badge-done':'badge-wait';
+                    const linkLabel=verified?'✅ وصلت الإجابة':(item.linkStatus||'⏳ بانتظار الوارد');
                     
                     // تمرير item.rowIndex حصراً
                     let imgBtn = `<button class="action-btn btn-upload" onclick="triggerImageUpload('${item.rowIndex}', 'outgoing')"><i class="fas fa-plus"></i> إرفاق</button>`;
                     if(item.imageUrl && item.imageUrl !== "") imgBtn = `<button class="action-btn btn-view" onclick="viewImage(decodeURIComponent('${encodeURIComponent(item.imageUrl || '')}'))"><i class="fas fa-image"></i> عرض</button>`;
                     
-                    html += `<tr><td><strong>${escapeHtml(item.name)}</strong></td><td dir="ltr">${escapeHtml(item.phone || '-')}</td><td>${escapeHtml(item.ministry)}</td><td>رقم: ${escapeHtml(item.bookNum)}<br><small>${dateStr}</small></td><td style="max-width:200px;">${escapeHtml(item.subject)}</td><td><span class="badge ${cl}">${escapeHtml(item.linkStatus)}</span></td><td>${imgBtn}</td></tr>`;
+                    html += `<tr><td><strong>${escapeHtml(item.name)}</strong></td><td dir="ltr">${escapeHtml(item.phone || '-')}</td><td>${escapeHtml(item.ministry)}</td><td>رقم: ${escapeHtml(item.bookNum)}<br><small>${dateStr}</small><br><small style="color:#64748b">كود: ${escapeHtml(item.id||'')}</small></td><td style="max-width:200px;">${escapeHtml(item.subject)}</td><td><span class="badge ${cl}">${escapeHtml(linkLabel)}</span>${verified?`<small style="display:block;color:#64748b;margin-top:5px">الوارد المرتبط: ${escapeHtml(item.linkedIncomingIds||'')}</small>`:''}</td><td>${imgBtn}</td></tr>`;
                 });
             } else if (currentArchiveView === "incoming") {
-                thead.innerHTML = `<tr><th>الاسم</th><th>الجهة</th><th>الموضوع</th><th>هامش الوزير أو الجهة</th><th>حالة الكتاب</th><th>المرفقات</th><th>إجراء التسليم</th></tr>`;
+                thead.innerHTML = `<tr><th>الاسم</th><th>الجهة</th><th>الموضوع</th><th>هامش الوزير أو الجهة</th><th>الربط حسب الاسم</th><th>حالة الكتاب</th><th>المرفقات</th><th>إجراء التسليم</th></tr>`;
                 archiveData.incoming.filter(i => (i.name+" "+i.ministry).toLowerCase().includes(q)).forEach(item => {
-                    let cl = item.linkStatus && item.linkStatus.includes("مرتبط") ? 'badge-done' : 'badge-out';
-                    
+                    let cl = item.linkedOutgoingCode ? 'badge-done' : (String(item.linkStatus||'').includes('مكرر')?'badge-wait':'badge-out');
                     let imgBtn = `<button class="action-btn btn-upload" onclick="triggerImageUpload('${item.rowIndex}', 'incoming')"><i class="fas fa-plus"></i> إرفاق</button>`;
                     if(item.imageUrl && item.imageUrl !== "") imgBtn = `<button class="action-btn btn-view" onclick="viewImage(decodeURIComponent('${encodeURIComponent(item.imageUrl || '')}'))"><i class="fas fa-image"></i> عرض</button>`;
-                    
+                    const matchDisplay=item.linkedOutgoingCode ? '✅ '+escapeHtml(item.linkedOutgoingCode) : '—';
                     let deliveryBtn = `<button class="action-btn btn-deliver" onclick="markAsDelivered('${item.rowIndex}', decodeURIComponent('${encodeURIComponent(item.name || '')}'))"><i class="fas fa-handshake"></i> تأشير التسليم</button>`;
                     if(item.deliveryDate) deliveryBtn = `<span style="color:var(--green); font-weight:bold; font-size:12px;"><i class="fas fa-check-circle"></i> تم التسليم<br>${escapeHtml(item.deliveryDate)}</span>`;
-                    
-                    html += `<tr><td><strong>${escapeHtml(item.name)}</strong></td><td>${escapeHtml(item.ministry)}</td><td style="max-width:200px;">${escapeHtml(item.subject)}</td><td style="min-width:180px;max-width:260px;white-space:normal;">${escapeHtml(item.margin || '—')}</td><td><span class="badge ${cl}">${escapeHtml(item.linkStatus)}</span></td><td>${imgBtn}</td><td>${deliveryBtn}</td></tr>`;
+                    html += `<tr><td><strong>${escapeHtml(item.name)}</strong></td><td>${escapeHtml(item.ministry)}</td><td style="max-width:200px;">${escapeHtml(item.subject)}</td><td style="min-width:180px;max-width:260px;white-space:normal;">${escapeHtml(item.margin || '—')}</td><td><small>${matchDisplay}</small></td><td><span class="badge ${cl}">${escapeHtml(item.linkStatus||'قيد المطابقة')}</span></td><td>${imgBtn}</td><td>${deliveryBtn}</td></tr>`;
                 });
             } else if (currentArchiveView === "delivered") {
                 thead.innerHTML = `<tr><th>الاسم</th><th>الجهة</th><th>الموضوع</th><th>تاريخ التسليم</th></tr>`;
@@ -985,7 +1112,7 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
                     html += `<tr><td><strong>${escapeHtml(item.name)}</strong></td><td>${escapeHtml(item.ministry)}</td><td style="max-width:250px;">${escapeHtml(item.subject)}</td><td><span style="color:var(--green); font-weight:900;"><i class="fas fa-check-double"></i> ${escapeHtml(item.deliveryDate)}</span></td></tr>`;
                 });
             } else if (currentArchiveView === "badges" && (currentUserRole === "admin" || currentUserRole === "badges")) {
-                thead.innerHTML = `<tr><th>صاحب الباج</th><th>تفاصيل العجلة</th><th>تاريخ الإصدار</th><th>الحالة</th><th>الإجراءات</th></tr>`;
+                thead.innerHTML = `<tr><th>صاحب الباج</th><th>تفاصيل العجلة</th><th>العدد والمعرّف</th><th>تاريخ الإصدار</th><th>الحالة</th><th>الإجراءات</th></tr>`;
                 archiveData.badges.filter(i => (i.name+" "+i.carType).toLowerCase().includes(q)).forEach(item => {
                     let carInfo = `${escapeHtml(item.carType)} - ${escapeHtml(item.color || '')}`;
                     let plateInfo = `${escapeHtml(item.plateNum || item.plate)} / ${escapeHtml(item.gov || '')}`;
@@ -1000,7 +1127,7 @@ header{gap:16px}header>div:first-child{min-width:0}header h1{display:flex;align-
                     let printLabel = item.printStatus ? `<small style="display:block;color:#64748b;margin-top:4px">${escapeHtml(item.printStatus)}</small>` : '';
                     let revokeBtn = item.status !== "ملغى" ? `<button class="action-btn" style="color:#ef4444; border-color:#ef4444; background:#fef2f2;" onclick="revokeBadge('${item.rowIndex}', decodeURIComponent('${encodeURIComponent(item.name || '')}'))"><i class="fas fa-ban"></i> إلغاء الباج</button>` : '';
 
-                    html += `<tr><td><strong>${escapeHtml(item.name)}</strong></td><td>${carInfo}<br><small dir="ltr">${plateInfo}</small></td><td>${dateStr}</td><td>${statusLabel}${printLabel}</td><td>${qrBtn} ${reprintBtn} ${revokeBtn}</td></tr>`;
+                    html += `<tr><td><strong>${escapeHtml(item.name)}</strong></td><td>${carInfo}<br><small dir="ltr">${plateInfo}</small></td><td>العدد: <b>${escapeHtml(item.count||'—')}</b><br><small>المعرّف: ${escapeHtml(item.identifier||'—')}</small></td><td>${dateStr}</td><td>${statusLabel}${printLabel}</td><td>${qrBtn} ${reprintBtn} ${revokeBtn}</td></tr>`;
                 });
             } else if (currentArchiveView === "localLetters" && currentUserRole === "admin") {
                 thead.innerHTML = `<tr><th>الاسم</th><th>الهاتف</th><th>الجهة</th><th>الموضوع</th><th>المرفقات</th></tr>`;
